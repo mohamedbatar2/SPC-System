@@ -18,19 +18,18 @@ namespace SPC.ViewModel
         public Enreg enreg { get; set; }
         public EnregDetail enregDetail { get; set; }
         public string AspectCnx { get; set; }
-
         public List<string> ItemsSourceD { get; set; }
         public Action RequestClose { get; set; }
         public ICommand SaveCommand { get; set; }
 
-        public MonoExtrimiteViewModel(string NMachine, string NSerie, string UAP) 
+        public MonoExtrimiteViewModel(string NMachine, string NSerie, string NMatricule) 
         {
             Init();
             enreg = new Enreg()
             {
                 NoSerie = NSerie,
                 NoMachine = NMachine,
-                UAP = UAP
+                OperationNo = NMatricule
             };
 
             ItemsSourceD = new List<string>() { "D", "D-F"};

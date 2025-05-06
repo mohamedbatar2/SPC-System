@@ -89,5 +89,28 @@ namespace SPC.Models
                 }
             }
         }
+        
+        public static string LastSerieByOpStatus(string NOp)
+        {
+            using (SqlConnection conn = DBConnexion.GetConnexion())
+            {
+                conn.Open();
+                string query = "select top 1 Nature from enreg e, enregdetail d where OperationNo = @NOp and d.idenrg = e.id order by datedebut desc;";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@NOp", NOp);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            string Nature;
+                            Nature = reader["Nature"] as string;
+                            return Nature;
+                        }
+                        else return "NO DATA(Fin)";
+                    }
+                }
+            }
+        }
     }
 }

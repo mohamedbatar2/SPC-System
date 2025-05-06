@@ -76,6 +76,53 @@ namespace SPC.Models
                 }
             }
         }
+        public static Enreg GetLastSerie(string NMachine, string NMatricule)
+        {
+            using(SqlConnection conn = DBConnexion.GetConnexion())
+            {
+                conn.Open();
+                string query = "select * from enreg where NoMachine = @NMachine and OperationNo = @NOpr;";
+                using(SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@NMachine", NMachine);
+                    cmd.Parameters.AddWithValue("@NOpr", NMatricule);
+                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        reader.Read();
+                         
+                        var enreg = new Enreg()
+                        {
+                            Id = (int)reader["ID"],
+
+                            NoSerie = reader["NoSerie"] as string,
+                            RessourceNo = reader["ResourceNo"] as string,
+                            OperationNo = reader["OperationNo"] as string,
+                            Client = reader["Client"] as string,
+                            NoEquipement = reader["NoEquipement"] as string,
+                            Section = reader["Section"] as string,
+                            NoContact = reader["NoContact"] as string,
+                            NoOutil = reader["NoOutil"] as string,
+                            NoContact2 = reader["NoContact2"] as string,
+                            NoOutil2 = reader["NoOutil2"] as string,
+                            UAP = reader["UAP"] as string,
+                            NoMachine = reader["NoMachine"] as string,
+
+                            AH = reader["AH"] != DBNull.Value ? (decimal?)reader["AH"] : null,
+                            FH = reader["FH"] != DBNull.Value ? (decimal?)reader["FH"] : null,
+                            Traction = reader["Traction"] != DBNull.Value ? (decimal?)reader["Traction"] : null,
+                            LongueurD = reader["LongueurD"] != DBNull.Value ? (decimal?)reader["LongueurD"] : null,
+                            LongueurD2 = reader["LongueurD2"] != DBNull.Value ? (decimal?)reader["LongueurD2"] : null,
+
+                            Connexion = reader["Connexion"] as string,
+                            Ref = reader["Ref"] as string,
+
+                            Denudage = reader["Denudage"] != DBNull.Value ? (decimal?)reader["Denudage"] : null,
+                        };
+                        return enreg;
+                    }
+                }
+            }
+        }
         public static Enreg GetSerie(string NSerie)
         {
             using(SqlConnection conn = DBConnexion.GetConnexion())

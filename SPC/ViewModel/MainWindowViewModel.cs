@@ -17,19 +17,15 @@ namespace SPC.ViewModel
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         public ICommand NewSeriesCommand { get; set; }
-        public bool NMachineDisp { get; set; }
+        public ICommand SurrFinCommand { get; set; }
         public ObservableCollection<EnregComplet> FiltredSeries { get; set; }
         public ObservableCollection<EnregComplet> AllSeries { get; set; }
         public string NMachine { get; set; }
+        public string NMatricule { get; set; }
         public string UAP { get; set; }
 
         private string nSerie;
-        private string Operateur;
-        private string NOperateur;
-        public string NouvelleLabel { get; set; }
-        public string NouvelleColor { get; set; }
-
-        public DispatcherTimer _timerDispatcher { get; set; }   
+        public DispatcherTimer _timerDispatcher { get; set; }
         public string NSerie
         {
             get { return nSerie; }
@@ -48,7 +44,8 @@ namespace SPC.ViewModel
         {
             AllSeries = EnregCompletManager.GetAll();
             FiltredSeries = EnregCompletManager.GetAll();
-            NewSeriesCommand = new RelayCommand(OpenNewSeries, parm => true);
+            NewSeriesCommand = new RelayCommand(obj => OpenNewSeries("new"), parm => true);
+            SurrFinCommand = new RelayCommand(obj => OpenNewSeries("surr"), parm => true);
 
             _timerDispatcher = new DispatcherTimer();
             _timerDispatcher.Interval = TimeSpan.FromMilliseconds(400);
@@ -56,42 +53,31 @@ namespace SPC.ViewModel
             {
                 _timerDispatcher.Stop();
                 ReloadFilter();
-
-                if (UniqueSerie())
-                {
-                    NSerie = FiltredSeries[0].NoSerie;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NSerie)));
-                }
-
-                NMachineManager();
             };
-
-            NMachineDisp = false;
-            NouvelleLabel = "Nouvelle Serie";
-            NouvelleColor = "LightBlue";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OpenNewSeries(object obj)
         {
-            if (string.IsNullOrEmpty(NMachine)) MessageBox.Show("specifie le machine");
+            if (string.IsNullOrEmpty(NMachine)) MessageBox.Show("verifier le machine");
+            else if (string.IsNullOrEmpty(NMatricule) || !OperateurManager.CheckOpExist(NMatricule)) MessageBox.Show("verifier le matricule");
             else if (string.Equals("M1", NMachine, StringComparison.OrdinalIgnoreCase))
             {
                 MonoExtrimiteViewModel viewModel;
 
-                if (string.IsNullOrEmpty(NSerie)) viewModel = new MonoExtrimiteViewModel(NMachine.ToUpper(), GenerateNSerie(), UAP);
-                else if (EnregManager.IsSerieThere(NSerie)) viewModel = new MonoExtrimiteViewModel(EnregManager.GetSerie(NSerie));
+                if (obj.Equals("new") && EnregCompletManager.LastSerieByOpStatus(NMatricule).Contains("Fin")) viewModel = new MonoExtrimiteViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule); //Todo selecting with last serie of the op
+                else if (obj.Equals("surr")) viewModel = new MonoExtrimiteViewModel(EnregManager.GetLastSerie(NMachine, NMatricule));
                 else
                 {
-                    MessageBox.Show("il n'ya pas une serie avec cet reference!!");
+                    MessageBox.Show("creer nouveus serie");
                     return;
                 }
 
-                var view = new MonoExtrimite
-                {
-                    DataContext = viewModel
-                };
+                    var view = new MonoExtrimite
+                    {
+                        DataContext = viewModel
+                    };
 
                 viewModel.RequestClose = () => view.Close();
 
@@ -136,51 +122,6 @@ namespace SPC.ViewModel
             }
         }
 
-        private void NMachineManager()
-        {
-            if (EnregManager.IsSerieThere(NSerie))
-            {
-                NMachine = EnregManager.GetSerie(NSerie).NoMachine;
-                NMachineDisp = true;
-                NouvelleColor = "YellowGreen";
-                NouvelleLabel = "Surveillance";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NouvelleColor)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NouvelleLabel)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NMachine)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NMachineDisp)));
-            }
-            else
-            {
-                NMachine = null;
-                NMachineDisp = false;
-                NouvelleColor = "LightBlue";
-                NouvelleLabel = "Nouvelle Serie";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NouvelleColor)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NouvelleLabel)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NMachine)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NMachineDisp)));
-            }
-        }
-
-        private bool UniqueSerie()
-        {
-            string nserie="";
-            int run=0;
-            if (FiltredSeries.Count <= 0) return false;
-            foreach(var ec in FiltredSeries)
-            {
-                if (run == 0)
-                {
-                    nserie = ec.NoSerie;
-                    run++;
-                }
-                else if(nserie != ec.NoSerie)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
         public string GenerateNSerie()
         {
             var lSerie = EnregManager.GetLastSerie();

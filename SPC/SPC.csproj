@@ -89,6 +89,10 @@
     <Compile Include="Models\EnregDetail.cs" />
     <Compile Include="Models\EnregDetailManager.cs" />
     <Compile Include="Models\EnregManager.cs" />
+    <Compile Include="Models\Operateur.cs" />
+    <Compile Include="Models\OperateurManager.cs" />
+    <Compile Include="Models\Outil.cs" />
+    <Compile Include="Models\OutilManager.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\MonoExtrimiteViewModel.cs" />
     <Compile Include="ViewModel\MultipleExtrimiteViewModel.cs" />
