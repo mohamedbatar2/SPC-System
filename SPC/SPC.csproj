@@ -89,23 +89,15 @@
     <Compile Include="Models\EnregDetail.cs" />
     <Compile Include="Models\EnregDetailManager.cs" />
     <Compile Include="Models\EnregManager.cs" />
-    <Compile Include="ViewModel\LaunchFormViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\MonoExtrimiteViewModel.cs" />
     <Compile Include="ViewModel\MultipleExtrimiteViewModel.cs" />
-    <Compile Include="Views\LaunchForm.xaml.cs">
-      <DependentUpon>LaunchForm.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\MonoExtrimite.xaml.cs">
       <DependentUpon>MonoExtrimite.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MultipleExtrimite.xaml.cs">
       <DependentUpon>MultipleExtrimite.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\LaunchForm.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

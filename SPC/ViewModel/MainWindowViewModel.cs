@@ -46,7 +46,6 @@ namespace SPC.ViewModel
 
         public MainWindowViewModel()
         {
-            OpenFormStart();
             AllSeries = EnregCompletManager.GetAll();
             FiltredSeries = EnregCompletManager.GetAll();
             NewSeriesCommand = new RelayCommand(OpenNewSeries, parm => true);
@@ -74,24 +73,6 @@ namespace SPC.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OpenFormStart()
-        {
-            LaunchForm lf = new LaunchForm();
-            LaunchFormViewModel vm = new LaunchFormViewModel();
-            vm.RequestExit = () => lf.Close();
-            vm.PassData = (data) =>
-            {
-                if (data.Length == 3)
-                {
-                    UAP = data[0];
-                    Operateur = data[1];
-                    NOperateur = data[2];
-                }
-            };
-
-            lf.DataContext = vm;
-            lf.ShowDialog();
-        }
         private void OpenNewSeries(object obj)
         {
             if (string.IsNullOrEmpty(NMachine)) MessageBox.Show("specifie le machine");
