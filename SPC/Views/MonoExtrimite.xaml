@@ -130,7 +130,7 @@
                     <StackPanel>
                         <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="ASPECT CNX" Width="90" TextAlignment="Center" />
                         <Border Background="White" Height="25" BorderThickness="1" BorderBrush="Gray">
-                            <ComboBox SelectedValue="{Binding AspectCnx}" SelectedValuePath="Content">
+                            <ComboBox SelectedValue="{Binding enregDetail.AspectCnx}" SelectedValuePath="Content">
                                 <ComboBoxItem Content="C"/>
                                 <ComboBoxItem Content="NC"/>
                             </ComboBox>

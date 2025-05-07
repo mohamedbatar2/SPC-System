@@ -27,7 +27,25 @@ namespace SPC.Models
                         return reader.Read();
                     }
                 }
-
+            }
+        }
+        public static string GetOpName(string NOp)
+        {
+            using(SqlConnection conn = DBConnexion.GetConnexion()) {
+                conn.Open();
+                string query = "select Name from Operateurs where OperationNo = @NOp;";
+                using(SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@NOp", NOp);
+                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if(reader.Read())
+                        {
+                            return reader[0] as string;
+                        }
+                        return null;
+                    }
+                }
             }
         }
     }

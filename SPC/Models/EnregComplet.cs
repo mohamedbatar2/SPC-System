@@ -11,7 +11,21 @@ namespace SPC.Models
         public string NoSerie { get; set; }
         public string NoMachine { get; set; }
         public string RessourceNo { get; set; }
-        public string OperationNo { get; set; }
+
+        private string operationNo;
+        public string OperationNo
+        {
+            get { return operationNo; }
+            set 
+            {
+                operationNo = value;
+                if (value != null)
+                {
+                Name = OperateurManager.GetOpName(operationNo);
+                }
+            }
+        }
+
         public string Client { get; set; }
         public string NoEquipement { get; set; }
         public string UAP { get; set; }
@@ -61,6 +75,8 @@ namespace SPC.Models
         public string Clip1 { get; set; }
         public string Clip2 { get; set; }
         public string Clip3 { get; set; }
+        public string Name { get; set; }
 
+        public string AspectCnx { get; set; }
     }
 }

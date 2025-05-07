@@ -17,7 +17,6 @@ namespace SPC.ViewModel
         public EnregComplet enregComplet { get; set; }
         public Enreg enreg { get; set; }
         public EnregDetail enregDetail { get; set; }
-        public string AspectCnx { get; set; }
         public List<string> ItemsSourceD { get; set; }
         public Action RequestClose { get; set; }
         public ICommand SaveCommand { get; set; }
@@ -79,7 +78,7 @@ namespace SPC.ViewModel
                 , "Denudage",};
             List<string> enregDetailProps= new List<string>{"Repere", "Nature", "Quantite"
                 ,"AH1", "AH2", "AH3", "FH1", "FH2", "FH3"
-                ,"Traction1" ,"Traction2","Traction3","NoOutil"
+                ,"Traction1" ,"Traction2","Traction3","NoOutil", "AspectCnx",
             };
             foreach(var prop in enregProps)
             {
@@ -90,6 +89,7 @@ namespace SPC.ViewModel
 
                     if (value == null || (value is string && string.IsNullOrEmpty((string)value)))
                     {
+                        MessageBox.Show("prop");
                         return false;
                     }
                 }
@@ -102,47 +102,14 @@ namespace SPC.ViewModel
                     var value = propInfo.GetValue(enregDetail);
 
                     if(value == null || (value is string  && string.IsNullOrEmpty((string)value)))
-                    { 
+                    {
+                        MessageBox.Show(prop);
                         return false;
                     }
                 }
             }
-            return !string.IsNullOrEmpty(AspectCnx); //last check that's why if you merge this to a model add it in the list then return true
+            return true;
         }
-        //public MonoExtrimiteViewModel(string NMachine, string NSerie)
-        //{
-        //    enregComplet = new EnregComplet()
-        //    {
-        //        NoSerie = NSerie,
-        //        NoMachine = NMachine,
-        //        DateCreation = DateTime.Now,
-        //    };
-        //}
-        //public MonoExtrimiteViewModel(Enreg enreg) 
-        //{
-        //    enregComplet = new EnregComplet()
-        //    {
-        //        DateCreation = DateTime.Now,
-        //        NoSerie = enreg.NoSerie,
-        //        NoMachine = enreg.NoMachine,
-        //        Client = enreg.Client,
-        //        RessourceNo = enreg.RessourceNo,
-        //        OperationNo = enreg.OperationNo,
-        //        NoEquipement = enreg.NoEquipement,
-        //        UAP = enreg.UAP,
-        //        Section = enreg.Section,
-        //        NoContact = enreg.NoContact,
-        //        NoContact2 = enreg.NoContact2,
-        //        NoOutil = enreg.NoOutil,
-        //        NoOutil2 = enreg.NoOutil2,
-        //        AH = enreg.AH,
-        //        FH  = enreg.FH,
-        //        Traction = enreg.Traction,
-        //        LongueurD = enreg.LongueurD,
-        //        LongueurD2 = enreg.LongueurD2,
-        //    };
-        //}
-
     }
 }
 

@@ -59,7 +59,7 @@
                 <DataGridTextColumn Binding="{Binding NoSerie}" Header="No Serie" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding NoMachine}" Header="Machine" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Client}" Header="Client" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding OperationNo}" Header="matricule" Width="auto"/> <!--get the name of the operation-->
+                <DataGridTextColumn Binding="{Binding Name}" Header="Nom-Prenom" Width="auto"/> 
                 <DataGridTextColumn Binding="{Binding DateCreation}" Header="Date" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Nature}" Header="Nature" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding NoOutil}" Header="Outil" Width="auto"/>
@@ -77,10 +77,11 @@
                 <DataGridTextColumn Binding="{Binding Traction1}" Header="Traction 1" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Traction2}" Header="Traction 2" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Traction3}" Header="Traction 3" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding AspectCnx}" Header="Aspect Connexion" Width="auto"/>
 <!--                <DataGridTextColumn Binding="{Binding}" Header="" Width="auto"/>  -->
             </DataGrid.Columns>
        </DataGrid>
-       </Border>
+        </Border>
 
     </Grid>
 </Window>

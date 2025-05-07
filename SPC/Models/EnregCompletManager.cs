@@ -82,6 +82,7 @@ namespace SPC.Models
 
                                 Denudage = reader["Denudage"] != DBNull.Value ? (decimal?)reader["Denudage"] : null,
 
+                                AspectCnx = reader["AspectCnx"] as string,
                             });
                         }
                         return enregComplets;

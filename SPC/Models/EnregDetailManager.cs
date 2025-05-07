@@ -56,7 +56,9 @@ namespace SPC.Models
                             ContactAspect1 = reader["ContactAspect1"] as string,
                             ContactAspect2 = reader["ContactAspect2"] as string,
                             ContactAspect3 = reader["ContactAspect3"] as string,
-                            Nature = reader["Nature"] as string
+                            Nature = reader["Nature"] as string,
+
+                            AspectCnx = reader["AspectCnx"] as string,
                         });
                     }
                 }
@@ -78,7 +80,7 @@ namespace SPC.Models
                         ContactAspect1, ContactAspect2, ContactAspect3,
                         Denudage1, Denudage2, Denudage3,
                         Tol1, Tol2, Tol3,
-                        Clip1, Clip2, Clip3, LongueurM2
+                        Clip1, Clip2, Clip3, LongueurM2, AspectCnx
                     )
                     VALUES (
                         @IdEnrg, @DateDebut, @Quantite, @AH1, @AH2, @AH3, 
@@ -87,7 +89,7 @@ namespace SPC.Models
                         @ContactAspect1, @ContactAspect2, @ContactAspect3,
                         @Denudage1, @Denudage2, @Denudage3,
                         @Tol1, @Tol2, @Tol3,
-                        @Clip1, @Clip2, @Clip3, @LongueurM2
+                        @Clip1, @Clip2, @Clip3, @LongueurM2, @AspectCnx
                     )";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -124,6 +126,8 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@Clip1", string.IsNullOrEmpty(detail.Clip1) ? DBNull.Value : (object)detail.Clip1);
                     cmd.Parameters.AddWithValue("@Clip2", string.IsNullOrEmpty(detail.Clip2) ? DBNull.Value : (object)detail.Clip2);
                     cmd.Parameters.AddWithValue("@Clip3", string.IsNullOrEmpty(detail.Clip3) ? DBNull.Value : (object)detail.Clip3);
+
+                    cmd.Parameters.AddWithValue("@AspectCnx", string.IsNullOrEmpty(detail.AspectCnx) ? DBNull.Value : (object)detail.AspectCnx);
 
                     cmd.ExecuteNonQuery();
                 }

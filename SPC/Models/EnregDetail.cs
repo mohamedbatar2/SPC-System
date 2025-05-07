@@ -40,5 +40,6 @@ namespace SPC.Models
         public string Clip1 { get; set; }
         public string Clip2 { get; set; }
         public string Clip3 { get; set; }
+        public string AspectCnx { get; set; }
     }
 }

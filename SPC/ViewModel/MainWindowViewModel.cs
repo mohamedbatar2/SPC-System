@@ -35,7 +35,6 @@ namespace SPC.ViewModel
                     nSerie = value;
                     _timerDispatcher.Stop();
                     _timerDispatcher.Start();
-
                 }
             }
         }
@@ -65,12 +64,19 @@ namespace SPC.ViewModel
             else if (string.Equals("M1", NMachine, StringComparison.OrdinalIgnoreCase))
             {
                 MonoExtrimiteViewModel viewModel;
+                var laststatus = EnregCompletManager.LastSerieByOpStatus(NMatricule);
 
-                if (obj.Equals("new") && EnregCompletManager.LastSerieByOpStatus(NMatricule).Contains("Fin")) viewModel = new MonoExtrimiteViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule); //Todo selecting with last serie of the op
-                else if (obj.Equals("surr")) viewModel = new MonoExtrimiteViewModel(EnregManager.GetLastSerie(NMachine, NMatricule));
+                if (obj.Equals("new") && laststatus.Contains("Fin")) viewModel = new MonoExtrimiteViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule); //Todo selecting with last serie of the op | should the op start a new series when the old one didn't finish
+                else if (obj.Equals("new"))
+                {
+                    //todo here to check if the series ended if you don't wan't to check you could remove last...conaitns("fin") from the previeus if
+                    MessageBox.Show("Finir premierement le dernier serie");
+                    return;
+                } 
+                else if (obj.Equals("surr") && (string.IsNullOrEmpty(laststatus) || !laststatus.Contains("Fin"))) viewModel = new MonoExtrimiteViewModel(EnregManager.GetLastSerie(NMachine, NMatricule)); //if there is no prev one it would arise error solve this
                 else
                 {
-                    MessageBox.Show("creer nouveus serie");
+                    MessageBox.Show("creer nouveux serie");
                     return;
                 }
 
