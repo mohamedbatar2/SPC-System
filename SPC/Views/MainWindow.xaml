@@ -68,12 +68,12 @@
                 <DataGridTextColumn Binding="{Binding Denudage}" Header="Denudage" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Section}" Header="Section" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Repere}" Header="Repere" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding AH1}" Header="Hauteur sertissage 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding AH2}" Header="Hauteur sertissage 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding AH3}" Header="Hauteur sertissage 3" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding FH1}" Header="Hauteur fretage 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding FH2}" Header="Hauteur fretage 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding FH3}" Header="Hauteur fretage 3" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding AH1}" Header="Hauteur ame 1" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding AH2}" Header="Hauteur ame 2" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding AH3}" Header="Hauteur ame 3" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding FH1}" Header="Hauteur isolant 1" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding FH2}" Header="Hauteur isolant 2" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding FH3}" Header="Hauteur isolant 3" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Traction1}" Header="Traction 1" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Traction2}" Header="Traction 2" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Traction3}" Header="Traction 3" Width="auto"/>

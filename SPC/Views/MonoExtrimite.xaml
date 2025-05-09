@@ -5,16 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SPC.Views"
         mc:Ignorable="d"
-        Title="MonoExtrimite" Height="360" Width="775" 
+        ResizeMode="NoResize"
+        Title="{Binding Name}" Height="500" Width="785"
         Background="LightGray">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="0 0 0 200" Grid.RowSpan="2">
+        <Grid Grid.Row="0" Margin="0 0 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
@@ -26,15 +28,18 @@
             <Border BorderBrush="Black" BorderThickness="1" Margin="20 20 0 20" Grid.Column="0">
                 <StackPanel >
                     <TextBlock FontWeight="Bold" TextAlignment="Center" Foreground="White" Text="CLIENT" Background="LightGreen" />
-                    <TextBox Width="120" Height="25" Text="{Binding enreg.Client}"/>
+                    <ComboBox Width="120" Height="25" ItemsSource="{Binding Clients}" Text="{Binding enreg.Client}" IsHitTestVisible="{Binding ClientChanging}" IsEditable="True"/> <!--add is editable so when adding new clients it adds them to the databse-->
                 </StackPanel>
             </Border>
-            <Border BorderBrush="Black" BorderThickness="1" Margin="0 20 0 20" Grid.Column="1">
+            <StackPanel Margin="0 20 0 0" Grid.Column="1">
+                <Border  BorderBrush="Black" BorderThickness="1" >
                 <StackPanel >
-                    <TextBlock FontWeight="Bold" TextAlignment="Center" Foreground="White" Text="Ref Client" Background="LightGreen" />
-                    <TextBox Width="120" Height="25" Text="{Binding enreg.Ref}"/>
+                    <TextBlock FontWeight="Bold" TextAlignment="Center" Foreground="{Binding RefFor}" Text="Ref Client" Background="{Binding RefColor}" />
+                    <TextBox Width="120" Height="25" Text="{Binding enreg.Ref}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
                 </StackPanel>
-            </Border>
+                </Border>
+                <TextBlock Text="ref > 6 svp" Visibility="{Binding VisiRefWarning}" Foreground="red" FontWeight="ExtraBold" HorizontalAlignment="Center"/>
+            </StackPanel>
             <Border BorderBrush="Black" BorderThickness="1" Margin="0 20 0 20" Grid.Column="2">
                 <StackPanel >
                     <TextBlock TextAlignment="Center" FontWeight="Bold" Foreground="White" Text="REPERE" Background="LightGreen" />
@@ -44,7 +49,7 @@
             <Border BorderBrush="Black" BorderThickness="1" Margin="0 20 0 20" Grid.Column="3">
                 <StackPanel >
                     <TextBlock TextAlignment="Center" FontWeight="Bold" Foreground="White" Text="SECTION FIL" Background="LightGreen" />
-                    <TextBox Width="120" Height="25"  Text="{Binding enreg.Section,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                    <TextBox Width="120" Height="25"  Text="{Binding Section,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
                 </StackPanel>
             </Border>
             <Border BorderBrush="Black" BorderThickness="1" Margin="0 20 0 20" Grid.Column="4">
@@ -53,7 +58,7 @@
                     <ComboBox ItemsSource="{Binding ItemsSourceD}" SelectedValue="{Binding enregDetail.Nature}" Width="120" Height="25" Grid.Row="1"/>
                 </StackPanel>
             </Border>
-            <Border BorderBrush="Black" BorderThickness="1" Margin="0 20 0 20" Grid.Column="6">
+            <Border BorderBrush="Black" BorderThickness="1" Margin="0 20 20 20" Grid.Column="6">
                 <StackPanel >
                     <TextBlock TextAlignment="Center" Foreground="White" Text="QUANTITE" FontWeight="Bold" Background="LightGreen" />
                     <TextBox Width="120" Height="25"  Text="{Binding enregDetail.Quantite,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
@@ -65,39 +70,7 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" Margin="0 25 0 0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-
-                <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="0">
-                    <StackPanel  Orientation="Horizontal">
-                        <TextBlock FontWeight="Bold" Padding="10 0 10 0"  Background="black" Foreground="white" Text="HA" Width="90"/>
-                        <TextBox Width="90" Text="{Binding enregDetail.AH1,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
-                        <TextBox Width="90" Margin="5 0 5 0 " Text="{Binding enregDetail.AH2,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
-                        <TextBox Width="90" Text="{Binding enregDetail.AH3,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
-                    </StackPanel>
-                </Border>
-                <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="1">
-                    <StackPanel  Orientation="Horizontal">
-                        <TextBlock  FontWeight="Bold" Padding="10 0 10 0"  Background="black" Foreground="white" Text="FA" Width="90"/>
-                        <TextBox Width="90" Text="{Binding enregDetail.FH1,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
-                        <TextBox Width="90" Margin="5 0 5 0 " Text="{Binding enregDetail.FH2,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
-                        <TextBox Width="90" Text="{Binding enregDetail.FH3,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
-                    </StackPanel>
-                </Border>
-                <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="2">
-                    <StackPanel  Orientation="Horizontal">
-                        <TextBlock FontWeight="Bold"  Padding="10 0 10 0" Background="black" Foreground="white" Text="TRACTION" Width="90"/>
-                        <TextBox Width="90" Text="{Binding enregDetail.Traction1,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
-                        <TextBox Width="90" Margin="5 0 5 0 " Text="{Binding enregDetail.Traction2,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
-                        <TextBox Width="90" Text="{Binding enregDetail.Traction3,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-            <Grid Grid.Column="1" Margin="10 0 20 0">
+            <Grid Grid.Column="0" Margin="10 0 20 0"> 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
@@ -108,38 +81,101 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1"  Grid.Column="0">
-                    <StackPanel >
-                        <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="Connexion" Width="90" TextAlignment="Center" />
-                        <TextBox Width="90" Height="25" Text="{Binding enreg.Connexion}"/>
-                    </StackPanel>
-                </Border>
-                <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" Grid.Column="0">
+                <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Grid.Column="0">
                     <StackPanel >
                         <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="N OUTIL" Width="90" TextAlignment="Center" />
-                        <TextBox Width="90" Height="25" Text="{Binding enreg.NoOutil}"/>
+                        <TextBox Width="90" Height="25" Text="{Binding NOutil, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
                     </StackPanel>
                 </Border>
                 <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1"  Grid.Column="1">
+                    <StackPanel >
+                        <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="Connexion" Width="120" TextAlignment="Center" />
+                        <TextBox Width="120" Height="25" Text="{Binding Connexion, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1"  Grid.Column="0">
                     <StackPanel>
                         <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="DENUDAGE" Width="90" TextAlignment="Center" />
-                        <TextBox Width="90" Height="25" Text="{Binding enreg.Denudage,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                        <TextBox Width="90" Height="25" Text="{Binding enreg.Denudage,UpdateSourceTrigger=LostFocus,TargetNullValue=''}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
                     </StackPanel>
                 </Border>
                 <Border BorderBrush="Black" BorderThickness="1"  Grid.Column="1" Grid.Row="1">
                     <StackPanel>
-                        <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="ASPECT CNX" Width="90" TextAlignment="Center" />
+                        <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="ASPECT CNX" Width="120" TextAlignment="Center" />
                         <Border Background="White" Height="25" BorderThickness="1" BorderBrush="Gray">
                             <ComboBox SelectedValue="{Binding enregDetail.AspectCnx}" SelectedValuePath="Content">
-                                <ComboBoxItem Content="C"/>
-                                <ComboBoxItem Content="NC"/>
+                                <ComboBoxItem Content="CONFORM"/>
+                                <ComboBoxItem Content="NON CONFORM"/>
                             </ComboBox>
                         </Border>
                     </StackPanel>
                 </Border>
-                <TextBlock Text="C:Conform NC:Non Conform" Foreground="Blue" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
+                <!--
+                <TextBlock Height="30" Text="C:Conform NC:Non Conform" Foreground="Blue" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
+                -->
+            </Grid>
+            <Grid Grid.Column="1" Margin="0 0 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Margin="10 0 10 5" Background="{Binding WarningColor}" Visibility="{Binding VisiWarning}">
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding Warning}" Foreground="Black" FontWeight="ExtraBlack"/>
+                </Border>
+
+                <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="1">
+                    <StackPanel  Orientation="Horizontal">
+                        <TextBlock FontWeight="Bold" Padding="10 0 10 0"  Background="black" Foreground="white" Text="HA" Width="90"/>
+                        <TextBox Width="90" Text="{Binding enregDetail.AH1,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                        <TextBox Width="90" Margin="5 0 5 0 " Text="{Binding enregDetail.AH2,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                        <TextBox Width="90" Text="{Binding enregDetail.AH3,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                    </StackPanel>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="2">
+                    <StackPanel  Orientation="Horizontal">
+                        <TextBlock  FontWeight="Bold" Padding="10 0 10 0"  Background="black" Foreground="white" Text="HI" Width="90"/>
+                        <TextBox Width="90" Text="{Binding enregDetail.FH1,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                        <TextBox Width="90" Margin="5 0 5 0 " Text="{Binding enregDetail.FH2,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                        <TextBox Width="90" Text="{Binding enregDetail.FH3,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                    </StackPanel>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="3">
+                    <StackPanel  Orientation="Horizontal">
+                        <TextBlock FontWeight="Bold"  Padding="10 0 10 0" Background="black" Foreground="white" Text="TRACTION" Width="90"/>
+                        <TextBox Width="90" Text="{Binding enregDetail.Traction1,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                        <TextBox Width="90" Margin="5 0 5 0 " Text="{Binding enregDetail.Traction2,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                        <TextBox Width="90" Text="{Binding enregDetail.Traction3,UpdateSourceTrigger=LostFocus,TargetNullValue=''}"/>
+                    </StackPanel>
+                </Border>
             </Grid>
         </Grid>
-        <Button Command="{Binding SaveCommand}" Grid.Row="2" Margin="0 0 20 20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="30" Height="20" Background="DimGray" Content="💾"/>
+        <Button Command="{Binding SaveCommand}" Grid.Row="3" Margin="0 0 20 20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="30" Height="20" Background="DimGray" Content="💾"/>
+        <Border Visibility="{Binding VisiDataGrid}" Grid.Row="2" BorderBrush="Black" BorderThickness="1.5" Margin="10 10 10 10">
+            <DataGrid ItemsSource="{Binding Outils}" HeadersVisibility="Column" MaxHeight="180" CanUserAddRows="False" IsReadOnly="True">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#C9ADA7"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="Padding" Value="2 0 2 0"/>
+                        <Setter Property="BorderThickness" Value="1.2 1.2 1.2 1"/>
+                    </Style>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Background" Value="#EADBD6"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True" >
+                                <Setter Property="Background" Value="#97A2A6" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Resources>
+            </DataGrid>
+        </Border>
     </Grid>
 </Window>

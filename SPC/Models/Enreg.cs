@@ -14,7 +14,18 @@ namespace SPC.Models
         public string RessourceNo { get; set; }
         public string OperationNo { get; set; }
         public string Client { get; set; }
-        public string Ref { get; set; }
+        private string _ref;
+        public string Ref
+        {
+            get { return _ref; }
+            set {
+                if (_ref != value)
+                {
+                    _ref = value;
+                    RefSizeTester?.Invoke();
+                }
+            }
+        }
         public string NoEquipement { get; set; }
         public string UAP { get; set; }
         public string Section { get; set; }
@@ -30,5 +41,7 @@ namespace SPC.Models
 
         public decimal? Denudage { get; set; }
         public string Connexion { get; set; }
+
+        public Action RefSizeTester { get; set; }
     }
 }

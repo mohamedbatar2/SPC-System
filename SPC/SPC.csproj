@@ -83,6 +83,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\ClientManager.cs" />
     <Compile Include="Models\Enreg.cs" />
     <Compile Include="Models\EnregComplet.cs" />
     <Compile Include="Models\EnregCompletManager.cs" />

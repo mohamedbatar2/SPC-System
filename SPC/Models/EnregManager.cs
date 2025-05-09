@@ -81,7 +81,7 @@ namespace SPC.Models
             using(SqlConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "select * from enreg where NoMachine = @NMachine and OperationNo = @NOpr;";
+                string query = "select top 1 * from enreg where NoMachine = @NMachine and OperationNo = @NOpr order by id desc;";
                 using(SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NMachine", NMachine);
