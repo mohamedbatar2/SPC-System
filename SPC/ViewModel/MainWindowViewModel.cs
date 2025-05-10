@@ -20,24 +20,65 @@ namespace SPC.ViewModel
         public ICommand SurrFinCommand { get; set; }
         public ObservableCollection<EnregComplet> FiltredSeries { get; set; }
         public ObservableCollection<EnregComplet> AllSeries { get; set; }
-        public string NMachine { get; set; }
-        public string NMatricule { get; set; }
         public string UAP { get; set; }
-
-        private string nSerie;
-        public DispatcherTimer _timerDispatcher { get; set; }
-        public string NSerie
+        private string nMachine;
+        public string NMachine
         {
-            get { return nSerie; }
-            set {
-                if (nSerie != value)
+            get { return nMachine; }
+            set
+            {
+                if (nMachine != value)
                 {
-                    nSerie = value;
+                    nMachine = value;
                     _timerDispatcher.Stop();
                     _timerDispatcher.Start();
                 }
             }
         }
+        private string nMatricule;
+        public string NMatricule
+        {
+            get { return nMatricule; }
+            set
+            {
+                if (nMatricule != value)
+                {
+                    nMatricule = value;
+                    _timerDispatcher.Stop();
+                    _timerDispatcher.Start();
+                }
+            }
+        }
+
+        private string machineLabel;
+        public string MachineLabel
+        {
+            get { return machineLabel; }
+            set
+            {
+                if (value != machineLabel)
+                {
+                    opLabel = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MachineLabel)));
+                }
+            }
+        }
+        private string opLabel;
+        public string OperateurLabel
+        {
+            get { return opLabel; }
+            set
+            {
+                if (value != opLabel)
+                {
+                    opLabel = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OperateurLabel)));
+                }
+            }
+        }
+
+
+        public DispatcherTimer _timerDispatcher { get; set; }
 
         public MainWindowViewModel()
         {
@@ -47,7 +88,7 @@ namespace SPC.ViewModel
             SurrFinCommand = new RelayCommand(obj => OpenNewSeries("surr"), parm => true);
 
             _timerDispatcher = new DispatcherTimer();
-            _timerDispatcher.Interval = TimeSpan.FromMilliseconds(400);
+            _timerDispatcher.Interval = TimeSpan.FromMilliseconds(1000);
             _timerDispatcher.Tick += (s, e) =>
             {
                 _timerDispatcher.Stop();
@@ -111,21 +152,23 @@ namespace SPC.ViewModel
         {
             FiltredSeries.Clear();
 
-            if (string.IsNullOrEmpty(NSerie))
+            if (string.IsNullOrEmpty(NMatricule) || !OperateurManager.CheckOpExist(NMatricule))
             {
                 foreach (var item in AllSeries) 
                 {
                     FiltredSeries.Add(item);
                 }
-            return;
+                OperateurLabel = "";
+                return;
             }
             foreach (var item in AllSeries) 
             {
-                if (item.NoSerie.Contains(NSerie))
+                if (item.OperationNo.Equals(NMatricule))
                 {
                     FiltredSeries.Add(item);
                 }
             }
+            OperateurLabel = OperateurManager.GetOpName(NMatricule);
         }
 
         public string GenerateNSerie()

@@ -13,7 +13,20 @@ namespace SPC.Models
         public string NoMachine { get; set; }
         public string RessourceNo { get; set; }
         public string OperationNo { get; set; }
-        public string Client { get; set; }
+        private string client;
+
+        public string Client
+        {
+            get { return client; }
+            set {
+                if (client != value)
+                {
+                    client = value;
+                    CliAbsTester?.Invoke();
+                }
+            }
+        }
+
         private string _ref;
         public string Ref
         {
@@ -43,5 +56,6 @@ namespace SPC.Models
         public string Connexion { get; set; }
 
         public Action RefSizeTester { get; set; }
+        public Action CliAbsTester { get; set; }
     }
 }

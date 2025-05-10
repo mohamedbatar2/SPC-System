@@ -7,7 +7,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 using SPC.Models;
 using SPC.Tools;
@@ -57,13 +59,25 @@ namespace SPC.ViewModel
                 {
                     section = value;
                     enreg.Section = value;
-                    _dispatcherTimer.Stop();
-                    _dispatcherTimer.Start();
+                    if (!string.IsNullOrEmpty(NOutil) && !string.IsNullOrEmpty(Connexion)) FilterOutils();
                 }
             }
         }
         public DispatcherTimer _dispatcherTimer { get; set; }
 
+        public string SaveButtonState { get; set; }
+        public string ColorHA1 { get; set; }
+        public string ColorHA2 { get; set; }
+        public string ColorHA3 { get; set; }
+        public string ColorHI1 { get; set; }
+        public string ColorHI2 { get; set; }
+        public string ColorHI3 { get; set; }
+        public string ColorTraction1 { get; set; }
+        public string ColorTraction2 { get; set; }
+        public string ColorTraction3 { get; set; }
+        public string CliColor { get; set; }
+        public string CliFor { get; set; }
+        public string VisiCliWarning { get; set; }
         public string WarningColor { get; set; }
         public string Warning { get; set; }
         public string VisiWarning { get; set; }
@@ -81,7 +95,6 @@ namespace SPC.ViewModel
                 ClientChanging = value=="false"? "true" : "false";
             }
         }
-
         public string ClientChanging { get; set; }
 
         public EnregComplet enregComplet { get; set; }
@@ -114,7 +127,7 @@ namespace SPC.ViewModel
         public MonoExtrimiteViewModel(Enreg enreg)
         {
             this.enreg = enreg;
-            Init();
+            Init(); //should be bellow enreg cause i use it in the Init
 
             Section = enreg.Section;
             Connexion = enreg.Connexion;
@@ -148,6 +161,7 @@ namespace SPC.ViewModel
 
             enregDetail.ChangeColor += (v, l) => WarningNotif(v, l);
             enreg.RefSizeTester += () => RefSizeAct();
+            enreg.CliAbsTester += () => CliAbsAct();
         }
         private void ViewInit()
         {
@@ -157,27 +171,46 @@ namespace SPC.ViewModel
             RefColor = "LightGreen";
             RefFor = "White";
             VisiRefWarning= "Hidden";
+            CliColor = "LightGreen";
+            CliFor = "White";
+            VisiCliWarning= "Hidden";
             VisiDataGrid = "Hidden";
             VisiWarning = "Hidden";
+            ColorHA1 = "white";
+            ColorHA2 = "white";
+            ColorHA3 = "white";
+            ColorHI1 = "white";
+            ColorHI2 = "white";
+            ColorHI3 = "white";
+            ColorTraction1 = "white";
+            ColorTraction2 = "white";
+            ColorTraction3 = "white";
+            SaveButtonState = "false";
         }
         public void WarningNotif(decimal? v, string p) 
         {
             if(Outils.Count == 0) 
                 return;
-            var outil = Outils.Last();
-            string warn = $"hors tolerance dans {p}";
+            var outil = Outils[0];
+            string warn = p;
 
             if (p.Contains("AH"))
             {
-                if(CompareBetween(v, outil.Hame, outil.TolHa))
+                if (CompareBetween(v, outil.Hame, outil.TolHa))
                 {
-                    if(warnings.Contains(warn))
+                    if (warnings.Contains(warn))
+                    {
                         warnings.Remove(warn);
+                        SetWaringColor(warn);
+                    }
                 }
                 else
                 {
-                    if(!warnings.Contains(warn))
+                    if (!warnings.Contains(warn))
+                    {
                         warnings.Add(warn);
+                        SetWaringColor(warn);
+                    }
                     if (warnings.Count() == 1)
                     {
                         WarningLoop();
@@ -186,15 +219,21 @@ namespace SPC.ViewModel
             }
             else if (p.Contains("FH"))
             {
-                if(CompareBetween(v, outil.Hisolant, outil.TolHi))
+                if (CompareBetween(v, outil.Hisolant, outil.TolHi))
                 {
-                    if(warnings.Contains(warn))
+                    if (warnings.Contains(warn))
+                    {
                         warnings.Remove(warn);
+                        SetWaringColor(warn);
+                    }
                 }
                 else
                 {
-                    if(!warnings.Contains(warn))
+                    if (!warnings.Contains(warn))
+                    {
                         warnings.Add(warn);
+                        SetWaringColor(warn);
+                    }
                     if (warnings.Count() == 1)
                     {
                         WarningLoop();
@@ -203,30 +242,83 @@ namespace SPC.ViewModel
             }
             else if (p.Contains("Traction"))
             {
-                if(v < outil.Trac)
+                if(v<outil.Trac)
                 {
-                    if(warnings.Contains(warn))
-                        warnings.Remove(warn);
-                }
-                else
-                {
-                    if(!warnings.Contains(warn))
+                    if (!warnings.Contains(warn))
+                    {
                         warnings.Add(warn);
+                        SetWaringColor(warn);
+                    }
                     if (warnings.Count() == 1)
                     {
                         WarningLoop();
                     }
                 }
+                else
+                {
+                    if (warnings.Contains(warn))
+                    {
+                        warnings.Remove(warn);
+                        SetWaringColor(warn);
+                    }
+                }
             }
         }
 
+        public void SetWaringColor(string warning)
+        {
+            if (warning == "AH1")
+            {
+                ColorHA1 = ColorHA1 == "white" ? "PaleVioletRed" : "white";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHA1)));
+            }
+            if (warning == "AH2") { 
+                ColorHA2 = ColorHA2 == "white" ? "PaleVioletRed" : "white";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHA2)));
+            }
+            if (warning == "AH3")
+            {
+                ColorHA3 = ColorHA3 == "white" ? "PaleVioletRed" : "white";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHA3)));
+            }
+            if (warning == "FH1")
+            {
+                ColorHI1 = ColorHI1 == "white" ? "PaleVioletRed" : "white";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHI1)));
+            }
+            if (warning == "FH2")
+            {
+                ColorHI2 = ColorHI2 == "white" ? "PaleVioletRed" : "white";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHI2)));
+            }
+            if (warning == "FH3")
+            {
+                ColorHI3 = ColorHI3 == "white" ? "PaleVioletRed" : "white";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHI3)));
+            }
+            if (warning == "Traction1") 
+            {
+                ColorTraction1 = ColorTraction1 == "white" ? "PaleVioletRed" : "white";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorTraction1)));
+            }
+            if (warning == "Traction2")
+            {
+                ColorTraction2 = ColorTraction2 == "white" ? "PaleVioletRed" : "white";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorTraction2)));
+            }
+            if (warning == "Traction3")
+            {
+                ColorTraction3 = ColorTraction3 == "white" ? "PaleVioletRed" : "white";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorTraction3)));
+            }
+        }
         private async void WarningLoop()
         {
             VisiWarning = "Visible";
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisiWarning)));
             while (warnings.Count()!=0)
             {
-                Warning = warnings.Last();
+                Warning = "Hort tolerance";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Warning)));
                 WarningColor = "red";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WarningColor)));
@@ -248,8 +340,18 @@ namespace SPC.ViewModel
         }
         private void SaveSerie(object obj)
         {
-            if (checkFull())
+            if (!ClientManager.GetClientsNames().Contains(enreg.Client))
             {
+                MessageBox.Show($"Pas de client {enreg.Client}");
+                return;
+            }
+            else if (checkFull())
+            {
+                if (Outils.Count() == 0)
+                {
+                    MessageBox.Show("svp selectionner des valid");
+                    return;
+                }
                 enregDetail.Nature = enregDetail.Nature.Equals("D") ? "Debut"
                     : enregDetail.Nature.Equals("D-F") ? "Debut-Fin"
                     : enregDetail.Nature.Equals("F") ? "Fin"
@@ -262,10 +364,11 @@ namespace SPC.ViewModel
 
                 EnregDetailManager.InsertNew(enregDetail);
                 RequestClose?.Invoke();
-                if (!ClientManager.GetClientsNames().Contains(enreg.Client))
-                {
-                    ClientManager.AddClient(enreg.Client);
-                }
+
+                //if (!ClientManager.GetClientsNames().Contains(enreg.Client)) //remove the first check and uncomment this to allow clients to be added if absent
+                //{
+                //    ClientManager.AddClient(enreg.Client);
+                //}
             }
             else MessageBox.Show("remplire tout les cas svp");
         }
@@ -306,6 +409,24 @@ namespace SPC.ViewModel
             }
             return true;
         }
+        private void CliAbsAct()
+        {
+            if(!ClientManager.GetClientsNames().Contains(enreg.Client))
+            {
+                CliColor = "Red";
+                CliFor = "Yellow";
+                VisiCliWarning = "Visible";
+            }
+            else
+            {
+                CliColor = "LightGreen";
+                CliFor = "White";
+                VisiCliWarning = "Hidden";
+            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CliColor)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CliFor)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisiCliWarning)));
+        }
         private void RefSizeAct()
         {
             if(enreg.Ref.Length < 6)
@@ -328,16 +449,22 @@ namespace SPC.ViewModel
         public void FilterOutils()
         {
             Outils.Clear();
+            var outils = OutilManager.GetOutilsByCndO(NOutil, Connexion);
 
-            foreach (var item in NonFiltredOutils) 
+            foreach (var item in outils) 
             {
-                if (item.Sec.Contains(string.IsNullOrEmpty(Section)?"":Section) && item.NOutil.Contains(string.IsNullOrEmpty(NOutil)?"":NOutil) && item.Connexion.Contains(string.IsNullOrEmpty(Connexion)?"":Connexion))
-                {
-                    Outils.Add(item);
-                }
+                if (item.Sec.Equals(string.IsNullOrEmpty(Section)?"":Section)) Outils.Add(item);
             }
             VisiDataGrid = Outils.Count() == 0 ? "Hidden" : "Visible";
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisiDataGrid)));
+        }
+        public void SaveCheck()
+        {
+            if (warnings.Count() == 0 && checkFull() && VisiRefWarning == "False" && Outils.Count()!=0) SaveButtonState = "true";
+
+            else SaveButtonState = "false";
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SaveButtonState)));
         }
     }
 }
