@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace SPC.ViewModel
         public ICommand SurrFinCommand { get; set; }
         public ObservableCollection<EnregComplet> FiltredSeries { get; set; }
         public ObservableCollection<EnregComplet> AllSeries { get; set; }
+        public EnregComplet SerieSelected { get; set;}
         public string UAP { get; set; }
         private string nMachine;
         public string NMachine
@@ -58,7 +60,7 @@ namespace SPC.ViewModel
             {
                 if (value != machineLabel)
                 {
-                    opLabel = value;
+                    machineLabel = value;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MachineLabel)));
                 }
             }
@@ -76,7 +78,6 @@ namespace SPC.ViewModel
                 }
             }
         }
-
 
         public DispatcherTimer _timerDispatcher { get; set; }
 
@@ -100,35 +101,31 @@ namespace SPC.ViewModel
 
         private void OpenNewSeries(object obj)
         {
-            if (string.IsNullOrEmpty(NMachine)) MessageBox.Show("verifier le machine");
+            if (string.IsNullOrEmpty(NMachine) || string.IsNullOrEmpty(MachineManager.GetTypeSPC(NMachine))) MessageBox.Show("verifier le machine");
             else if (string.IsNullOrEmpty(NMatricule) || !OperateurManager.CheckOpExist(NMatricule)) MessageBox.Show("verifier le matricule");
-            else if (string.Equals("M1", NMachine, StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(MachineManager.GetTypeSPC(NMachine), "CRIP1"))
             {
                 MonoExtrimiteViewModel viewModel;
                 var laststatus = EnregCompletManager.LastSerieByOpStatus(NMatricule);
 
-                if (obj.Equals("new") && laststatus.Contains("Fin")) viewModel = new MonoExtrimiteViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule); //Todo selecting with last serie of the op | should the op start a new series when the old one didn't finish
-                else if (obj.Equals("new"))
-                {
-                    //todo here to check if the series ended if you don't wan't to check you could remove last...conaitns("fin") from the previeus if
-                    MessageBox.Show("Finir premierement le dernier serie");
-                    return;
-                } 
-                else if (obj.Equals("surr") && (string.IsNullOrEmpty(laststatus) || !laststatus.Contains("Fin"))) viewModel = new MonoExtrimiteViewModel(EnregManager.GetLastSerie(NMachine, NMatricule)); //if there is no prev one it would arise error solve this
+                if (obj.Equals("new")) viewModel = new MonoExtrimiteViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule);
+                else if (obj.Equals("surr") && SerieSelected != null ) viewModel = new MonoExtrimiteViewModel(EnregManager.GetSerie(SerieSelected.NoSerie)); //if there is no prev one it would arise error solve this
                 else
                 {
-                    MessageBox.Show("creer nouveux serie");
+                    MessageBox.Show("Selectionner une serie!!!!");
                     return;
                 }
 
-                    var view = new MonoExtrimite
-                    {
-                        DataContext = viewModel
-                    };
+                var view = new MonoExtrimite
+                {
+                    DataContext = viewModel
+                };
 
                 viewModel.RequestClose = () => view.Close();
 
                 view.ShowDialog();
+
+                viewModel.ExitLoops = true;
                 ReloadAllSeries();
                 ReloadFilter();
             }
@@ -152,23 +149,30 @@ namespace SPC.ViewModel
         {
             FiltredSeries.Clear();
 
-            if (string.IsNullOrEmpty(NMatricule) || !OperateurManager.CheckOpExist(NMatricule))
+            if (string.IsNullOrEmpty(NMatricule))
             {
                 foreach (var item in AllSeries) 
                 {
                     FiltredSeries.Add(item);
                 }
-                OperateurLabel = "";
-                return;
             }
-            foreach (var item in AllSeries) 
+            else
             {
-                if (item.OperationNo.Equals(NMatricule))
+                foreach (var item in AllSeries)
                 {
-                    FiltredSeries.Add(item);
+                    if (item.OperationNo.Equals(NMatricule))
+                    {
+                        if (string.IsNullOrEmpty(NMachine))
+                        {
+                            FiltredSeries.Add(item);
+                        }
+                        else if (item.NoMachine.Contains(NMachine.ToUpper())) FiltredSeries.Add(item);
+                    }
                 }
             }
-            OperateurLabel = OperateurManager.GetOpName(NMatricule);
+
+            OperateurLabel = !OperateurManager.CheckOpExist(NMatricule)? "" :OperateurManager.GetOpName(NMatricule.ToUpper());
+            MachineLabel = string.IsNullOrEmpty(NMachine) ? "" : MachineManager.GetLibelle(NMachine);
         }
 
         public string GenerateNSerie()

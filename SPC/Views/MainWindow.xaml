@@ -38,8 +38,8 @@
             <TextBox Text="{Binding NMatricule, UpdateSourceTrigger=PropertyChanged}" Width="120" Margin="0 0 15 10" VerticalAlignment="Center" Padding="3" Grid.Row="1" Grid.Column="1"/>
             <Label Content="{Binding OperateurLabel}" Grid.Row="0" Grid.Column="0" Height="25" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
 
-            <Label FontWeight="DemiBold" Content="Machine:" Margin="5 0 5 5" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"/>
-            <TextBox Text="{Binding NMachine}" Width="120" Margin="0 0 15 10" VerticalAlignment="Center" Padding="3" Grid.Row="1" Grid.Column="3"/>
+            <Label FontWeight="DemiBold" Content="Machine:" Margin="25 0 5 5" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"/>
+            <TextBox Text="{Binding NMachine, UpdateSourceTrigger=PropertyChanged}" Width="120" Margin="0 0 120 10" VerticalAlignment="Center" Padding="3" Grid.Row="1" Grid.Column="3"/>
             <Label Content="{Binding MachineLabel}" Grid.Row="0" Grid.Column="2" Height="25" FontWeight="bold" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
 
             <Button FontWeight="DemiBold" Background="LightBlue" Content="Nouvelle Serie" Padding="15 0 15 0" Command="{Binding NewSeriesCommand}" Margin="20 0 0 10" Grid.Row="1" Grid.Column="4"/>
@@ -47,7 +47,7 @@
         </Grid>
 
         <Border Grid.Column="0" Grid.ColumnSpan="2" Margin="10" Grid.Row="1" BorderThickness="1.5" BorderBrush="Black">
-            <DataGrid IsReadOnly="True"  HeadersVisibility="Column" CanUserAddRows="False" ItemsSource="{Binding FiltredSeries}"  AutoGenerateColumns="False" Width="auto">
+            <DataGrid IsReadOnly="True"  HeadersVisibility="Column" CanUserAddRows="False" ItemsSource="{Binding FiltredSeries}"  AutoGenerateColumns="False" Width="auto" SelectedValue="{Binding SerieSelected}">
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="Background" Value="#C9ADA7"/>

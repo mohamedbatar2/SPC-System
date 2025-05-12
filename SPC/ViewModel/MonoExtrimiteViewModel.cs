@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,6 +20,373 @@ namespace SPC.ViewModel
 {
     public class MonoExtrimiteViewModel : INotifyPropertyChanged
     {
+
+        public bool ExitLoops { get; set; }
+        private int cc;
+        private string outilWarningVisibilite;
+        public string OutilWarningVisibilite
+        {
+            get { return outilWarningVisibilite; }
+            set
+            {
+                if (value != outilWarningVisibilite)
+                {
+                    outilWarningVisibilite = value;
+                    OnPropertyChanged(nameof(OutilWarningVisibilite));
+                    if(cc == 0)
+                    {
+                        prvLoop();
+                    }
+                }
+            }
+        }
+        private string outilWarningColor;
+        public string OutilWarningColor
+        {
+            get { return outilWarningColor; }
+            set
+            {
+                if (value != outilWarningColor)
+                {
+                    outilWarningColor = value;
+                    OnPropertyChanged(nameof(OutilWarningColor));
+                }
+            }
+        }
+
+        private string quantite;
+        public string Quantite
+        {
+            get { return quantite; }
+            set {
+                if (quantite != value)
+                {
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        quantite = value;
+                        enregDetail.Quantite = null;
+                    }
+                    else if(Regex.IsMatch(value.ToString(), @"^[0-9]+$"))
+                    {
+                        quantite = value;
+                        enregDetail.Quantite = Int32.Parse(value);
+                        OnPropertyChanged(nameof(Quantite));
+                    }
+                }
+            }
+        }
+
+        private string denudage;
+        public string Denudage
+        {
+            get { return denudage; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    denudage = value;
+                    enreg.Denudage = null;
+                    OnPropertyChanged(nameof(Denudage));
+                    return;
+                }
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
+                if (denudage != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    denudage = value;
+                    enreg.Denudage = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage);
+                    OnPropertyChanged(nameof(Denudage));
+                }
+            }
+        }
+        public string ah1;
+        public string AH1
+        {
+            get
+            {
+                return ah1;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(value)){
+                    ah1 = null;
+                    WarningNotif(null , "AH1");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (ah1 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    ah1 = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(ah1)?(decimal?)null:decimal.Parse(ah1.Replace(',', '.')), "AH1");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(AH1));
+                    enregDetail.AH1 = decimal.Parse(ah1.Replace(',', '.'));
+                }
+            }
+        }
+        public string ah2;
+        public string AH2
+        {
+            get
+            {
+                return ah2;
+            }
+            set
+            {
+                if (value == null){
+                    ah2 = null;
+                    WarningNotif(null , "AH2");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (ah2 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    ah2 = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(ah2)?(decimal?)null:decimal.Parse(ah2.Replace(',', '.')), "AH2");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(AH2));
+                    enregDetail.AH2 = decimal.Parse(ah2.Replace(',', '.'));
+                }
+            }
+        }
+        public string ah3;
+        public string AH3
+        {
+            get
+            {
+                return ah3;
+            }
+            set
+            {
+                if (value == null){
+                    ah3 = null;
+                    WarningNotif(null , "AH2");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (ah3 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    ah3 = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(ah3)?(decimal?)null:decimal.Parse(ah3.Replace(',', '.')), "AH3");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(AH3));
+                    enregDetail.AH3 = decimal.Parse(ah3.Replace(',', '.'));
+                }
+            }
+        }
+
+        public string fh1;
+        public string FH1
+        {
+            get
+            {
+                return fh1;
+            }
+            set
+            {
+                if (value == null){
+                    fh1 = null;
+                    WarningNotif(null , "FH1");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (fh1 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    fh1 = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(fh1) ? (decimal?)null : decimal.Parse(fh1.Replace(',', '.')), "FH1");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(FH1));
+                    enregDetail.FH1 = decimal.Parse(fh1.Replace(',', '.'));
+                }
+            }
+        }
+        public string fh2;
+        public string FH2
+        {
+            get
+            {
+                return fh2;
+            }
+            set
+            {
+                if (value == null){
+                    fh2 = null;
+                    WarningNotif(null , "FH2");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (fh2 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    fh2 = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(fh2) ? (decimal?)null : decimal.Parse(fh2.Replace(',', '.')), "FH2");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(FH2));
+                    enregDetail.FH2 = decimal.Parse(fh2.Replace(',', '.'));
+                }
+            }
+        }
+        public string fh3;
+        public string FH3
+        {
+            get
+            {
+                return fh3;
+            }
+            set
+            {
+                if (value == null){
+                    fh3 = null;
+                    WarningNotif(null , "FH3");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (fh3 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    fh3 = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(fh3) ? (decimal?)null : decimal.Parse(fh3.Replace(',', '.')), "FH3");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(FH3));
+                    enregDetail.FH3 = decimal.Parse(fh3.Replace(',', '.'));
+                }
+            }
+        }
+        public string traction1;
+        public string Traction1
+        {
+            get
+            {
+                return traction1;
+            }
+            set
+            {
+                if (value == null){
+                    traction1 = null;
+                    WarningNotif(null , "Traction1");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (traction1 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    traction1 = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(traction1) ? (decimal?)null : decimal.Parse(traction1.Replace(',', '.')), "Traction1");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(Traction1));
+                    enregDetail.Traction1 = decimal.Parse(traction1.Replace(',', '.'));
+                }
+            }
+        }
+        public string traction2;
+        public string Traction2
+        {
+            get
+            {
+                return traction2;
+            }
+            set
+            {
+                if (value == null){
+                    traction2 = null;
+                    WarningNotif(null , "Traction2");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (traction2 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    traction2 = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(traction2) ? (decimal?)null : decimal.Parse(traction2.Replace(',', '.')), "Traction2");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(Traction2));
+                    enregDetail.Traction2 = decimal.Parse(traction2.Replace(',', '.'));
+                }
+            }
+        }
+        public string traction3;
+        public string Traction3
+        {
+            get
+            {
+                return traction3;
+            }
+            set
+            {
+                if (value == null){
+                    traction3 = null;
+                    WarningNotif(null , "Traction1");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (traction3 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    traction3 = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(traction3) ? (decimal?)null : decimal.Parse(traction3.Replace(',', '.')), "Traction3");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(Traction3));
+                    enregDetail.Traction3 = decimal.Parse(traction3.Replace(',', '.'));
+                }
+            }
+        }
         public string Name { get; set; }//title
 
         private string nOutil;
@@ -29,8 +398,10 @@ namespace SPC.ViewModel
                 {
                     enreg.NoOutil = value;
                     nOutil = value;
-                    _dispatcherTimer.Stop();
-                    _dispatcherTimer.Start();
+                    FilterOutils();
+                    WarningNotifCheckingAll();
+                    var prv = OtaPrvntfManager.GetPrvntf(NOutil);
+                    OutilWarningVisibilite = prv == null || ( prv.DtPrv < DateTime.Now && prv.QtAct < 0.8 * prv.PrvQt ) ? "Hidden" : "Visible";
                 }
             }
         }
@@ -44,8 +415,8 @@ namespace SPC.ViewModel
                 {
                     enreg.Connexion = value;
                     connexion = value;
-                    _dispatcherTimer.Stop();
-                    _dispatcherTimer.Start();
+                    FilterOutils();
+                    WarningNotifCheckingAll();
                 }
             }
         }
@@ -55,17 +426,27 @@ namespace SPC.ViewModel
             get { return section; }
             set
             {
-                if (value != section)
+                if (string.IsNullOrEmpty(value))
+                {
+                    section = null;
+                    OnPropertyChanged(nameof(Section));
+                    return;
+                }
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
+                if (section != value && Regex.IsMatch(value.ToString(), @"^([0-9]+\,?[0-9]{0,3})(\+([0-9]+\,?[0-9]{0,3})?)?$"))
                 {
                     section = value;
                     enreg.Section = value;
-                    if (!string.IsNullOrEmpty(NOutil) && !string.IsNullOrEmpty(Connexion)) FilterOutils();
+                    if (!string.IsNullOrEmpty(NOutil) && !string.IsNullOrEmpty(Connexion))
+                    {
+                        FilterOutils();
+                        WarningNotifCheckingAll();
+                        OnPropertyChanged(nameof(Section));
+                    }
                 }
             }
         }
-        public DispatcherTimer _dispatcherTimer { get; set; }
-
-        public string SaveButtonState { get; set; }
+        public DispatcherTimer WarningNotifTimer { get; set; }
         public string ColorHA1 { get; set; }
         public string ColorHA2 { get; set; }
         public string ColorHA3 { get; set; }
@@ -151,20 +532,17 @@ namespace SPC.ViewModel
             {
                 DateCreation = DateTime.Now,
             };
-            _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(400);
-            _dispatcherTimer.Tick += (s, e) =>
-            {
-                _dispatcherTimer.Stop();
-                FilterOutils();
-            };
+            WarningNotifTimer =new DispatcherTimer();
+            WarningNotifTimer.Interval = TimeSpan.FromMilliseconds(1000);
 
-            enregDetail.ChangeColor += (v, l) => WarningNotif(v, l);
             enreg.RefSizeTester += () => RefSizeAct();
             enreg.CliAbsTester += () => CliAbsAct();
+
+            ExitLoops = false;
         }
         private void ViewInit()
         {
+            OutilWarningVisibilite = "Hidden";
             warnings = new List<string>();
             Warning = "";
             WarningColor = "red";
@@ -176,21 +554,31 @@ namespace SPC.ViewModel
             VisiCliWarning= "Hidden";
             VisiDataGrid = "Hidden";
             VisiWarning = "Hidden";
-            ColorHA1 = "white";
-            ColorHA2 = "white";
-            ColorHA3 = "white";
-            ColorHI1 = "white";
-            ColorHI2 = "white";
-            ColorHI3 = "white";
-            ColorTraction1 = "white";
-            ColorTraction2 = "white";
-            ColorTraction3 = "white";
-            SaveButtonState = "false";
+            InitWarningColor();
+
+        }
+        private void WarningNotifCheckingAll()
+        {
+            WarningNotif(string.IsNullOrEmpty(AH1)?(decimal?)null:decimal.Parse(AH1.Replace(',', '.')), "AH1");
+            WarningNotif(string.IsNullOrEmpty(AH2)?(decimal?)null:decimal.Parse(AH2.Replace(',', '.')), "AH2");
+            WarningNotif(string.IsNullOrEmpty(AH3)?(decimal?)null:decimal.Parse(AH3.Replace(',', '.')), "AH3");
+
+            WarningNotif(string.IsNullOrEmpty(FH1)?(decimal?)null:decimal.Parse(FH1.Replace(',', '.')), "FH1");
+            WarningNotif(string.IsNullOrEmpty(FH2)?(decimal?)null:decimal.Parse(FH2.Replace(',', '.')), "FH2");
+            WarningNotif(string.IsNullOrEmpty(FH3)?(decimal?)null:decimal.Parse(FH3.Replace(',', '.')), "FH3");
+
+            WarningNotif(string.IsNullOrEmpty(Traction1)?(decimal?)null:decimal.Parse(Traction1.Replace(',', '.')), "Traction1");
+            WarningNotif(string.IsNullOrEmpty(Traction2)?(decimal?)null:decimal.Parse(Traction2.Replace(',', '.')), "Traction2");
+            WarningNotif(string.IsNullOrEmpty(Traction3)?(decimal?)null:decimal.Parse(Traction3.Replace(',', '.')), "Traction3");
         }
         public void WarningNotif(decimal? v, string p) 
         {
-            if(Outils.Count == 0) 
+            if(Outils.Count == 0 || (string.IsNullOrEmpty(Section) && string.IsNullOrEmpty(Connexion) && string.IsNullOrEmpty(NOutil)))
+            {
+                warnings.Clear();
+                InitWarningColor();
                 return;
+            }
             var outil = Outils[0];
             string warn = p;
 
@@ -264,73 +652,106 @@ namespace SPC.ViewModel
                 }
             }
         }
+        private void InitWarningColor()
+        {
+            ColorHA1 = "white";
+            ColorHA2 = "white";
+            ColorHA3 = "white";
+            ColorHI1 = "white";
+            ColorHI2 = "white";
+            ColorHI3 = "white";
+            ColorTraction1 = "white";
+            ColorTraction2 = "white";
+            ColorTraction3 = "white";
+            OnPropertyChanged(nameof(ColorHA1));
+            OnPropertyChanged(nameof(ColorHA2));
+            OnPropertyChanged(nameof(ColorHA3));
+            OnPropertyChanged(nameof(ColorHI1));
+            OnPropertyChanged(nameof(ColorHI2));
+            OnPropertyChanged(nameof(ColorHI3));
+            OnPropertyChanged(nameof(ColorTraction1));
+            OnPropertyChanged(nameof(ColorTraction2));
+            OnPropertyChanged(nameof(ColorTraction3));
+        }
 
         public void SetWaringColor(string warning)
         {
             if (warning == "AH1")
             {
                 ColorHA1 = ColorHA1 == "white" ? "PaleVioletRed" : "white";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHA1)));
+                OnPropertyChanged(nameof(ColorHA1));
             }
             if (warning == "AH2") { 
                 ColorHA2 = ColorHA2 == "white" ? "PaleVioletRed" : "white";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHA2)));
+                OnPropertyChanged(nameof(ColorHA2));
             }
             if (warning == "AH3")
             {
                 ColorHA3 = ColorHA3 == "white" ? "PaleVioletRed" : "white";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHA3)));
+                OnPropertyChanged(nameof(ColorHA3));
             }
             if (warning == "FH1")
             {
                 ColorHI1 = ColorHI1 == "white" ? "PaleVioletRed" : "white";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHI1)));
+                OnPropertyChanged(nameof(ColorHI1));
             }
             if (warning == "FH2")
             {
                 ColorHI2 = ColorHI2 == "white" ? "PaleVioletRed" : "white";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHI2)));
+                OnPropertyChanged(nameof(ColorHI2));
             }
             if (warning == "FH3")
             {
                 ColorHI3 = ColorHI3 == "white" ? "PaleVioletRed" : "white";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorHI3)));
+                OnPropertyChanged(nameof(ColorHI3));
             }
             if (warning == "Traction1") 
             {
                 ColorTraction1 = ColorTraction1 == "white" ? "PaleVioletRed" : "white";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorTraction1)));
+                OnPropertyChanged(nameof(ColorTraction1));
             }
             if (warning == "Traction2")
             {
                 ColorTraction2 = ColorTraction2 == "white" ? "PaleVioletRed" : "white";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorTraction2)));
+                OnPropertyChanged(nameof(ColorTraction2));
             }
             if (warning == "Traction3")
             {
                 ColorTraction3 = ColorTraction3 == "white" ? "PaleVioletRed" : "white";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColorTraction3)));
+                OnPropertyChanged(nameof(ColorTraction3));
             }
+        }
+        private async void prvLoop()
+        {
+            cc++;
+            while (OutilWarningVisibilite == "Visible" && !ExitLoops)
+            {
+                OutilWarningColor = "Red";
+                await Task.Delay(400);
+                OutilWarningColor = "Yellow";
+                await Task.Delay(400);
+            }
+            cc--;
         }
         private async void WarningLoop()
         {
             VisiWarning = "Visible";
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisiWarning)));
-            while (warnings.Count()!=0)
+            OnPropertyChanged(nameof(VisiWarning));
+            while (warnings.Count()!=0 && !ExitLoops)
             {
                 Warning = "Hort tolerance";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Warning)));
+                OnPropertyChanged(nameof(Warning));
                 WarningColor = "red";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WarningColor)));
+                OnPropertyChanged(nameof(WarningColor));
                 await Task.Delay(200);
                 WarningColor = "yellow";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WarningColor)));
+                OnPropertyChanged(nameof(WarningColor));
                 await Task.Delay(200);
             }
             Warning = "";
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Warning)));
+            OnPropertyChanged(nameof(Warning));
             VisiWarning = "Hidden";
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisiWarning)));
+            OnPropertyChanged(nameof(VisiWarning));
        }
 
         private bool CompareBetween(decimal? value1, decimal? value2, decimal? tol)
@@ -340,39 +761,22 @@ namespace SPC.ViewModel
         }
         private void SaveSerie(object obj)
         {
-            if (!ClientManager.GetClientsNames().Contains(enreg.Client))
+            if (SaveCheck())
             {
-                MessageBox.Show($"Pas de client {enreg.Client}");
-                return;
-            }
-            else if (checkFull())
-            {
-                if (Outils.Count() == 0)
-                {
-                    MessageBox.Show("svp selectionner des valid");
-                    return;
-                }
-                enregDetail.Nature = enregDetail.Nature.Equals("D") ? "Debut"
-                    : enregDetail.Nature.Equals("D-F") ? "Debut-Fin"
-                    : enregDetail.Nature.Equals("F") ? "Fin"
-                    : enregDetail.Nature.Equals("S") ? "Sourvillence"
-                    : null;
-
                 EnregManager.InsertNew(enreg);
 
                 enregDetail.IdEnrg = EnregManager.GetId(enreg.NoSerie);
+                OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);
 
                 EnregDetailManager.InsertNew(enregDetail);
                 RequestClose?.Invoke();
-
-                //if (!ClientManager.GetClientsNames().Contains(enreg.Client)) //remove the first check and uncomment this to allow clients to be added if absent
-                //{
-                //    ClientManager.AddClient(enreg.Client);
-                //}
             }
-            else MessageBox.Show("remplire tout les cas svp");
+            else
+            {
+                MessageBox.Show("Error"); //ToDo add sepecific ...
+            }
         }
-        private bool checkFull()
+        private bool CheckFull()
         {
             List<string> enregProps = new List<string>{"Client", "Ref", "Section", "Connexion"
                 , "Denudage",};
@@ -402,7 +806,6 @@ namespace SPC.ViewModel
 
                     if (value == null || (value is string && string.IsNullOrEmpty((string)value)))
                     {
-                        MessageBox.Show(prop);
                         return false;
                     }
                 }
@@ -441,9 +844,9 @@ namespace SPC.ViewModel
                 RefFor = "White";
                 VisiRefWarning = "Hidden";
             }
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RefColor)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RefFor)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisiRefWarning)));
+            OnPropertyChanged(nameof(RefColor));
+            OnPropertyChanged(nameof(RefFor));
+            OnPropertyChanged(nameof(VisiRefWarning));
         }
 
         public void FilterOutils()
@@ -453,18 +856,21 @@ namespace SPC.ViewModel
 
             foreach (var item in outils) 
             {
-                if (item.Sec.Equals(string.IsNullOrEmpty(Section)?"":Section)) Outils.Add(item);
+                if (item.Sec.Equals(Section) || string.IsNullOrEmpty(Section)) Outils.Add(item);
             }
             VisiDataGrid = Outils.Count() == 0 ? "Hidden" : "Visible";
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisiDataGrid)));
+            OnPropertyChanged(nameof(VisiDataGrid));
         }
-        public void SaveCheck()
+        private bool SaveCheck()
         {
-            if (warnings.Count() == 0 && checkFull() && VisiRefWarning == "False" && Outils.Count()!=0) SaveButtonState = "true";
-
-            else SaveButtonState = "false";
-
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SaveButtonState)));
+            var prv = OtaPrvntfManager.GetPrvntf(NOutil);
+            bool prvcheck = prv.QtAct + enregDetail.Quantite < prv.PrvQt;
+            if (warnings.Count() == 0 && CheckFull() && VisiRefWarning == "Hidden" && Outils.Count() != 0 && prvcheck) return true;
+            else return false;
+        }
+        private void OnPropertyChanged(string Name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Name));
         }
     }
 }
