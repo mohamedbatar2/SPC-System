@@ -17,7 +17,7 @@ namespace SPC.Models
         public decimal? TolHa { get; set; }
         public decimal? Hisolant { get; set; }
         public decimal? TolHi { get; set; }
-        public string TypeFil { get; set; }
+        public int? Trac { get; set; }
         public decimal? Denu { get; set; }
         public int? Vld { get; set; }
         public decimal? Lame { get; set; }
@@ -28,12 +28,12 @@ namespace SPC.Models
         public decimal? Bat { get; set; }
         public string Empl { get; set; }
         public string Reg { get; set; }
-        public string Ema { get; set; }
         public string Ph { get; set; }
         public string Emplcnx { get; set; }
-        public string Clip { get; set; }
         public DateTime DateSi { get; set; }
-        public int? Trac { get; set; }
+        public string Clip { get; set; }
+        public string Ema { get; set; }
+        public string TypeFil { get; set; }
         public string UAP { get; set; }
         public string Zone { get; set; }
     }

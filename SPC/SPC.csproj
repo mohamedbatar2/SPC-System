@@ -99,15 +99,31 @@
     <Compile Include="Models\OtaPrvntfManager.cs" />
     <Compile Include="Models\Outil.cs" />
     <Compile Include="Models\OutilManager.cs" />
+    <Compile Include="ViewModel\DualExtrimiteSertisseuseViewModel.cs" />
+    <Compile Include="ViewModel\HistoryViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\MonoExtrimiteViewModel.cs" />
     <Compile Include="ViewModel\MultipleExtrimiteViewModel.cs" />
+    <Compile Include="ViewModel\ResetOutilViewModel.cs" />
+    <Compile Include="Views\DualExtrimiteSertisseuse.xaml.cs">
+      <DependentUpon>DualExtrimiteSertisseuse.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MonoExtrimite.xaml.cs">
       <DependentUpon>MonoExtrimite.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MultipleExtrimite.xaml.cs">
       <DependentUpon>MultipleExtrimite.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ResetOutil.xaml.cs">
+      <DependentUpon>ResetOutil.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SerieHistory.xaml.cs">
+      <DependentUpon>SerieHistory.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\DualExtrimiteSertisseuse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -127,6 +143,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MultipleExtrimite.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResetOutil.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SerieHistory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -8,23 +8,24 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using SPC.ViewModel;
 
 namespace SPC.Views
 {
     /// <summary>
-    /// Interaction logic for MonoExtrimite.xaml
+    /// Interaction logic for ResetOutil.xaml
     /// </summary>
-    public partial class MonoExtrimite : Window
+    public partial class ResetOutil : Window
     {
-        public MonoExtrimite()
+        public ResetOutil()
         {
             InitializeComponent();
 
-            this.Language = XmlLanguage.GetLanguage("fr-FR");
+            var vm = new ResetOutilViewModel();
+            this.DataContext = vm;
         }
     }
 }

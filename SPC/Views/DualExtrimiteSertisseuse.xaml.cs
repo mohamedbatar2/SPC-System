@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace SPC.Views
 {
     /// <summary>
-    /// Interaction logic for MonoExtrimite.xaml
+    /// Interaction logic for DualExtrimiteSertisseuse.xaml
     /// </summary>
-    public partial class MonoExtrimite : Window
+    public partial class DualExtrimiteSertisseuse : Window
     {
-        public MonoExtrimite()
+        public DualExtrimiteSertisseuse()
         {
             InitializeComponent();
 

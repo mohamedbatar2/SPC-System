@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using SPC.DB;
 
 namespace SPC.Models
@@ -30,12 +31,12 @@ namespace SPC.Models
                             IdEnrg = (int)reader["Idenrg"],
                             DateCreation = reader["DateDebut"] != DBNull.Value ? (DateTime?)reader["DateDebut"] : null,
                             Quantite = reader["Quantite"] != DBNull.Value ? (decimal?)reader["Quantite"] : null,
-                            AH1 = reader["AH1"] != DBNull.Value ? (decimal?)reader["AH1"] : null,
-                            AH2 = reader["AH2"] != DBNull.Value ? (decimal?)reader["AH2"] : null,
-                            AH3 = reader["AH3"] != DBNull.Value ? (decimal?)reader["AH3"] : null,
-                            FH1 = reader["FH1"] != DBNull.Value ? (decimal?)reader["FH1"] : null,
-                            FH2 = reader["FH2"] != DBNull.Value ? (decimal?)reader["FH2"] : null,
-                            FH3 = reader["FH3"] != DBNull.Value ? (decimal?)reader["FH3"] : null,
+                            HA1 = reader["HA1"] != DBNull.Value ? (decimal?)reader["HA1"] : null,
+                            HA2 = reader["HA2"] != DBNull.Value ? (decimal?)reader["HA2"] : null,
+                            HA3 = reader["HA3"] != DBNull.Value ? (decimal?)reader["HA3"] : null,
+                            HI1 = reader["HI1"] != DBNull.Value ? (decimal?)reader["HI1"] : null,
+                            HI2 = reader["HI2"] != DBNull.Value ? (decimal?)reader["HI2"] : null,
+                            HI3 = reader["HI3"] != DBNull.Value ? (decimal?)reader["HI3"] : null,
                             Traction1 = reader["Traction1"] != DBNull.Value ? (decimal?)reader["Traction1"] : null,
                             Traction2 = reader["Traction2"] != DBNull.Value ? (decimal?)reader["Traction2"] : null,
                             Traction3 = reader["Traction3"] != DBNull.Value ? (decimal?)reader["Traction3"] : null,
@@ -59,6 +60,25 @@ namespace SPC.Models
                             Nature = reader["Nature"] as string,
 
                             AspectCnx = reader["AspectCnx"] as string,
+
+                            HA1B = reader["HA1B"] != DBNull.Value ? (decimal?)reader["HA1B"] : null,
+                            HA2B = reader["HA2B"] != DBNull.Value ? (decimal?)reader["HA2B"] : null,
+                            HA3B = reader["HA3B"] != DBNull.Value ? (decimal?)reader["HA3B"] : null,
+                            HI1B = reader["HI1B"] != DBNull.Value ? (decimal?)reader["HI1B"] : null,
+                            HI2B = reader["HI2B"] != DBNull.Value ? (decimal?)reader["HI2B"] : null,
+                            HI3B = reader["HI3B"] != DBNull.Value ? (decimal?)reader["HI3B"] : null,
+                            Traction1B = reader["Traction1B"] != DBNull.Value ? (decimal?)reader["Traction1B"] : null,
+                            Traction2B = reader["Traction2B"] != DBNull.Value ? (decimal?)reader["Traction2B"] : null,
+                            Traction3B = reader["Traction3B"] != DBNull.Value ? (decimal?)reader["Traction3B"] : null,
+                            HA1C = reader["HA1C"] != DBNull.Value ? (decimal?)reader["HA1C"] : null,
+                            HA2C = reader["HA2C"] != DBNull.Value ? (decimal?)reader["HA2C"] : null,
+                            HA3C = reader["HA3C"] != DBNull.Value ? (decimal?)reader["HA3C"] : null,
+                            HI1C = reader["HI1C"] != DBNull.Value ? (decimal?)reader["HI1C"] : null,
+                            HI2C = reader["HI2C"] != DBNull.Value ? (decimal?)reader["HI2C"] : null,
+                            HI3C = reader["HI3C"] != DBNull.Value ? (decimal?)reader["HI3C"] : null,
+                            Traction1C = reader["Traction1C"] != DBNull.Value ? (decimal?)reader["Traction1C"] : null,
+                            Traction2C = reader["Traction2C"] != DBNull.Value ? (decimal?)reader["Traction2C"] : null,
+                            Traction3C = reader["Traction3C"] != DBNull.Value ? (decimal?)reader["Traction3C"] : null,
                         });
                     }
                 }
@@ -74,22 +94,26 @@ namespace SPC.Models
                 conn.Open();
                 string query = @"
                     INSERT INTO enregdetail (
-                        IdEnrg, DateDebut, Quantite, AH1, AH2, AH3, 
-                        FH1, FH2, FH3, Traction1, Traction2, Traction3,
+                        IdEnrg, DateDebut, Quantite, HA1, HA2, HA3, 
+                        HI1, HI2, HI3, Traction1, Traction2, Traction3,
                         Nature, LongueurM, Repere, Claquage, Marquage,
                         ContactAspect1, ContactAspect2, ContactAspect3,
                         Denudage1, Denudage2, Denudage3,
                         Tol1, Tol2, Tol3,
-                        Clip1, Clip2, Clip3, LongueurM2, AspectCnx
+                        Clip1, Clip2, Clip3, LongueurM2, AspectCnx,
+                        HA1B, HA2B, HA3B, HI1B, HI2B, HI3B, Traction1B, Traction2B, Traction3B, 
+                        HA1C, HA2C, HA3C, HI1C, HI2C, HI3C, Traction1C, Traction2C, Traction3C
                     )
                     VALUES (
-                        @IdEnrg, @DateDebut, @Quantite, @AH1, @AH2, @AH3, 
-                        @FH1, @FH2, @FH3, @Traction1, @Traction2, @Traction3,
+                        @IdEnrg, @DateDebut, @Quantite, @HA1, @HA2, @HA3, 
+                        @HI1, @HI2, @HI3, @Traction1, @Traction2, @Traction3,
                         @Nature, @LongueurM, @Repere, @Claquage, @Marquage,
                         @ContactAspect1, @ContactAspect2, @ContactAspect3,
                         @Denudage1, @Denudage2, @Denudage3,
                         @Tol1, @Tol2, @Tol3,
-                        @Clip1, @Clip2, @Clip3, @LongueurM2, @AspectCnx
+                        @Clip1, @Clip2, @Clip3, @LongueurM2, @AspectCnx,
+                        @HA1B, @HA2B, @HA3B, @HI1B, @HI2B, @HI3B, @Traction1B, @Traction2B, @Traction3B, 
+                        @HA1C, @HA2C, @HA3C, @HI1C, @HI2C, @HI3C, @Traction1C, @Traction2C, @Traction3C
                     )";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -97,12 +121,12 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@IdEnrg", detail.IdEnrg);
                     cmd.Parameters.AddWithValue("@DateDebut", detail.DateCreation ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Quantite", detail.Quantite ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@AH1", detail.AH1 ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@AH2", detail.AH2 ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@AH3", detail.AH3 ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@FH1", detail.FH1 ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@FH2", detail.FH2 ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@FH3", detail.FH3 ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HA1", detail.HA1 ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HA2", detail.HA2 ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HA3", detail.HA3 ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HI1", detail.HI1 ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HI2", detail.HI2 ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HI3", detail.HI3 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Traction1", detail.Traction1 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Traction2", detail.Traction2 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Traction3", detail.Traction3 ?? (object)DBNull.Value);
@@ -128,6 +152,26 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@Clip3", string.IsNullOrEmpty(detail.Clip3) ? DBNull.Value : (object)detail.Clip3);
 
                     cmd.Parameters.AddWithValue("@AspectCnx", string.IsNullOrEmpty(detail.AspectCnx) ? DBNull.Value : (object)detail.AspectCnx);
+
+                    cmd.Parameters.AddWithValue("@HA1B", detail.HA1B ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HA2B", detail.HA2B ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HA3B", detail.HA3B ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HI1B", detail.HI1B ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HI2B", detail.HI2B ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HI3B", detail.HI3B ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Traction1B", detail.Traction1B ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Traction2B", detail.Traction2B ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Traction3B", detail.Traction3B ?? (object)DBNull.Value);
+
+                    cmd.Parameters.AddWithValue("@HA1C", detail.HA1C ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HA2C", detail.HA2C ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HA3C", detail.HA3C ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HI1C", detail.HI1C ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HI2C", detail.HI2C ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HI3C", detail.HI3C ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Traction1C", detail.Traction1C ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Traction2C", detail.Traction2C ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Traction3C", detail.Traction3C ?? (object)DBNull.Value);
 
                     cmd.ExecuteNonQuery();
                 }

@@ -12,11 +12,13 @@ namespace SPC.Models
 {
     public class EnregCompletManager
     {
-        public static ObservableCollection<EnregComplet> GetAll()
+        public static ObservableCollection<EnregComplet> GetAll(string stat)//not Finished == nf fo
         {
             using (SqlConnection conn = DBConnexion.GetConnexion())
             {
-                string query = "select * from enreg e, enregdetail d where e.id = d.idenrg;";
+                string query;
+                if(string.Equals(stat, "NF")) query = "select * from enreg e, enregdetail d where e.id = d.idenrg and e.NoSerie not in (select se.NoSerie from enreg se, enregdetail sd where se.id = sd.idenrg and Right(sd.Nature, 1 ) = 'F' ) order by NoSerie;";
+                else query = "select * from enreg e, enregdetail d where e.id = d.idenrg and e.id in (select idenrg from enregDetail where right(Nature, 1) = 'F') order by NoSerie;";
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -39,8 +41,8 @@ namespace SPC.Models
                                 NoOutil2 = reader["NoOutil2"] as string,
                                 UAP = reader["UAP"] as string,
 
-                                AH = reader["AH"] != DBNull.Value ? (decimal?)reader["AH"] : null,
-                                FH = reader["FH"] != DBNull.Value ? (decimal?)reader["FH"] : null,
+                                HA = reader["HA"] != DBNull.Value ? (decimal?)reader["HA"] : null,
+                                HI = reader["HI"] != DBNull.Value ? (decimal?)reader["HI"] : null,
                                 Traction = reader["Traction"] != DBNull.Value ? (decimal?)reader["Traction"] : null,
                                 LongueurD = reader["LongueurD"] != DBNull.Value ? (decimal?)reader["LongueurD"] : null,
                                 LongueurD2 = reader["LongueurD2"] != DBNull.Value ? (decimal?)reader["LongueurD2"] : null,
@@ -48,12 +50,12 @@ namespace SPC.Models
 
                                 DateCreation = reader["DateDebut"] != DBNull.Value ? (DateTime?)reader["DateDebut"] : null,
                                 Quantite = reader["Quantite"] != DBNull.Value ? (decimal?)reader["Quantite"] : null,
-                                AH1 = reader["AH1"] != DBNull.Value ? (decimal?)reader["AH1"] : null,
-                                AH2 = reader["AH2"] != DBNull.Value ? (decimal?)reader["AH2"] : null,
-                                AH3 = reader["AH3"] != DBNull.Value ? (decimal?)reader["AH3"] : null,
-                                FH1 = reader["FH1"] != DBNull.Value ? (decimal?)reader["FH1"] : null,
-                                FH2 = reader["FH2"] != DBNull.Value ? (decimal?)reader["FH2"] : null,
-                                FH3 = reader["FH3"] != DBNull.Value ? (decimal?)reader["FH3"] : null,
+                                HA1 = reader["HA1"] != DBNull.Value ? (decimal?)reader["HA1"] : null,
+                                HA2 = reader["HA2"] != DBNull.Value ? (decimal?)reader["HA2"] : null,
+                                HA3 = reader["HA3"] != DBNull.Value ? (decimal?)reader["HA3"] : null,
+                                HI1 = reader["HI1"] != DBNull.Value ? (decimal?)reader["HI1"] : null,
+                                HI2 = reader["HI2"] != DBNull.Value ? (decimal?)reader["HI2"] : null,
+                                HI3 = reader["HI3"] != DBNull.Value ? (decimal?)reader["HI3"] : null,
                                 Traction1 = reader["Traction1"] != DBNull.Value ? (decimal?)reader["Traction1"] : null,
                                 Traction2 = reader["Traction2"] != DBNull.Value ? (decimal?)reader["Traction2"] : null,
                                 Traction3 = reader["Traction3"] != DBNull.Value ? (decimal?)reader["Traction3"] : null,
@@ -81,6 +83,34 @@ namespace SPC.Models
                                 NoMachine = reader["NoMachine"] as string,
 
                                 Denudage = reader["Denudage"] != DBNull.Value ? (decimal?)reader["Denudage"] : null,
+
+                                NoOutilB = reader["NoOutilB"] as string,
+                                NoOutilC = reader["NoOutilC"] as string,
+
+                                ConnexionB = reader["ConnexionB"] as string,
+                                ConnexionC = reader["ConnexionC"] as string,
+
+                                DenudageB = reader["DenudageB"]!= DBNull.Value? (decimal?)reader["DenudageB"] :null,
+                                DenudageC = reader["DenudageC"]!= DBNull.Value? (decimal?)reader["DenudageC"] :null,
+
+                                HA1B = reader["HA1B"] != DBNull.Value ? (decimal?)reader["HA1B"] : null,
+                                HA2B = reader["HA2B"] != DBNull.Value ? (decimal?)reader["HA2B"] : null,
+                                HA3B = reader["HA3B"] != DBNull.Value ? (decimal?)reader["HA3B"] : null,
+                                HI1B = reader["HI1B"] != DBNull.Value ? (decimal?)reader["HI1B"] : null,
+                                HI2B = reader["HI2B"] != DBNull.Value ? (decimal?)reader["HI2B"] : null,
+                                HI3B = reader["HI3B"] != DBNull.Value ? (decimal?)reader["HI3B"] : null,
+                                Traction1B = reader["Traction1B"] != DBNull.Value ? (decimal?)reader["Traction1B"] : null,
+                                Traction2B = reader["Traction2B"] != DBNull.Value ? (decimal?)reader["Traction2B"] : null,
+                                Traction3B = reader["Traction3B"] != DBNull.Value ? (decimal?)reader["Traction3B"] : null,
+                                HA1C = reader["HA1C"] != DBNull.Value ? (decimal?)reader["HA1C"] : null,
+                                HA2C = reader["HA2C"] != DBNull.Value ? (decimal?)reader["HA2C"] : null,
+                                HA3C = reader["HA3C"] != DBNull.Value ? (decimal?)reader["HA3C"] : null,
+                                HI1C = reader["HI1C"] != DBNull.Value ? (decimal?)reader["HI1C"] : null,
+                                HI2C = reader["HI2C"] != DBNull.Value ? (decimal?)reader["HI2C"] : null,
+                                HI3C = reader["HI3C"] != DBNull.Value ? (decimal?)reader["HI3C"] : null,
+                                Traction1C = reader["Traction1C"] != DBNull.Value ? (decimal?)reader["Traction1C"] : null,
+                                Traction2C = reader["Traction2C"] != DBNull.Value ? (decimal?)reader["Traction2C"] : null,
+                                Traction3C = reader["Traction3C"] != DBNull.Value ? (decimal?)reader["Traction3C"] : null,
 
                                 AspectCnx = reader["AspectCnx"] as string,
                             });

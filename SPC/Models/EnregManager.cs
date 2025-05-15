@@ -43,12 +43,22 @@ namespace SPC.Models
                             UAP = reader["UAP"] as string,
                             NoMachine = reader["NoMachine"] as string,
 
-                            AH = reader["AH"] !=DBNull.Value? (decimal?)reader["AH"] : null,
-                            FH = reader["FH"]!= DBNull.Value? (decimal?)reader["FH"] :null,
+                            HA = reader["HA"] !=DBNull.Value? (decimal?)reader["HA"] : null,
+                            HI = reader["HI"]!= DBNull.Value? (decimal?)reader["HI"] :null,
                             Traction = reader["Traction"]!= DBNull.Value? (decimal?)reader["Traction"] :null,
                             LongueurD = reader["LongueurD"]!= DBNull.Value? (decimal?)reader["LongueurD"] :null,
                             LongueurD2 = reader["LongueurD2"]!= DBNull.Value? (decimal?)reader["LongueurD2"] :null,
 
+                            NoOutilB = reader["NoOutilB"] as string,
+                            NoOutilC = reader["NoOutilC"] as string,
+
+                            Connexion = reader["Connexion"] as string,
+                            ConnexionB = reader["ConnexionB"] as string,
+                            ConnexionC = reader["ConnexionC"] as string,
+
+                            Denudage = reader["Denudage"]!= DBNull.Value? (decimal?)reader["Denudage"] :null,
+                            DenudageB = reader["DenudageB"]!= DBNull.Value? (decimal?)reader["DenudageB"] :null,
+                            DenudageC = reader["DenudageC"]!= DBNull.Value? (decimal?)reader["DenudageC"] :null,
                         });
                     }
 
@@ -107,8 +117,8 @@ namespace SPC.Models
                             UAP = reader["UAP"] as string,
                             NoMachine = reader["NoMachine"] as string,
 
-                            AH = reader["AH"] != DBNull.Value ? (decimal?)reader["AH"] : null,
-                            FH = reader["FH"] != DBNull.Value ? (decimal?)reader["FH"] : null,
+                            HA = reader["HA"] != DBNull.Value ? (decimal?)reader["HA"] : null,
+                            HI = reader["HI"] != DBNull.Value ? (decimal?)reader["HI"] : null,
                             Traction = reader["Traction"] != DBNull.Value ? (decimal?)reader["Traction"] : null,
                             LongueurD = reader["LongueurD"] != DBNull.Value ? (decimal?)reader["LongueurD"] : null,
                             LongueurD2 = reader["LongueurD2"] != DBNull.Value ? (decimal?)reader["LongueurD2"] : null,
@@ -117,6 +127,15 @@ namespace SPC.Models
                             Ref = reader["Ref"] as string,
 
                             Denudage = reader["Denudage"] != DBNull.Value ? (decimal?)reader["Denudage"] : null,
+
+                            NoOutilB = reader["NoOutilB"] as string,
+                            NoOutilC = reader["NoOutilC"] as string,
+
+                            ConnexionB = reader["ConnexionB"] as string,
+                            ConnexionC = reader["ConnexionC"] as string,
+
+                            DenudageB = reader["DenudageB"]!= DBNull.Value? (decimal?)reader["DenudageB"] :null,
+                            DenudageC = reader["DenudageC"]!= DBNull.Value? (decimal?)reader["DenudageC"] :null,
                         };
                         return enreg;
                     }
@@ -153,8 +172,8 @@ namespace SPC.Models
                             UAP = reader["UAP"] as string,
                             NoMachine = reader["NoMachine"] as string,
 
-                            AH = reader["AH"] != DBNull.Value ? (decimal?)reader["AH"] : null,
-                            FH = reader["FH"] != DBNull.Value ? (decimal?)reader["FH"] : null,
+                            HA = reader["HA"] != DBNull.Value ? (decimal?)reader["HA"] : null,
+                            HI = reader["HI"] != DBNull.Value ? (decimal?)reader["HI"] : null,
                             Traction = reader["Traction"] != DBNull.Value ? (decimal?)reader["Traction"] : null,
                             LongueurD = reader["LongueurD"] != DBNull.Value ? (decimal?)reader["LongueurD"] : null,
                             LongueurD2 = reader["LongueurD2"] != DBNull.Value ? (decimal?)reader["LongueurD2"] : null,
@@ -163,6 +182,15 @@ namespace SPC.Models
                             Ref = reader["Ref"] as string,
 
                             Denudage = reader["Denudage"] != DBNull.Value ? (decimal?)reader["Denudage"] : null,
+
+                            NoOutilB = reader["NoOutilB"] as string,
+                            NoOutilC = reader["NoOutilC"] as string,
+
+                            ConnexionB = reader["ConnexionB"] as string,
+                            ConnexionC = reader["ConnexionC"] as string,
+
+                            DenudageB = reader["DenudageB"]!= DBNull.Value? (decimal?)reader["DenudageB"] :null,
+                            DenudageC = reader["DenudageC"]!= DBNull.Value? (decimal?)reader["DenudageC"] :null,
                         };
                         return enreg;
                     }
@@ -177,13 +205,18 @@ namespace SPC.Models
                 string query = @"
                     INSERT INTO enreg (
                         NoSerie, ResourceNo, OperationNo, Client, NoEquipement, Section,
-                        NoContact, NoOutil, NoContact2, NoOutil2, AH, FH, Traction,
-                        LongueurD, UAP, LongueurD2, NoMachine, Connexion, Ref, Denudage
+                        NoContact, NoOutil, NoContact2, NoOutil2, HA, HI, Traction,
+                        LongueurD, UAP, LongueurD2, NoMachine, Connexion, Ref, Denudage,
+                        ConnexionB, NoOutilB, DenudageB,
+                        ConnexionC, NoOutilC, DenudageC
                     )
                     VALUES (
                         @NoSerie, @ResourceNo, @OperationNo, @Client, @NoEquipement, @Section,
-                        @NoContact, @NoOutil, @NoContact2, @NoOutil2, @AH, @FH, @Traction,
-                        @LongueurD, @UAP, @LongueurD2, @NoMachine, @Connexion, @Ref, @Denudage
+                        @NoContact, @NoOutil, @NoContact2, @NoOutil2, @HA, @HI, @Traction,
+                        @LongueurD, @UAP, @LongueurD2, @NoMachine, @Connexion, @Ref, @Denudage,
+                        @ConnexionB, @NoOutilB, @DenudageB,
+                        @ConnexionC, @NoOutilC, @DenudageC
+
                     )";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -200,8 +233,8 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@NoOutil2", string.IsNullOrEmpty(enreg.NoOutil2) ? DBNull.Value : (object)enreg.NoOutil2);
                     cmd.Parameters.AddWithValue("@UAP", string.IsNullOrEmpty(enreg.UAP) ? DBNull.Value : (object)enreg.UAP);
 
-                    cmd.Parameters.AddWithValue("@AH", enreg.AH ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@FH", enreg.FH ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HA", enreg.HA ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HI", enreg.HI ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Traction", enreg.Traction ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@LongueurD", enreg.LongueurD ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@LongueurD2", enreg.LongueurD2 ?? (object)DBNull.Value);
@@ -211,6 +244,14 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@Ref", (object)enreg.Ref ?? DBNull.Value);
 
                     cmd.Parameters.AddWithValue("@Denudage", enreg.Denudage ?? (object)DBNull.Value);
+
+                    cmd.Parameters.AddWithValue("@NoOutilB", string.IsNullOrEmpty(enreg.NoOutilB) ? DBNull.Value : (object)enreg.NoOutil);
+                    cmd.Parameters.AddWithValue("@ConnexionB", (object)enreg.ConnexionB ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@DenudageB", enreg.DenudageB ?? (object)DBNull.Value);
+
+                    cmd.Parameters.AddWithValue("@NoOutilC", string.IsNullOrEmpty(enreg.NoOutilC) ? DBNull.Value : (object)enreg.NoOutil);
+                    cmd.Parameters.AddWithValue("@ConnexionC", (object)enreg.ConnexionC ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@DenudageC", enreg.DenudageC ?? (object)DBNull.Value);
 
                     cmd.ExecuteNonQuery();
                 }

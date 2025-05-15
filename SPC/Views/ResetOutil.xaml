@@ -1,0 +1,17 @@
+﻿<Window x:Class="SPC.Views.ResetOutil"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SPC.Views"
+        mc:Ignorable="d"
+        Title="ResetOutil" Height="250" Width="300">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBox FontSize="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="0" Text="{Binding NOutil}"/>
+        <Button Margin="0 20 0 0" FontSize="40" FontWeight="Bold" Content="Save" Grid.Row="1" Command="{Binding ResetCommand}"/>
+    </Grid>
+</Window>

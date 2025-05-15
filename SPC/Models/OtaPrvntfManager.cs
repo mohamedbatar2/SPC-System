@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using SPC.DB;
 
 namespace SPC.Models
@@ -16,10 +17,10 @@ namespace SPC.Models
             using(SqlConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "update OtaPrvntf set DtPrev = @DtPrev, QtAct = 0 where NOutil = @NOutil;";
+                string query = "update OtaPrvntf set DtPre = @DtPrev, QtAct = 0 where NOutil = @NOutil;";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@DtPrev", DateTime.Now.Date);
+                    cmd.Parameters.AddWithValue("@DtPrev", DateTime.Now);
                     cmd.Parameters.AddWithValue("@NOutil", NOutil);
                     cmd.ExecuteNonQuery();
                 }
@@ -41,7 +42,7 @@ namespace SPC.Models
                             return new OtaPrvntf()
                             {
                                 NOutil = reader["NOutil"] as string,
-                                DtPrv = (DateTime)reader["DtPrev"],
+                                DtPrv = (DateTime)reader["DtPre"],
                                 QtAct = (int)reader["QtAct"],
                                 PrvQt = (int)reader["PrvQt"]
                             };

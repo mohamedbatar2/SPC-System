@@ -34,8 +34,8 @@ namespace SPC.Models
         public string NoContact2 { get; set; }
         public string NoOutil { get; set; }
         public string NoOutil2 { get; set; }
-        public decimal? AH { get; set; }
-        public decimal? FH { get; set; }
+        public decimal? HA { get; set; }
+        public decimal? HI { get; set; }
         public decimal? Traction { get; set; }
         public decimal? LongueurD { get; set; }
         public decimal? LongueurD2 { get; set; }
@@ -48,12 +48,12 @@ namespace SPC.Models
         //Details
         public decimal? Quantite { get; set; }
         public DateTime? DateCreation { get; set; }
-        public decimal? AH1 { get; set; }
-        public decimal? AH2 { get; set; }
-        public decimal? AH3 { get; set; }
-        public decimal? FH1 { get; set; }
-        public decimal? FH2 { get; set; }
-        public decimal? FH3 { get; set; }
+        public decimal? HA1 { get; set; }
+        public decimal? HA2 { get; set; }
+        public decimal? HA3 { get; set; }
+        public decimal? HI1 { get; set; }
+        public decimal? HI2 { get; set; }
+        public decimal? HI3 { get; set; }
         public decimal? Traction1 { get; set; }
         public decimal? Traction2 { get; set; }
         public decimal? Traction3 { get; set; }
@@ -78,5 +78,31 @@ namespace SPC.Models
         public string Name { get; set; }
 
         public string AspectCnx { get; set; }
+
+        public decimal? DenudageB { get; set; }
+        public decimal? DenudageC { get; set; }
+        public string ConnexionB { get; set; }
+        public string ConnexionC { get; set; }
+        public string NoOutilB { get; set; }
+        public string NoOutilC { get; set; }
+        public decimal? HA1B { get; set; }
+        public decimal? HA2B { get; set; }
+        public decimal? HA3B { get; set; }
+        public decimal? HI1B { get; set; }
+        public decimal? HI2B { get; set; }
+        public decimal? HI3B { get; set; }
+        public decimal? Traction1B { get; set; }
+        public decimal? Traction2B { get; set; }
+        public decimal? Traction3B { get; set; }
+
+        public decimal? HA1C { get; set; }
+        public decimal? HA2C { get; set; }
+        public decimal? HA3C { get; set; }
+        public decimal? HI1C { get; set; }
+        public decimal? HI2C { get; set; }
+        public decimal? HI3C { get; set; }
+        public decimal? Traction1C { get; set; }
+        public decimal? Traction2C { get; set; }
+        public decimal? Traction3C { get; set; }
     }
 }
