@@ -10,11 +10,11 @@ using SPC.DB;
 
 namespace SPC.Models
 {
-    public class EnregManager
+    public class SPCEnregManager
     {
-        public static ObservableCollection<Enreg> GetEnregs()
+        public static ObservableCollection<SPCEnreg> GetEnregs()
         {
-            var Enregistrements = new ObservableCollection<Enreg>();
+            var Enregistrements = new ObservableCollection<SPCEnreg>();
             using (SqlConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
@@ -26,7 +26,7 @@ namespace SPC.Models
                     while (reader.Read())
                     {
 
-                        Enregistrements.Add(new Enreg()
+                        Enregistrements.Add(new SPCEnreg()
                         {
                             Id = (int)reader["ID"],
 
@@ -86,7 +86,7 @@ namespace SPC.Models
                 }
             }
         }
-        public static Enreg GetLastSerie(string NMachine, string NMatricule)
+        public static SPCEnreg GetLastSerie(string NMachine, string NMatricule)
         {
             using(SqlConnection conn = DBConnexion.GetConnexion())
             {
@@ -100,7 +100,7 @@ namespace SPC.Models
                     {
                         reader.Read();
                          
-                        var enreg = new Enreg()
+                        var enreg = new SPCEnreg()
                         {
                             Id = (int)reader["ID"],
 
@@ -142,7 +142,7 @@ namespace SPC.Models
                 }
             }
         }
-        public static Enreg GetSerie(string NSerie)
+        public static SPCEnreg GetSerie(string NSerie)
         {
             using(SqlConnection conn = DBConnexion.GetConnexion())
             {
@@ -155,7 +155,7 @@ namespace SPC.Models
                     {
                         reader.Read();
                          
-                        var enreg = new Enreg()
+                        var enreg = new SPCEnreg()
                         {
                             Id = (int)reader["ID"],
 
@@ -197,7 +197,7 @@ namespace SPC.Models
                 }
             }
         }
-        public static void InsertNew(Enreg enreg)
+        public static void InsertNew(SPCEnreg enreg)
         {
             using (SqlConnection conn = DBConnexion.GetConnexion())
             {

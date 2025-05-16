@@ -85,12 +85,12 @@
     </ApplicationDefinition>
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\ClientManager.cs" />
-    <Compile Include="Models\Enreg.cs" />
-    <Compile Include="Models\EnregComplet.cs" />
-    <Compile Include="Models\EnregCompletManager.cs" />
-    <Compile Include="Models\EnregDetail.cs" />
-    <Compile Include="Models\EnregDetailManager.cs" />
-    <Compile Include="Models\EnregManager.cs" />
+    <Compile Include="Models\SPC\SPCEnreg.cs" />
+    <Compile Include="Models\SPC\SPCEnregComplet.cs" />
+    <Compile Include="Models\SPC\Manager\SPCEnregCompletManager.cs" />
+    <Compile Include="Models\SPC\SPCEnregDetail.cs" />
+    <Compile Include="Models\SPC\Manager\SPCEnregDetailManager.cs" />
+    <Compile Include="Models\SPC\Manager\SPCEnregManager.cs" />
     <Compile Include="Models\Machine.cs" />
     <Compile Include="Models\MachineManager.cs" />
     <Compile Include="Models\Operateur.cs" />

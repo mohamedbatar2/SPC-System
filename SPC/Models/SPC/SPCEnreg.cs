@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SPC.Models
 {
-    public class Enreg
+    public class SPCEnreg
     {
         public int Id { get; set; }
         public string NoSerie { get; set; }

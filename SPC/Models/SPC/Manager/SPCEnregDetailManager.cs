@@ -10,11 +10,11 @@ using SPC.DB;
 
 namespace SPC.Models
 {
-    public class EnregDetailManager
+    public class SPCEnregDetailManager
     {
-        public static ObservableCollection<EnregDetail> GetEnregDetails()
+        public static ObservableCollection<SPCEnregDetail> GetEnregDetails()
         {
-            var enregDetails = new ObservableCollection<EnregDetail>();
+            var enregDetails = new ObservableCollection<SPCEnregDetail>();
             using (SqlConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
@@ -25,7 +25,7 @@ namespace SPC.Models
                 {
                     while (reader.Read())
                     {
-                        enregDetails.Add(new EnregDetail
+                        enregDetails.Add(new SPCEnregDetail
                         {
                             Id = (int)reader["Id"],
                             IdEnrg = (int)reader["Idenrg"],
@@ -87,7 +87,7 @@ namespace SPC.Models
             return enregDetails;
         }
 
-        public static void InsertNew(EnregDetail detail)
+        public static void InsertNew(SPCEnregDetail detail)
         {
             using (SqlConnection conn = DBConnexion.GetConnexion())
             {

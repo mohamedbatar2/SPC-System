@@ -10,9 +10,9 @@ using SPC.DB;
 
 namespace SPC.Models
 {
-    public class EnregCompletManager
+    public class SPCEnregCompletManager
     {
-        public static ObservableCollection<EnregComplet> GetAll(string stat)//not Finished == nf fo
+        public static ObservableCollection<SPCEnregComplet> GetAll(string stat)//not Finished == nf fo
         {
             using (SqlConnection conn = DBConnexion.GetConnexion())
             {
@@ -24,10 +24,10 @@ namespace SPC.Models
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        var enregComplets = new ObservableCollection<EnregComplet>();
+                        var enregComplets = new ObservableCollection<SPCEnregComplet>();
                         while (reader.Read())
                         {
-                            enregComplets.Add(new EnregComplet()
+                            enregComplets.Add(new SPCEnregComplet()
                             {
                                 NoSerie = reader["NoSerie"] as string,
                                 RessourceNo = reader["ResourceNo"] as string,

@@ -10,10 +10,10 @@ namespace SPC.ViewModel
 {
     public class HistoryViewModel
     {
-        public ObservableCollection<EnregComplet> AllSeries { get; set; }
+        public ObservableCollection<SPCEnregComplet> AllSeries { get; set; }
         public HistoryViewModel()
         {
-            AllSeries = EnregCompletManager.GetAll("all");
+            AllSeries = SPCEnregCompletManager.GetAll("all");
         }
     }
 }

@@ -20,11 +20,11 @@ namespace SPC.ViewModel
         public ICommand HistoryCommand { get; set; }
         public ICommand NewSeriesCommand { get; set; }
         public ICommand SurrFinCommand { get; set; }
-        public ObservableCollection<EnregComplet> FiltredSeries { get; set; }
-        public ObservableCollection<EnregComplet> AllSeries { get; set; }
-        private EnregComplet serieSelected;
+        public ObservableCollection<SPCEnregComplet> FiltredSeries { get; set; }
+        public ObservableCollection<SPCEnregComplet> AllSeries { get; set; }
+        private SPCEnregComplet serieSelected;
 
-        public EnregComplet SerieSelected
+        public SPCEnregComplet SerieSelected
         {
             get { return serieSelected; }
             set {
@@ -106,8 +106,8 @@ namespace SPC.ViewModel
 
         public MainWindowViewModel()
         {
-            AllSeries = EnregCompletManager.GetAll("NF");
-            FiltredSeries = EnregCompletManager.GetAll("NF");
+            AllSeries = SPCEnregCompletManager.GetAll("NF");
+            FiltredSeries = SPCEnregCompletManager.GetAll("NF");
             NewSeriesCommand = new RelayCommand(obj => OpenNewSeries("new"), parm => true);
             SurrFinCommand = new RelayCommand(obj => OpenNewSeries("surr"), parm => true);
             HistoryCommand = new RelayCommand(OpenHistory, parm => true);
@@ -142,10 +142,10 @@ namespace SPC.ViewModel
             else if (string.Equals(MachineManager.GetTypeSPC(NMachine), "CRIP1"))
             {
                 MonoExtrimiteViewModel viewModel;
-                var laststatus = EnregCompletManager.LastSerieByOpStatus(NMatricule);
+                var laststatus = SPCEnregCompletManager.LastSerieByOpStatus(NMatricule);
 
                 if (obj.Equals("new")) viewModel = new MonoExtrimiteViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule);
-                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new MonoExtrimiteViewModel(EnregManager.GetSerie(SerieSelected.NoSerie)); //if there is no prev one it would arise error solve this
+                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new MonoExtrimiteViewModel(SPCEnregManager.GetSerie(SerieSelected.NoSerie)); //if there is no prev one it would arise error solve this
                 else
                 {
                     MessageBox.Show("Selectionner une serie!!!!");
@@ -169,10 +169,10 @@ namespace SPC.ViewModel
             {
 
                 DualExtrimiteSertisseuseViewModel viewModel;
-                var laststatus = EnregCompletManager.LastSerieByOpStatus(NMatricule);
+                var laststatus = SPCEnregCompletManager.LastSerieByOpStatus(NMatricule);
 
                 if (obj.Equals("new")) viewModel = new DualExtrimiteSertisseuseViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule);
-                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new DualExtrimiteSertisseuseViewModel(EnregManager.GetSerie(SerieSelected.NoSerie));                 else
+                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new DualExtrimiteSertisseuseViewModel(SPCEnregManager.GetSerie(SerieSelected.NoSerie));                 else
                 {
                     MessageBox.Show("Selectionner une serie!!!!");
                     return;
@@ -195,10 +195,10 @@ namespace SPC.ViewModel
             {
 
                 TripleExtrimiteSetisseuseViewModel viewModel;
-                var laststatus = EnregCompletManager.LastSerieByOpStatus(NMatricule);
+                var laststatus = SPCEnregCompletManager.LastSerieByOpStatus(NMatricule);
 
                 if (obj.Equals("new")) viewModel = new TripleExtrimiteSetisseuseViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule);
-                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new TripleExtrimiteSetisseuseViewModel(EnregManager.GetSerie(SerieSelected.NoSerie));                 else
+                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new TripleExtrimiteSetisseuseViewModel(SPCEnregManager.GetSerie(SerieSelected.NoSerie));                 else
                 {
                     MessageBox.Show("Selectionner une serie!!!!");
                     return;
@@ -220,7 +220,7 @@ namespace SPC.ViewModel
         }
         public void ReloadAllSeries()
         {
-            AllSeries = EnregCompletManager.GetAll("NF");
+            AllSeries = SPCEnregCompletManager.GetAll("NF");
         }
         public void ReloadFilter()
         {
@@ -254,7 +254,7 @@ namespace SPC.ViewModel
 
         public string GenerateNSerie()
         {
-            var lSerie = EnregManager.GetLastSerie();
+            var lSerie = SPCEnregManager.GetLastSerie();
             int n = int.Parse(lSerie.Substring(2, lSerie.Length-2)) + 1;
             return "SN"+n.ToString("D4");
         }

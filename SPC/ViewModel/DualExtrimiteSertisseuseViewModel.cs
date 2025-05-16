@@ -870,9 +870,9 @@ namespace SPC.ViewModel
         }
         public string ClientChanging { get; set; }
 
-        public EnregComplet enregComplet { get; set; }
-        public Enreg enreg { get; set; }
-        public EnregDetail enregDetail { get; set; }
+        public SPCEnregComplet enregComplet { get; set; }
+        public SPCEnreg enreg { get; set; }
+        public SPCEnregDetail enregDetail { get; set; }
         public ObservableCollection<Outil> Outils { get; set; }
         public ObservableCollection<Outil> NonFiltredOutils { get; set; }
         public ObservableCollection<Outil> OutilsB { get; set; }
@@ -888,7 +888,7 @@ namespace SPC.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         public DualExtrimiteSertisseuseViewModel(string NMachine, string NSerie, string NMatricule)
         {
-            enreg = new Enreg()
+            enreg = new SPCEnreg()
             {
                 NoSerie = NSerie,
                 NoMachine = NMachine,
@@ -901,7 +901,7 @@ namespace SPC.ViewModel
             EnregReadOnlyProp = "false";
         }
 
-        public DualExtrimiteSertisseuseViewModel(Enreg enreg)
+        public DualExtrimiteSertisseuseViewModel(SPCEnreg enreg)
         {
             this.enreg = enreg;
 
@@ -938,7 +938,7 @@ namespace SPC.ViewModel
             Outils = new ObservableCollection<Outil>();
             OutilsB = new ObservableCollection<Outil>();
             SaveCommand = new RelayCommand(SaveSerie, parm => true);
-            enregDetail = new EnregDetail()
+            enregDetail = new SPCEnregDetail()
             {
                 DateCreation = DateTime.Now,
             };
@@ -1284,14 +1284,14 @@ namespace SPC.ViewModel
         {
             if (SaveCheck())
             {
-                EnregManager.InsertNew(enreg);
+                SPCEnregManager.InsertNew(enreg);
 
-                enregDetail.IdEnrg = EnregManager.GetId(enreg.NoSerie);
+                enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
                 OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);
                 if(string.IsNullOrEmpty(NOutilB))
                     OtaPrvntfManager.UpdatePrvntf(NOutilB, (int)enregDetail.Quantite);
 
-                EnregDetailManager.InsertNew(enregDetail);
+                SPCEnregDetailManager.InsertNew(enregDetail);
                 RequestClose?.Invoke();
             }
             else
@@ -1320,7 +1320,7 @@ namespace SPC.ViewModel
             }
             foreach (var prop in enregProps)
             {
-                var propInfo = typeof(Enreg).GetProperty(prop);
+                var propInfo = typeof(SPCEnreg).GetProperty(prop);
                 if (propInfo != null)
                 {
                     var value = propInfo.GetValue(enreg);
@@ -1333,7 +1333,7 @@ namespace SPC.ViewModel
             }
             foreach (var prop in enregDetailProps)
             {
-                var propInfo = typeof(EnregDetail).GetProperty(prop);
+                var propInfo = typeof(SPCEnregDetail).GetProperty(prop);
                 if (propInfo != null)
                 {
                     var value = propInfo.GetValue(enregDetail);
