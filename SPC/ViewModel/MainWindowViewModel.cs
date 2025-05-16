@@ -165,7 +165,6 @@ namespace SPC.ViewModel
                 ReloadAllSeries();
                 ReloadFilter();
             }
-
             else if (string.Equals(MachineManager.GetTypeSPC(NMachine), "CRIP2"))
             {
 
@@ -180,6 +179,32 @@ namespace SPC.ViewModel
                 }
 
                 var view = new DualExtrimiteSertisseuse
+                {
+                    DataContext = viewModel
+                };
+
+                viewModel.RequestClose = () => view.Close();
+
+                view.ShowDialog();
+
+                viewModel.ExitLoops = true;
+                ReloadAllSeries();
+                ReloadFilter();
+            }
+            else if (string.Equals(MachineManager.GetTypeSPC(NMachine), "CRIP3"))
+            {
+
+                TripleExtrimiteSetisseuseViewModel viewModel;
+                var laststatus = EnregCompletManager.LastSerieByOpStatus(NMatricule);
+
+                if (obj.Equals("new")) viewModel = new TripleExtrimiteSetisseuseViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule);
+                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new TripleExtrimiteSetisseuseViewModel(EnregManager.GetSerie(SerieSelected.NoSerie));                 else
+                {
+                    MessageBox.Show("Selectionner une serie!!!!");
+                    return;
+                }
+
+                var view = new TripleExtrimiteSertisseuse
                 {
                     DataContext = viewModel
                 };

@@ -773,10 +773,6 @@ namespace SPC.ViewModel
                 EnregDetailManager.InsertNew(enregDetail);
                 RequestClose?.Invoke();
             }
-            else
-            {
-                MessageBox.Show("Error"); //ToDo add sepecific ...
-            }
         }
         private bool CheckFull()
         {
@@ -864,10 +860,40 @@ namespace SPC.ViewModel
         }
         private bool SaveCheck()
         {
-            var prv = OtaPrvntfManager.GetPrvntf(NOutil);
-            bool prvcheck = prv.QtAct + enregDetail.Quantite < prv.PrvQt;
-            if (warnings.Count() == 0 && CheckFull() && VisiRefWarning == "Hidden" && Outils.Count() != 0 && prvcheck) return true;
-            else return false;
+            if (!CheckFull())
+            {
+                MessageBox.Show("Remplire toutes les case.");
+                return false;
+            }
+
+            if (VisiRefWarning == "Visible")
+            {
+                MessageBox.Show("Le Ref doit surpasser 6 characters.");
+                return false;
+            }
+
+            if (Outils.Count() == 0)
+            {
+                MessageBox.Show("Verifier NOutil / Section / Connexion.");
+                return false;
+            }
+            
+            if (warnings.Count() != 0)
+            {
+                MessageBox.Show("pas possible, contacter le respensable de machine.");
+                return false;
+            }
+
+            var prv = OtaPrvntfManager.GetPrvntf(string.IsNullOrEmpty(NOutil)? "" : NOutil);
+            bool prvcheck = prv == null ? false : prv.QtAct + enregDetail.Quantite < prv.PrvQt;
+
+            if (!prvcheck)
+            {
+                MessageBox.Show("pas possible, fait le preventife.");
+                return false;
+            }
+
+            return true;
         }
         private void OnPropertyChanged(string Name)
         {

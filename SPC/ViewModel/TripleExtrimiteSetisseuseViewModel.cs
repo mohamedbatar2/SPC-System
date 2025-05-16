@@ -12,13 +12,33 @@ using System.Windows.Threading;
 using SPC.Models;
 using SPC.Tools;
 
+
 namespace SPC.ViewModel
 {
-    public class DualExtrimiteSertisseuseViewModel : INotifyPropertyChanged
+    public class TripleExtrimiteSetisseuseViewModel : INotifyPropertyChanged
     {
         public bool ExitLoops { get; set; }
         private int aa;
         private int bb;
+        private int cc;
+        public string VisiExtrimiteC { get; set; }
+        private string outilWarningVisibiliteC;
+        public string OutilWarningVisibiliteC
+        {
+            get { return outilWarningVisibiliteC; }
+            set
+            {
+                if (value != outilWarningVisibiliteC)
+                {
+                    outilWarningVisibiliteC = value;
+                    OnPropertyChanged(nameof(OutilWarningVisibiliteC));
+                    if(cc == 0)
+                    {
+                        prvLoopC();
+                    }
+                }
+            }
+        }
         public string VisiExtrimiteB { get; set; }
         private string outilWarningVisibiliteB;
         public string OutilWarningVisibiliteB
@@ -34,6 +54,19 @@ namespace SPC.ViewModel
                     {
                         prvLoopB();
                     }
+                }
+            }
+        }
+        private string outilWarningColorC;
+        public string OutilWarningColorC
+        {
+            get { return outilWarningColorC; }
+            set
+            {
+                if (value != outilWarningColorC)
+                {
+                    outilWarningColorC = value;
+                    OnPropertyChanged(nameof(OutilWarningColorC));
                 }
             }
         }
@@ -103,6 +136,28 @@ namespace SPC.ViewModel
             }
         }
 
+        private string denudageC;
+        public string DenudageC
+        {
+            get { return denudageC; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    denudageC = value;
+                    enreg.DenudageC = null;
+                    OnPropertyChanged(nameof(DenudageC));
+                    return;
+                }
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
+                if (denudageC != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    denudageC = value;
+                    enreg.DenudageC = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudageC);
+                    OnPropertyChanged(nameof(DenudageC));
+                }
+            }
+        }
         private string denudageB;
         public string DenudageB
         {
@@ -144,6 +199,295 @@ namespace SPC.ViewModel
                     denudage = value;
                     enreg.Denudage = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage);
                     OnPropertyChanged(nameof(Denudage));
+                }
+            }
+        }
+        public string ha1C;
+        public string HA1C
+        {
+            get
+            {
+                return ha1C;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(value)){
+                    ha1C = null;
+                    WarningNotif(null , "HA1C");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (ha1C != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    ha1C = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(ha1C)?(decimal?)null:decimal.Parse(ha1C.Replace(',', '.')), "HA1C");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(HA1C));
+                    enregDetail.HA1C = decimal.Parse(ha1C.Replace(',', '.'));
+                }
+            }
+        }
+        public string ha2C;
+        public string HA2C
+        {
+            get
+            {
+                return ha2C;
+            }
+            set
+            {
+                if (value == null){
+                    ha2C = null;
+                    WarningNotif(null , "HA2C");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (ha2C != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    ha2C = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(ha2C)?(decimal?)null:decimal.Parse(ha2C.Replace(',', '.')), "HA2C");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(HA2C));
+                    enregDetail.HA2C = decimal.Parse(ha2C.Replace(',', '.'));
+                }
+            }
+        }
+        public string ha3C;
+        public string HA3C
+        {
+            get
+            {
+                return ha3C;
+            }
+            set
+            {
+                if (value == null){
+                    ha3C = null;
+                    WarningNotif(null , "HA3C");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (ha3C != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    ha3C = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(ha3C)?(decimal?)null:decimal.Parse(ha3C.Replace(',', '.')), "HA3C");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(HA3C));
+                    enregDetail.HA3C = decimal.Parse(ha3C.Replace(',', '.'));
+                }
+            }
+        }
+
+        public string hi1C;
+        public string HI1C
+        {
+            get
+            {
+                return hi1C;
+            }
+            set
+            {
+                if (value == null){
+                    hi1C = null;
+                    WarningNotif(null , "HI1C");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (hi1C != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    hi1C = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(hi1C) ? (decimal?)null : decimal.Parse(hi1C.Replace(',', '.')), "HI1C");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(HI1C));
+                    enregDetail.HI1C = decimal.Parse(hi1C.Replace(',', '.'));
+                }
+            }
+        }
+        public string hi2C;
+        public string HI2C
+        {
+            get
+            {
+                return hi2C;
+            }
+            set
+            {
+                if (value == null){
+                    hi2C = null;
+                    WarningNotif(null , "HI2C");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (hi2C != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    hi2C = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(hi2C) ? (decimal?)null : decimal.Parse(hi2C.Replace(',', '.')), "HI2C");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(HI2C));
+                    enregDetail.HI2C = decimal.Parse(hi2C.Replace(',', '.'));
+                }
+            }
+        }
+        public string hi3C;
+        public string HI3C
+        {
+            get
+            {
+                return hi3C;
+            }
+            set
+            {
+                if (value == null){
+                    hi3C = null;
+                    WarningNotif(null , "HI3C");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (hi3C != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    hi3C = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(hi3C) ? (decimal?)null : decimal.Parse(hi3C.Replace(',', '.')), "HI3C");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(HI3C));
+                    enregDetail.HI3C = decimal.Parse(hi3C.Replace(',', '.'));
+                }
+            }
+        }
+        public string traction1C;
+        public string Traction1C
+        {
+            get
+            {
+                return traction1C;
+            }
+            set
+            {
+                if (value == null){
+                    traction1C = null;
+                    WarningNotif(null , "Traction1C");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (traction1C != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    traction1C = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(traction1C) ? (decimal?)null : decimal.Parse(traction1C.Replace(',', '.')), "Traction1C");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(Traction1C));
+                    enregDetail.Traction1C = decimal.Parse(traction1C.Replace(',', '.'));
+                }
+            }
+        }
+        public string traction2C;
+        public string Traction2C
+        {
+            get
+            {
+                return traction2C;
+            }
+            set
+            {
+                if (value == null){
+                    traction2C = null;
+                    WarningNotif(null , "Traction2C");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (traction2C != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    traction2C = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(traction2C) ? (decimal?)null : decimal.Parse(traction2C.Replace(',', '.')), "Traction2C");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(Traction2C));
+                    enregDetail.Traction2C = decimal.Parse(traction2C.Replace(',', '.'));
+                }
+            }
+        }
+        public string traction3C;
+        public string Traction3C
+        {
+            get
+            {
+                return traction3C;
+            }
+            set
+            {
+                if (value == null){
+                    traction3C = null;
+                    WarningNotif(null , "Traction3C");
+                    return;
+                }
+                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (traction3C != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
+                {
+                    traction3C = value;
+
+                    WarningNotifTimer.Tick += (s, e) =>
+                    {
+                        WarningNotif(string.IsNullOrEmpty(traction3C) ? (decimal?)null : decimal.Parse(traction3C.Replace(',', '.')), "Traction3C");
+                        WarningNotifTimer.Stop();
+                    };
+                    WarningNotifTimer.Stop();
+                    WarningNotifTimer.Start();
+
+                    OnPropertyChanged(nameof(Traction3C));
+                    enregDetail.Traction3C = decimal.Parse(traction3C.Replace(',', '.'));
                 }
             }
         }
@@ -727,6 +1071,22 @@ namespace SPC.ViewModel
         }
         public string Name { get; set; }//title
 
+        private string nOutilC;
+        public string NOutilC
+        {
+            get { return nOutilC; }
+            set {
+                if (value != nOutilC)
+                {
+                    enreg.NoOutilC = value;
+                    nOutilC = value;
+                    FilterOutils();
+                    WarningNotifCheckingAll();
+                    var prv = OtaPrvntfManager.GetPrvntf(NOutilC);
+                    OutilWarningVisibiliteC = prv == null || ( prv.DtPrv > DateTime.Now.AddYears(-1) && prv.QtAct < 0.8 * prv.PrvQt ) ? "Hidden" : "Visible";
+                }
+            }
+        }
         private string nOutilB;
         public string NOutilB
         {
@@ -743,8 +1103,23 @@ namespace SPC.ViewModel
                 }
             }
         }
-        private string connexionB;
+        private string connexionC;
+        public string ConnexionC
+        {
+            get { return connexionC; }
+            set {
+                if (value != connexionC)
+                {
+                    enreg.ConnexionC = value;
+                    connexionC = value;
+                    FilterOutils();
+                    WarningNotifCheckingAll();
+                }
+            }
+        }
 
+
+        private string connexionB;
         public string ConnexionB
         {
             get { return connexionB; }
@@ -834,6 +1209,22 @@ namespace SPC.ViewModel
 
         public string VisiDataGrid { get; set; }
 
+        public string ColorHA1C { get; set; }
+        public string ColorHA2C { get; set; }
+        public string ColorHA3C { get; set; }
+        public string ColorHI1C { get; set; }
+        public string ColorHI2C { get; set; }
+        public string ColorHI3C { get; set; }
+        public string ColorTraction1C { get; set; }
+        public string ColorTraction2C { get; set; }
+        public string ColorTraction3C { get; set; }
+
+        public string WarningColorC { get; set; }
+        public string WarningC { get; set; }
+        public string VisiWarningC { get; set; }
+
+        public string VisiDataGridC { get; set; }
+
         public string ColorHA1B { get; set; }
         public string ColorHA2B { get; set; }
         public string ColorHA3B { get; set; }
@@ -875,6 +1266,8 @@ namespace SPC.ViewModel
         public EnregDetail enregDetail { get; set; }
         public ObservableCollection<Outil> Outils { get; set; }
         public ObservableCollection<Outil> NonFiltredOutils { get; set; }
+        public ObservableCollection<Outil> OutilsC { get; set; }
+        public ObservableCollection<Outil> NonFiltredOutilsC { get; set; }
         public ObservableCollection<Outil> OutilsB { get; set; }
         public ObservableCollection<Outil> NonFiltredOutilsB { get; set; }
         public List<string> Clients { get; set; }
@@ -884,9 +1277,10 @@ namespace SPC.ViewModel
 
         private List<string> warnings;
         private List<string> warningsB;
+        private List<string> warningsC;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public DualExtrimiteSertisseuseViewModel(string NMachine, string NSerie, string NMatricule)
+        public TripleExtrimiteSetisseuseViewModel(string NMachine, string NSerie, string NMatricule)
         {
             enreg = new Enreg()
             {
@@ -897,11 +1291,12 @@ namespace SPC.ViewModel
             Init(); //should be bellow enreg cause i use it in the Init
 
             VisiExtrimiteB = "Visible";
+            VisiExtrimiteC = "Visible";
             ItemsSourceD = new List<string>() { "D", "D-F" };
             EnregReadOnlyProp = "false";
         }
 
-        public DualExtrimiteSertisseuseViewModel(Enreg enreg)
+        public TripleExtrimiteSetisseuseViewModel(Enreg enreg)
         {
             this.enreg = enreg;
 
@@ -912,6 +1307,16 @@ namespace SPC.ViewModel
             Connexion = enreg.Connexion;
             NOutil = enreg.NoOutil;
             Denudage = enreg.Denudage.ToString().Replace('.',',');
+
+            if (enreg.DenudageC != null)
+            {
+                VisiExtrimiteC = "Visible";
+                ConnexionC = enreg.ConnexionC;
+                NOutilC = enreg.NoOutilC;
+                DenudageC = enreg.DenudageC.ToString().Replace('.',',');
+            }
+
+            else VisiExtrimiteC = "Hidden";
 
             if (enreg.DenudageB != null)
             {
@@ -937,6 +1342,7 @@ namespace SPC.ViewModel
             Clients = ClientManager.GetClientsNames();
             Outils = new ObservableCollection<Outil>();
             OutilsB = new ObservableCollection<Outil>();
+            OutilsC = new ObservableCollection<Outil>();
             SaveCommand = new RelayCommand(SaveSerie, parm => true);
             enregDetail = new EnregDetail()
             {
@@ -954,9 +1360,11 @@ namespace SPC.ViewModel
         {
             warnings = new List<string>();
             warningsB = new List<string>();
+            warningsC = new List<string>();
             Warning = "HORS TOLERANCE";
             WarningColor = "red";
             WarningColorB = "red";
+            WarningColorC = "red";
             RefColor = "LightGreen";
             RefFor = "White";
             VisiRefWarning= "Hidden";
@@ -965,15 +1373,20 @@ namespace SPC.ViewModel
             VisiCliWarning= "Hidden";
             VisiDataGrid = "Hidden";
             VisiDataGridB = "Hidden";
+            VisiDataGridC = "Hidden";
             VisiWarning = "Hidden";
             VisiWarningB = "Hidden";
+            VisiWarningC = "Hidden";
             OutilWarningColor = "red";
             OutilWarningColorB = "red";
+            OutilWarningColorC = "red";
             OutilWarningVisibilite = "Hidden";
             OutilWarningVisibiliteB = "Hidden";
+            OutilWarningVisibiliteC = "Hidden";
 
             InitWarningColor();
             InitWarningColorB();
+            InitWarningColorC();
 
         }
         private void WarningNotifCheckingAll()
@@ -1001,15 +1414,35 @@ namespace SPC.ViewModel
             WarningNotif(string.IsNullOrEmpty(Traction1B)?(decimal?)null:decimal.Parse(Traction1B.Replace(',', '.')), "Traction1B");
             WarningNotif(string.IsNullOrEmpty(Traction2B)?(decimal?)null:decimal.Parse(Traction2B.Replace(',', '.')), "Traction2B");
             WarningNotif(string.IsNullOrEmpty(Traction3B)?(decimal?)null:decimal.Parse(Traction3B.Replace(',', '.')), "Traction3B");
+
+            WarningNotif(string.IsNullOrEmpty(HA1C)?(decimal?)null:decimal.Parse(HA1C.Replace(',', '.')), "HA1C");
+            WarningNotif(string.IsNullOrEmpty(HA2C)?(decimal?)null:decimal.Parse(HA2C.Replace(',', '.')), "HA2C");
+            WarningNotif(string.IsNullOrEmpty(HA3C)?(decimal?)null:decimal.Parse(HA3C.Replace(',', '.')), "HA3C");
+
+            WarningNotif(string.IsNullOrEmpty(HI1C)?(decimal?)null:decimal.Parse(HI1C.Replace(',', '.')), "HI1C");
+            WarningNotif(string.IsNullOrEmpty(HI2C)?(decimal?)null:decimal.Parse(HI2C.Replace(',', '.')), "HI2C");
+            WarningNotif(string.IsNullOrEmpty(HI3C)?(decimal?)null:decimal.Parse(HI3C.Replace(',', '.')), "HI3C");
+
+            WarningNotif(string.IsNullOrEmpty(Traction1C)?(decimal?)null:decimal.Parse(Traction1C.Replace(',', '.')), "Traction1C");
+            WarningNotif(string.IsNullOrEmpty(Traction2C)?(decimal?)null:decimal.Parse(Traction2C.Replace(',', '.')), "Traction2C");
+            WarningNotif(string.IsNullOrEmpty(Traction3C)?(decimal?)null:decimal.Parse(Traction3C.Replace(',', '.')), "Traction3C");
         }
         public void WarningNotif(decimal? v, string p) 
         {
 
             var extrimiteB = p.Contains("B");
 
-            if(!extrimiteB && (Outils.Count == 0 || (string.IsNullOrEmpty(Section) || string.IsNullOrEmpty(Connexion) || string.IsNullOrEmpty(NOutil))))    
+            var extrimiteC = p.Contains("C");
+
+            if(!extrimiteB && !extrimiteC && (Outils.Count == 0 || (string.IsNullOrEmpty(Section) || string.IsNullOrEmpty(Connexion) || string.IsNullOrEmpty(NOutil))))    
             {
-                warnings.RemoveAll(s=> !s.Contains("B"));
+                warnings.RemoveAll(s=> !s.Contains("B") && !s.Contains("C"));
+                InitWarningColor();
+                return;
+            }
+            if(extrimiteC && (OutilsC.Count == 0 || (string.IsNullOrEmpty(Section) || string.IsNullOrEmpty(ConnexionC) || string.IsNullOrEmpty(NOutilC))))
+            {
+                warnings.RemoveAll(s=> s.Contains("C"));
                 InitWarningColor();
                 return;
             }
@@ -1020,7 +1453,7 @@ namespace SPC.ViewModel
                 return;
             }
 
-            var outil = extrimiteB?OutilsB[0]:Outils[0];
+            var outil = extrimiteB?OutilsB[0]:extrimiteC?OutilsC[0]:Outils[0];
 
             string warn = p;
 
@@ -1040,7 +1473,8 @@ namespace SPC.ViewModel
                         warnings.Add(warn);
                     }
                     if(extrimiteB && warnings.Count(s => s.Contains("B")) == 1) WarningLoopB();
-                    else if (warnings.Count(s => !s.Contains("B")) == 1) WarningLoop();
+                    else if(extrimiteC && warnings.Count(s => s.Contains("C")) == 1) WarningLoopC();
+                    else if (warnings.Count(s => !s.Contains("B") && !s.Contains("C")) == 1) WarningLoop();
                 }
             }
             else if (p.Contains("HI"))
@@ -1059,7 +1493,8 @@ namespace SPC.ViewModel
                         warnings.Add(warn);
                     }
                     if(extrimiteB && warnings.Count(s=> s.Contains("B")) == 1) WarningLoopB();
-                    else if (warnings.Count(s=> !s.Contains("B")) == 1) WarningLoop();
+                    else if(extrimiteC && warnings.Count(s => s.Contains("C")) == 1) WarningLoopC();
+                    else if (warnings.Count(s => !s.Contains("B") && !s.Contains("C")) == 1) WarningLoop();
                }
             }
             else if (p.Contains("Traction"))
@@ -1071,7 +1506,8 @@ namespace SPC.ViewModel
                         warnings.Add(warn);
                     }
                     if(extrimiteB && warnings.Count(s=> s.Contains("B")) == 1) WarningLoopB();
-                    else if (warnings.Count(s=> !s.Contains("B")) == 1) WarningLoop();
+                    else if(extrimiteC && warnings.Count(s => s.Contains("C")) == 1) WarningLoopC();
+                    else if (warnings.Count(s => !s.Contains("B") && !s.Contains("C")) == 1) WarningLoop();
                 }
                 else
                 {
@@ -1104,6 +1540,28 @@ namespace SPC.ViewModel
             OnPropertyChanged(nameof(ColorTraction2));
             OnPropertyChanged(nameof(ColorTraction3));
         }
+        private void InitWarningColorC()
+        {
+            ColorHA1C = "white";
+            ColorHA2C = "white";
+            ColorHA3C = "white";
+            ColorHI1C = "white";
+            ColorHI2C = "white";
+            ColorHI3C = "white";
+            ColorTraction1C = "white";
+            ColorTraction2C = "white";
+            ColorTraction3C = "white";
+            OnPropertyChanged(nameof(ColorHA1C));
+            OnPropertyChanged(nameof(ColorHA2C));
+            OnPropertyChanged(nameof(ColorHA3C));
+            OnPropertyChanged(nameof(ColorHI1C));
+            OnPropertyChanged(nameof(ColorHI2C));
+            OnPropertyChanged(nameof(ColorHI3C));
+            OnPropertyChanged(nameof(ColorTraction1C));
+            OnPropertyChanged(nameof(ColorTraction2C));
+            OnPropertyChanged(nameof(ColorTraction3C));
+        }
+
         private void InitWarningColorB()
         {
             ColorHA1B = "white";
@@ -1217,6 +1675,62 @@ namespace SPC.ViewModel
                 ColorTraction3B = warnings.Contains(warning) ? "PaleVioletRed" : "white";
                 OnPropertyChanged(nameof(ColorTraction3B));
             }
+            if (warning == "HA1C")
+            {
+                ColorHA1C = warnings.Contains(warning) ? "PaleVioletRed" : "white";
+                OnPropertyChanged(nameof(ColorHA1C));
+            }
+            if (warning == "HA2C") { 
+                ColorHA2C = warnings.Contains(warning) ? "PaleVioletRed" : "white";
+                OnPropertyChanged(nameof(ColorHA2C));
+            }
+            if (warning == "HA3C")
+            {
+                ColorHA3C = warnings.Contains(warning) ? "PaleVioletRed" : "white";
+                OnPropertyChanged(nameof(ColorHA3C));
+            }
+            if (warning == "HI1C")
+            {
+                ColorHI1C = warnings.Contains(warning) ? "PaleVioletRed" : "white";
+                OnPropertyChanged(nameof(ColorHI1C));
+            }
+            if (warning == "HI2C")
+            {
+                ColorHI2C = warnings.Contains(warning) ? "PaleVioletRed" : "white";
+                OnPropertyChanged(nameof(ColorHI2C));
+            }
+            if (warning == "HI3C")
+            {
+                ColorHI3C = warnings.Contains(warning) ? "PaleVioletRed" : "white";
+                OnPropertyChanged(nameof(ColorHI3C));
+            }
+            if (warning == "Traction1C") 
+            {
+                ColorTraction1C = warnings.Contains(warning) ? "PaleVioletRed" : "white";
+                OnPropertyChanged(nameof(ColorTraction1C));
+            }
+            if (warning == "Traction2C")
+            {
+                ColorTraction2C = warnings.Contains(warning) ? "PaleVioletRed" : "white";
+                OnPropertyChanged(nameof(ColorTraction2C));
+            }
+            if (warning == "Traction3C")
+            {
+                ColorTraction3C = warnings.Contains(warning) ? "PaleVioletRed" : "white";
+                OnPropertyChanged(nameof(ColorTraction3C));
+            }
+        }
+        private async void prvLoopC()
+        {
+            cc++;
+            while (OutilWarningVisibiliteC == "Visible" && !ExitLoops)
+            {
+                OutilWarningColorC = "Red";
+                await Task.Delay(400);
+                OutilWarningColorC = "Yellow";
+                await Task.Delay(400);
+            }
+            cc--;
         }
         private async void prvLoopB()
         {
@@ -1242,6 +1756,22 @@ namespace SPC.ViewModel
             }
             aa--;
         }
+        private async void WarningLoopC()
+        {
+            VisiWarningC = "Visible";
+            OnPropertyChanged(nameof(VisiWarningC));
+            while (warnings.Any(s=>s.Contains("C")) && !ExitLoops)
+            {
+                WarningColorC = "red";
+                OnPropertyChanged(nameof(WarningColorC));
+                await Task.Delay(400);
+                WarningColorC = "yellow";
+                OnPropertyChanged(nameof(WarningColorC));
+                await Task.Delay(400);
+            }
+            VisiWarningC = "Hidden";
+            OnPropertyChanged(nameof(VisiWarningC));
+        }
         private async void WarningLoopB()
         {
             VisiWarningB = "Visible";
@@ -1250,26 +1780,26 @@ namespace SPC.ViewModel
             {
                 WarningColorB = "red";
                 OnPropertyChanged(nameof(WarningColorB));
-                await Task.Delay(200);
+                await Task.Delay(400);
                 WarningColorB = "yellow";
                 OnPropertyChanged(nameof(WarningColorB));
-                await Task.Delay(200);
+                await Task.Delay(400);
             }
             VisiWarningB = "Hidden";
             OnPropertyChanged(nameof(VisiWarningB));
-       }
+        }
         private async void WarningLoop()
         {
             VisiWarning = "Visible";
             OnPropertyChanged(nameof(VisiWarning));
-            while (!warnings.All(s=>s.Contains("B")) && !ExitLoops)
+            while (!warnings.All(s=> s.Contains("B") || s.Contains("C")) && !ExitLoops)
             {
                 WarningColor = "red";
                 OnPropertyChanged(nameof(WarningColor));
-                await Task.Delay(200);
+                await Task.Delay(400);
                 WarningColor = "yellow";
                 OnPropertyChanged(nameof(WarningColor));
-                await Task.Delay(200);
+                await Task.Delay(400);
             }
             VisiWarning = "Hidden";
             OnPropertyChanged(nameof(VisiWarning));
@@ -1290,13 +1820,11 @@ namespace SPC.ViewModel
                 OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);
                 if(string.IsNullOrEmpty(NOutilB))
                     OtaPrvntfManager.UpdatePrvntf(NOutilB, (int)enregDetail.Quantite);
+                if(string.IsNullOrEmpty(NOutilC))
+                    OtaPrvntfManager.UpdatePrvntf(NOutilC, (int)enregDetail.Quantite);
 
                 EnregDetailManager.InsertNew(enregDetail);
                 RequestClose?.Invoke();
-            }
-            else
-            {
-                MessageBox.Show("Error"); //ToDo add sepecific ...
             }
         }
         private bool CheckFull(string Ext = "A")
@@ -1317,6 +1845,14 @@ namespace SPC.ViewModel
                 enregDetailProps.AddRange(new List<string> 
                 { "HA1B", "HA2B", "HA3B", "HI1B", "HI2B", "HI3B"
                 ,"Traction1B" ,"Traction2B","Traction3B","NoOutilB", "AspectCnx",});
+            }
+            else if (Ext == "C") 
+            {
+                if (string.IsNullOrEmpty(enreg.ConnexionC) && string.IsNullOrEmpty(enreg.NoOutilC)) return true;
+                enregProps.AddRange(new List<string> {"ConnexionC", "DenudageC", "NoOutilC"});
+                enregDetailProps.AddRange(new List<string> 
+                { "HA1C", "HA2C", "HA3C", "HI1C", "HI2C", "HI3C"
+                ,"Traction1C" ,"Traction2C","Traction3C","NoOutilC", "AspectCnx",});
             }
             foreach (var prop in enregProps)
             {
@@ -1385,6 +1921,16 @@ namespace SPC.ViewModel
 
         public void FilterOutils()
         {
+            OutilsC.Clear();
+            var outilsC = OutilManager.GetOutilsByCndO(NOutilC, ConnexionC);
+
+            foreach (var item in outilsC) 
+            {
+                if (item.Sec.Equals(Section) || string.IsNullOrEmpty(Section)) OutilsC.Add(item);
+            }
+            VisiDataGridC = OutilsC.Count() == 0 ? "Hidden" : "Visible";
+            OnPropertyChanged(nameof(VisiDataGridC));
+
             OutilsB.Clear();
             var outilsB = OutilManager.GetOutilsByCndO(NOutilB, ConnexionB);
 
@@ -1449,6 +1995,18 @@ namespace SPC.ViewModel
                 if (!prvcheckB)
                 {
                     MessageBox.Show($"pas possible, fait le preventife pour l'outil {NOutilB}.");
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(NOutilC))
+            {
+                var prvC = OtaPrvntfManager.GetPrvntf(string.IsNullOrEmpty(NOutilC)? "" : NOutilC);
+                bool prvcheckC = prvC == null ? false : prvC.QtAct + enregDetail.Quantite < prvC.PrvQt;
+
+                if (!prvcheckC)
+                {
+                    MessageBox.Show($"pas possible, fait le preventife pour l'outil {NOutilC}.");
                     return false;
                 }
             }
