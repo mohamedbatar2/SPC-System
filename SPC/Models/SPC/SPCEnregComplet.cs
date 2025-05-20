@@ -104,5 +104,7 @@ namespace SPC.Models
         public decimal? Traction1C { get; set; }
         public decimal? Traction2C { get; set; }
         public decimal? Traction3C { get; set; }
+        public string AspectCnxB { get; set; }
+        public string AspectCnxC { get; set; }
     }
 }

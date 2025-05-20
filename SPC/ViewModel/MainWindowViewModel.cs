@@ -217,6 +217,58 @@ namespace SPC.ViewModel
                 ReloadAllSeries();
                 ReloadFilter();
             }
+            else if (string.Equals(MachineManager.GetTypeSPC(NMachine), "DENUD"))
+            {
+                DenudeuseViewModel viewModel;
+                var laststatus = SPCEnregCompletManager.LastSerieByOpStatus(NMatricule);
+
+                if (obj.Equals("new")) viewModel = new DenudeuseViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule);
+                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new DenudeuseViewModel(SPCEnregManager.GetSerie(SerieSelected.NoSerie)); //if there is no prev one it would arise error solve this
+                else
+                {
+                    MessageBox.Show("Selectionner une serie!!!!");
+                    return;
+                }
+
+                var view = new DenudeuseView
+                {
+                    DataContext = viewModel
+                };
+
+                viewModel.RequestClose = () => view.Close();
+
+                view.ShowDialog();
+
+                viewModel.ExitLoops = true;
+                ReloadAllSeries();
+                ReloadFilter();
+            }
+            else if (string.Equals(MachineManager.GetTypeSPC(NMachine), "CCD"))
+            {
+                CoupeCableViewModel viewModel;
+                var laststatus = SPCEnregCompletManager.LastSerieByOpStatus(NMatricule);
+
+                if (obj.Equals("new")) viewModel = new CoupeCableViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule);
+                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new CoupeCableViewModel(SPCEnregManager.GetSerie(SerieSelected.NoSerie)); //if there is no prev one it would arise error solve this
+                else
+                {
+                    MessageBox.Show("Selectionner une serie!!!!");
+                    return;
+                }
+
+                var view = new CoupeCableView
+                {
+                    DataContext = viewModel
+                };
+
+                viewModel.RequestClose = () => view.Close();
+
+                view.ShowDialog();
+
+                viewModel.ExitLoops = true;
+                ReloadAllSeries();
+                ReloadFilter();
+            }
         }
         public void ReloadAllSeries()
         {

@@ -99,12 +99,20 @@
     <Compile Include="Models\OtaPrvntfManager.cs" />
     <Compile Include="Models\Outil.cs" />
     <Compile Include="Models\OutilManager.cs" />
+    <Compile Include="ViewModel\CoupeCableViewModel.cs" />
+    <Compile Include="ViewModel\DenudeuseViewModel.cs" />
     <Compile Include="ViewModel\DualExtrimiteSertisseuseViewModel.cs" />
     <Compile Include="ViewModel\HistoryViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\MonoExtrimiteViewModel.cs" />
     <Compile Include="ViewModel\ResetOutilViewModel.cs" />
     <Compile Include="ViewModel\TripleExtrimiteSetisseuseViewModel.cs" />
+    <Compile Include="Views\CoupeCableView.xaml.cs">
+      <DependentUpon>CoupeCableView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DenudeuseView.xaml.cs">
+      <DependentUpon>DenudeuseView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DualExtrimiteSertisseuse.xaml.cs">
       <DependentUpon>DualExtrimiteSertisseuse.xaml</DependentUpon>
     </Compile>
@@ -123,6 +131,14 @@
     <Compile Include="Views\TripleExtrimiteSertisseuse.xaml.cs">
       <DependentUpon>TripleExtrimiteSertisseuse.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\CoupeCableView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DenudeuseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DualExtrimiteSertisseuse.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

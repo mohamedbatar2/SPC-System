@@ -16,9 +16,69 @@ namespace SPC.ViewModel
 {
     public class DualExtrimiteSertisseuseViewModel : INotifyPropertyChanged
     {
+        private string nature;
+        public string Nature
+        {
+            get { return nature; }
+            set {
+
+                nature = value; 
+                enregDetail.Nature = value;
+                NatureLabel = Nature == "D" ? "Debut" : Nature == "F" ? "Fin" : Nature == "S" ? "Surveillance" : Nature == "D-F" ? "Debut/Fin" : "";
+                OnPropertyChanged(nameof(NatureLabel));
+            }
+        }
+        public string NatureLabel { get; set; }
+        private bool BCchicked;
+        public bool BCChicked
+        {
+            get { return BCchicked; }
+            set
+            {
+                BCchicked = value;
+                OnPropertyChanged(nameof(BCChicked));
+                enregDetail.AspectCnxB = BCchicked ? "Conform" : "Non conform";
+            }
+        }
+
+        private bool BnCchicked;
+        public bool BNCChicked
+        {
+            get { return BnCchicked; }
+            set
+            {
+                BnCchicked = value;
+                OnPropertyChanged(nameof(BNCChicked));
+                enregDetail.AspectCnx = !BnCchicked ? "Conform" : "Non conform";
+            }
+        }
+        private bool Cchicked;
+        public bool CChicked
+        {
+            get { return Cchicked; }
+            set
+            {
+                Cchicked = value;
+                OnPropertyChanged(nameof(CChicked));
+                enregDetail.AspectCnx = Cchicked ? "Conform" : "Non conform";
+            }
+        }
+
+        private bool nCchicked;
+        public bool NCChicked
+        {
+            get { return nCchicked; }
+            set
+            {
+                nCchicked = value;
+                OnPropertyChanged(nameof(NCChicked));
+                enregDetail.AspectCnx = !nCchicked ? "Conform" : "Non conform";
+            }
+        }
         public bool ExitLoops { get; set; }
         private int aa;
         private int bb;
+        public string ExtBEnable { get; set; }
         public string VisiExtrimiteB { get; set; }
         private string outilWarningVisibiliteB;
         public string OutilWarningVisibiliteB
@@ -732,10 +792,10 @@ namespace SPC.ViewModel
         {
             get { return nOutilB; }
             set {
-                if (value != nOutilB)
+                if (value.ToUpper() != nOutilB)
                 {
-                    enreg.NoOutilB = value;
-                    nOutilB = value;
+                    enreg.NoOutilB = value.ToUpper();
+                    nOutilB = value.ToUpper();
                     FilterOutils();
                     WarningNotifCheckingAll();
                     var prv = OtaPrvntfManager.GetPrvntf(NOutilB);
@@ -764,10 +824,10 @@ namespace SPC.ViewModel
         {
             get { return nOutil; }
             set {
-                if (value != nOutil)
+                if (value.ToUpper() != nOutil)
                 {
-                    enreg.NoOutil = value;
-                    nOutil = value;
+                    enreg.NoOutil = value.ToUpper();
+                    nOutil = value.ToUpper();
                     FilterOutils();
                     WarningNotifCheckingAll();
                     var prv = OtaPrvntfManager.GetPrvntf(NOutil);
@@ -799,6 +859,7 @@ namespace SPC.ViewModel
                 if (string.IsNullOrEmpty(value))
                 {
                     section = null;
+                    enreg.Section = null;
                     OnPropertyChanged(nameof(Section));
                     WarningNotifCheckingAll();
                     return;
@@ -971,6 +1032,8 @@ namespace SPC.ViewModel
             OutilWarningColorB = "red";
             OutilWarningVisibilite = "Hidden";
             OutilWarningVisibiliteB = "Hidden";
+
+            ExtBEnable = "false";
 
             InitWarningColor();
             InitWarningColorB();
@@ -1316,7 +1379,7 @@ namespace SPC.ViewModel
                 enregProps.AddRange(new List<string> {"ConnexionB", "DenudageB", "NoOutilB"});
                 enregDetailProps.AddRange(new List<string> 
                 { "HA1B", "HA2B", "HA3B", "HI1B", "HI2B", "HI3B"
-                ,"Traction1B" ,"Traction2B","Traction3B","NoOutilB", "AspectCnx",});
+                ,"Traction1B" ,"Traction2B","Traction3B","NoOutilB", "AspectCnxB",});
             }
             foreach (var prop in enregProps)
             {
@@ -1404,6 +1467,9 @@ namespace SPC.ViewModel
             }
             VisiDataGrid = Outils.Count() == 0 ? "Hidden" : "Visible";
             OnPropertyChanged(nameof(VisiDataGrid));
+
+            ExtBEnable = Outils.Count() == 0 ? "false" : "true";
+            OnPropertyChanged(nameof(ExtBEnable));
         }
         private bool SaveCheck()
         {

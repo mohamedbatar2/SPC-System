@@ -61,6 +61,9 @@ namespace SPC.Models
 
                             AspectCnx = reader["AspectCnx"] as string,
 
+                            AspectCnxB = reader["AspectCnxB"] as string,
+                            AspectCnxC = reader["AspectCnxC"] as string,
+
                             HA1B = reader["HA1B"] != DBNull.Value ? (decimal?)reader["HA1B"] : null,
                             HA2B = reader["HA2B"] != DBNull.Value ? (decimal?)reader["HA2B"] : null,
                             HA3B = reader["HA3B"] != DBNull.Value ? (decimal?)reader["HA3B"] : null,
@@ -102,7 +105,8 @@ namespace SPC.Models
                         Tol1, Tol2, Tol3,
                         Clip1, Clip2, Clip3, LongueurM2, AspectCnx,
                         HA1B, HA2B, HA3B, HI1B, HI2B, HI3B, Traction1B, Traction2B, Traction3B, 
-                        HA1C, HA2C, HA3C, HI1C, HI2C, HI3C, Traction1C, Traction2C, Traction3C
+                        HA1C, HA2C, HA3C, HI1C, HI2C, HI3C, Traction1C, Traction2C, Traction3C,
+                        AspectCnxB, AspectCnxC
                     )
                     VALUES (
                         @IdEnrg, @DateDebut, @Quantite, @HA1, @HA2, @HA3, 
@@ -113,7 +117,8 @@ namespace SPC.Models
                         @Tol1, @Tol2, @Tol3,
                         @Clip1, @Clip2, @Clip3, @LongueurM2, @AspectCnx,
                         @HA1B, @HA2B, @HA3B, @HI1B, @HI2B, @HI3B, @Traction1B, @Traction2B, @Traction3B, 
-                        @HA1C, @HA2C, @HA3C, @HI1C, @HI2C, @HI3C, @Traction1C, @Traction2C, @Traction3C
+                        @HA1C, @HA2C, @HA3C, @HI1C, @HI2C, @HI3C, @Traction1C, @Traction2C, @Traction3C,
+                        @AspectCnxB, @AspectCnxC
                     )";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -152,6 +157,9 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@Clip3", string.IsNullOrEmpty(detail.Clip3) ? DBNull.Value : (object)detail.Clip3);
 
                     cmd.Parameters.AddWithValue("@AspectCnx", string.IsNullOrEmpty(detail.AspectCnx) ? DBNull.Value : (object)detail.AspectCnx);
+
+                    cmd.Parameters.AddWithValue("@AspectCnxB", string.IsNullOrEmpty(detail.AspectCnxB) ? DBNull.Value : (object)detail.AspectCnxB);
+                    cmd.Parameters.AddWithValue("@AspectCnxC", string.IsNullOrEmpty(detail.AspectCnxC) ? DBNull.Value : (object)detail.AspectCnxC);
 
                     cmd.Parameters.AddWithValue("@HA1B", detail.HA1B ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@HA2B", detail.HA2B ?? (object)DBNull.Value);

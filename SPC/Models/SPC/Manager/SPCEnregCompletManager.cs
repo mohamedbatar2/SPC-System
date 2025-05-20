@@ -113,6 +113,8 @@ namespace SPC.Models
                                 Traction3C = reader["Traction3C"] != DBNull.Value ? (decimal?)reader["Traction3C"] : null,
 
                                 AspectCnx = reader["AspectCnx"] as string,
+                                AspectCnxB = reader["AspectCnxB"] as string,
+                                AspectCnxC = reader["AspectCnxC"] as string,
                             });
                         }
                         return enregComplets;

@@ -20,7 +20,43 @@ namespace SPC.ViewModel
 {
     public class MonoExtrimiteViewModel : INotifyPropertyChanged
     {
+        private string nature;
+        public string Nature
+        {
+            get { return nature; }
+            set {
 
+                nature = value; 
+                enregDetail.Nature = value;
+                NatureLabel = Nature == "D" ? "Debut" : Nature == "F" ? "Fin" : Nature == "S" ? "Surveillance" : Nature == "D-F" ? "Debut/Fin" : "";
+                OnPropertyChanged(nameof(NatureLabel));
+            }
+        }
+        public string NatureLabel { get; set; }
+
+        private bool Cchicked;
+        public bool CChicked
+        {
+            get { return Cchicked; }
+            set
+            {
+                Cchicked = value;
+                OnPropertyChanged(nameof(CChicked));
+                enregDetail.AspectCnx = Cchicked ? "Conform" : "Non conform";
+            }
+        }
+
+        private bool nCchicked;
+        public bool NCChicked
+        {
+            get { return nCchicked; }
+            set
+            {
+                nCchicked = value;
+                OnPropertyChanged(nameof(NCChicked));
+                enregDetail.AspectCnx = !nCchicked ? "Conform" : "Non conform";
+            }
+        }
         public bool ExitLoops { get; set; }
         private int cc;
         private string outilWarningVisibilite;
@@ -394,10 +430,10 @@ namespace SPC.ViewModel
         {
             get { return nOutil; }
             set {
-                if (value != nOutil)
+                if (value.ToUpper() != nOutil)
                 {
-                    enreg.NoOutil = value;
-                    nOutil = value;
+                    enreg.NoOutil = value.ToUpper();
+                    nOutil = value.ToUpper();
                     FilterOutils();
                     WarningNotifCheckingAll();
                     var prv = OtaPrvntfManager.GetPrvntf(NOutil);
@@ -430,6 +466,7 @@ namespace SPC.ViewModel
                 {
                     section = null;
                     OnPropertyChanged(nameof(Section));
+                    enreg.Section = null;
                     return;
                 }
                 if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';

@@ -17,10 +17,83 @@ namespace SPC.ViewModel
 {
     public class TripleExtrimiteSetisseuseViewModel : INotifyPropertyChanged
     {
+        private string nature;
+        public string Nature
+        {
+            get { return nature; }
+            set {
+
+                nature = value; 
+                enregDetail.Nature = value;
+                NatureLabel = Nature == "D" ? "Debut" : Nature == "F" ? "Fin" : Nature == "S" ? "Surveillance" : Nature == "D-F" ? "Debut/Fin" : "";
+                OnPropertyChanged(nameof(NatureLabel));
+            }
+        }
+        public string NatureLabel { get; set; }
+
+        private bool CCchicked;
+        public bool CCChicked
+        {
+            get { return CCchicked; }
+            set
+            {
+                CCchicked = value;
+                OnPropertyChanged(nameof(CCChicked));
+                enregDetail.AspectCnxC = CCchicked ? "Conform" : "Non conform";
+            }
+        }
+        private bool BCchicked;
+        public bool BCChicked
+        {
+            get { return BCchicked; }
+            set
+            {
+                BCchicked = value;
+                OnPropertyChanged(nameof(BCChicked));
+                enregDetail.AspectCnxB = BCchicked ? "Conform" : "Non conform";
+            }
+        }
+
+        private bool BnCchicked;
+        public bool BNCChicked
+        {
+            get { return BnCchicked; }
+            set
+            {
+                BnCchicked = value;
+                OnPropertyChanged(nameof(BNCChicked));
+                enregDetail.AspectCnx = !BnCchicked ? "Conform" : "Non conform";
+            }
+        }
+        private bool Cchicked;
+        public bool CChicked
+        {
+            get { return Cchicked; }
+            set
+            {
+                Cchicked = value;
+                OnPropertyChanged(nameof(CChicked));
+                enregDetail.AspectCnx = Cchicked ? "Conform" : "Non conform";
+            }
+        }
+
+        private bool nCchicked;
+        public bool NCChicked
+        {
+            get { return nCchicked; }
+            set
+            {
+                nCchicked = value;
+                OnPropertyChanged(nameof(NCChicked));
+                enregDetail.AspectCnx = !nCchicked ? "Conform" : "Non conform";
+            }
+        }
         public bool ExitLoops { get; set; }
-        private int aa;
+        private int aa;//counteur pour n de warnings pour extrminte a
         private int bb;
         private int cc;
+        public string ExtBEnable { get; set; }
+        public string ExtCEnable { get; set; }
         public string VisiExtrimiteC { get; set; }
         private string outilWarningVisibiliteC;
         public string OutilWarningVisibiliteC
@@ -1076,10 +1149,13 @@ namespace SPC.ViewModel
         {
             get { return nOutilC; }
             set {
-                if (value != nOutilC)
+                if (Outils.Count() == 0) return;
+                if (OutilsB.Count() == 0) return;
+
+                if (value.ToUpper() != nOutilC)
                 {
-                    enreg.NoOutilC = value;
-                    nOutilC = value;
+                    enreg.NoOutilC = value.ToUpper();
+                    nOutilC = value.ToUpper();
                     FilterOutils();
                     WarningNotifCheckingAll();
                     var prv = OtaPrvntfManager.GetPrvntf(NOutilC);
@@ -1092,10 +1168,11 @@ namespace SPC.ViewModel
         {
             get { return nOutilB; }
             set {
-                if (value != nOutilB)
+                if (Outils.Count() == 0) return;
+                if (value.ToUpper() != nOutilB)
                 {
-                    enreg.NoOutilB = value;
-                    nOutilB = value;
+                    enreg.NoOutilB = value.ToUpper();
+                    nOutilB = value.ToUpper();
                     FilterOutils();
                     WarningNotifCheckingAll();
                     var prv = OtaPrvntfManager.GetPrvntf(NOutilB);
@@ -1108,6 +1185,8 @@ namespace SPC.ViewModel
         {
             get { return connexionC; }
             set {
+                if (Outils.Count() == 0) return;
+                if (OutilsB.Count() == 0) return;
                 if (value != connexionC)
                 {
                     enreg.ConnexionC = value;
@@ -1124,6 +1203,7 @@ namespace SPC.ViewModel
         {
             get { return connexionB; }
             set {
+                if (Outils.Count() == 0) return;
                 if (value != connexionB)
                 {
                     enreg.ConnexionB = value;
@@ -1139,10 +1219,10 @@ namespace SPC.ViewModel
         {
             get { return nOutil; }
             set {
-                if (value != nOutil)
+                if (value.ToUpper() != nOutil)
                 {
-                    enreg.NoOutil = value;
-                    nOutil = value;
+                    enreg.NoOutil = value.ToUpper();
+                    nOutil = value.ToUpper();
                     FilterOutils();
                     WarningNotifCheckingAll();
                     var prv = OtaPrvntfManager.GetPrvntf(NOutil);
@@ -1174,6 +1254,7 @@ namespace SPC.ViewModel
                 if (string.IsNullOrEmpty(value))
                 {
                     section = null;
+                    enreg.Section = null;
                     OnPropertyChanged(nameof(Section));
                     WarningNotifCheckingAll();
                     return;
@@ -1383,6 +1464,8 @@ namespace SPC.ViewModel
             OutilWarningVisibilite = "Hidden";
             OutilWarningVisibiliteB = "Hidden";
             OutilWarningVisibiliteC = "Hidden";
+            ExtBEnable = "false";
+            ExtCEnable = "false";
 
             InitWarningColor();
             InitWarningColorB();
@@ -1818,9 +1901,9 @@ namespace SPC.ViewModel
 
                 enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
                 OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);
-                if(string.IsNullOrEmpty(NOutilB))
+                if(!string.IsNullOrEmpty(NOutilB))
                     OtaPrvntfManager.UpdatePrvntf(NOutilB, (int)enregDetail.Quantite);
-                if(string.IsNullOrEmpty(NOutilC))
+                if(!string.IsNullOrEmpty(NOutilC))
                     OtaPrvntfManager.UpdatePrvntf(NOutilC, (int)enregDetail.Quantite);
 
                 SPCEnregDetailManager.InsertNew(enregDetail);
@@ -1844,7 +1927,7 @@ namespace SPC.ViewModel
                 enregProps.AddRange(new List<string> {"ConnexionB", "DenudageB", "NoOutilB"});
                 enregDetailProps.AddRange(new List<string> 
                 { "HA1B", "HA2B", "HA3B", "HI1B", "HI2B", "HI3B"
-                ,"Traction1B" ,"Traction2B","Traction3B","NoOutilB", "AspectCnx",});
+                ,"Traction1B" ,"Traction2B","Traction3B","NoOutilB", "AspectCnxB",});
             }
             else if (Ext == "C") 
             {
@@ -1852,7 +1935,7 @@ namespace SPC.ViewModel
                 enregProps.AddRange(new List<string> {"ConnexionC", "DenudageC", "NoOutilC"});
                 enregDetailProps.AddRange(new List<string> 
                 { "HA1C", "HA2C", "HA3C", "HI1C", "HI2C", "HI3C"
-                ,"Traction1C" ,"Traction2C","Traction3C","NoOutilC", "AspectCnx",});
+                ,"Traction1C" ,"Traction2C","Traction3C","NoOutilC", "AspectCnxC",});
             }
             foreach (var prop in enregProps)
             {
@@ -1924,9 +2007,12 @@ namespace SPC.ViewModel
             OutilsC.Clear();
             var outilsC = OutilManager.GetOutilsByCndO(NOutilC, ConnexionC);
 
-            foreach (var item in outilsC) 
+            if (NOutilC != NOutil && NOutilC != NOutilB)
             {
-                if (item.Sec.Equals(Section) || string.IsNullOrEmpty(Section)) OutilsC.Add(item);
+                foreach (var item in outilsC) 
+                {
+                    if (item.Sec.Equals(Section) || string.IsNullOrEmpty(Section)) OutilsC.Add(item);
+                }
             }
             VisiDataGridC = OutilsC.Count() == 0 ? "Hidden" : "Visible";
             OnPropertyChanged(nameof(VisiDataGridC));
@@ -1934,10 +2020,14 @@ namespace SPC.ViewModel
             OutilsB.Clear();
             var outilsB = OutilManager.GetOutilsByCndO(NOutilB, ConnexionB);
 
-            foreach (var item in outilsB) 
+            if (NOutilB != NOutil)
             {
-                if (item.Sec.Equals(Section) || string.IsNullOrEmpty(Section)) OutilsB.Add(item);
+                foreach (var item in outilsB) 
+                {
+                    if (item.Sec.Equals(Section) || string.IsNullOrEmpty(Section)) OutilsB.Add(item);
+                }
             }
+    
             VisiDataGridB = OutilsB.Count() == 0 ? "Hidden" : "Visible";
             OnPropertyChanged(nameof(VisiDataGridB));
 
@@ -1950,6 +2040,13 @@ namespace SPC.ViewModel
             }
             VisiDataGrid = Outils.Count() == 0 ? "Hidden" : "Visible";
             OnPropertyChanged(nameof(VisiDataGrid));
+
+            ExtBEnable = Outils.Count() == 0 ? "false" : "true";
+
+            ExtCEnable = OutilsB.Count() == 0 ? "false" : "true";
+
+            OnPropertyChanged(nameof(ExtBEnable));
+            OnPropertyChanged(nameof(ExtCEnable));
         }
         private bool SaveCheck()
         {

@@ -56,19 +56,22 @@
             <Border BorderBrush="Black" BorderThickness="1" Margin="0 20 0 20" Grid.Column="3">
                 <StackPanel >
                     <TextBlock TextAlignment="Center" FontWeight="Bold" Foreground="White" Text="SECTION FIL" Background="LightGreen" />
-                    <TextBox Width="120" Height="25"  Text="{Binding Section, UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
+                    <TextBox Width="120" Height="25"  Text="{Binding Section, UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" IsReadOnly="{Binding EnregReadOnlyProp}" HorizontalContentAlignment="Center"/>
                 </StackPanel>
             </Border>
-            <Border BorderBrush="Black" BorderThickness="1" Margin="0 20 0 20" Grid.Column="4">
-                <StackPanel >
-                    <TextBlock TextAlignment="Center" Foreground="White" FontWeight="Bold" Text="NATURE CONTROLE" Background="LightGreen" />
-                    <ComboBox ItemsSource="{Binding ItemsSourceD}" SelectedValue="{Binding enregDetail.Nature}" Width="120" Height="25" Grid.Row="1"/>
-                </StackPanel>
-            </Border>
+            <StackPanel  Margin="0 20 0 0" Grid.Column="4">
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <StackPanel >
+                        <TextBlock TextAlignment="Center" Foreground="White" FontWeight="Bold" Text="NATURE CONTROLE" Background="LightGreen" />
+                        <ComboBox ItemsSource="{Binding ItemsSourceD}" SelectedValue="{Binding Nature}" Width="120" Height="25" Grid.Row="1"/>
+                    </StackPanel>
+                </Border>
+                <TextBlock Text="{Binding NatureLabel}" Foreground="Black" FontWeight="ExtraBold" HorizontalAlignment="Center"/>
+            </StackPanel>
             <Border BorderBrush="Black" BorderThickness="1" Margin="0 20 20 20" Grid.Column="6">
                 <StackPanel >
                     <TextBlock TextAlignment="Center" Foreground="White" Text="QUANTITE" FontWeight="Bold" Background="LightGreen" />
-                    <TextBox Width="120" Height="25"  Text="{Binding Quantite,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
+                    <TextBox Width="120" Height="25"  Text="{Binding Quantite,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
                 </StackPanel>
             </Border>
         </Grid>
@@ -93,7 +96,7 @@
                 <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Grid.Column="0">
                     <StackPanel >
                         <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="N OUTIL" Width="90" TextAlignment="Center" />
-                        <TextBox Width="90" Height="25" Text="{Binding NOutil}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
+                        <TextBox Width="90" Height="25" Text="{Binding NOutil}" IsReadOnly="{Binding EnregReadOnlyProp}" HorizontalContentAlignment="Center"/>
                     </StackPanel>
                 </Border>
                 <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1"  Grid.Column="1">
@@ -105,23 +108,27 @@
                 <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1"  Grid.Column="0">
                     <StackPanel>
                         <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="DENUDAGE" Width="90" TextAlignment="Center" />
-                        <TextBox Width="90" Height="25" Text="{Binding Denudage,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
+                        <TextBox Width="90" Height="25" Text="{Binding Denudage,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" IsReadOnly="{Binding EnregReadOnlyProp}" HorizontalContentAlignment="Center"/>
                     </StackPanel>
                 </Border>
                 <Border BorderBrush="Black" BorderThickness="1"  Grid.Column="1" Grid.Row="1">
                     <StackPanel>
                         <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="ASPECT CNX" Width="120" TextAlignment="Center" />
                         <Border Background="White" Height="25" BorderThickness="1" BorderBrush="Gray">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <RadioButton Content="C" IsChecked="{Binding CChicked}" Margin="0 0 10 0" />
+                                <RadioButton Content="NC" IsChecked="{Binding NCChicked}" />
+                <!--
                             <ComboBox SelectedValue="{Binding enregDetail.AspectCnx}" SelectedValuePath="Content">
                                 <ComboBoxItem Content="CONFORM"/>
                                 <ComboBoxItem Content="NON CONFORM"/>
                             </ComboBox>
+                -->
+                            </StackPanel>
                         </Border>
                     </StackPanel>
                 </Border>
-                <!--
                 <TextBlock Height="30" Text="C:Conform NC:Non Conform" Foreground="Blue" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
-                -->
             </Grid>
             <Grid Grid.Column="1" Margin="0 0 0 0">
                 <Grid.RowDefinitions>
@@ -138,25 +145,25 @@
                 <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="1">
                     <StackPanel  Orientation="Horizontal">
                         <TextBlock FontWeight="Bold" Padding="10 0 10 0"  Background="black" Foreground="white" Text="HA" Width="90"/>
-                        <TextBox Width="90"  Background="{Binding ColorHA1}" Text="{Binding HA1,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" InputScope="Number"/>
-                        <TextBox Width="90"  Background="{Binding ColorHA2}" Margin="5 0 5 0 " Text="{Binding HA2,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
-                        <TextBox Width="90"  Background="{Binding ColorHA3}" Text="{Binding HA3,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
+                        <TextBox Width="90"  Background="{Binding ColorHA1}" Text="{Binding HA1,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" InputScope="Number" HorizontalContentAlignment="Center"/>
+                        <TextBox Width="90"  Background="{Binding ColorHA2}" Margin="5 0 5 0 " Text="{Binding HA2,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
+                        <TextBox Width="90"  Background="{Binding ColorHA3}" Text="{Binding HA3,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
                     </StackPanel>
                 </Border>
                 <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="2">
                     <StackPanel  Orientation="Horizontal">
                         <TextBlock  FontWeight="Bold" Padding="10 0 10 0"  Background="black" Foreground="white" Text="HI" Width="90"/>
-                        <TextBox Width="90" Background="{Binding ColorHI1}" Text="{Binding HI1,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
-                        <TextBox Width="90" Background="{Binding ColorHI2}" Margin="5 0 5 0 " Text="{Binding HI2,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
-                        <TextBox Width="90" Background="{Binding ColorHI3}" Text="{Binding HI3,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
+                        <TextBox Width="90" Background="{Binding ColorHI1}" Text="{Binding HI1,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
+                        <TextBox Width="90" Background="{Binding ColorHI2}" Margin="5 0 5 0 " Text="{Binding HI2,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
+                        <TextBox Width="90" Background="{Binding ColorHI3}" Text="{Binding HI3,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
                     </StackPanel>
                 </Border>
                 <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="3">
                     <StackPanel  Orientation="Horizontal">
                         <TextBlock FontWeight="Bold"  Padding="10 0 10 0" Background="black" Foreground="white" Text="TRACTION" Width="90"/>
-                        <TextBox Width="90" Background="{Binding ColorTraction1}" Text="{Binding Traction1,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
-                        <TextBox Width="90" Background="{Binding ColorTraction2}" Margin="5 0 5 0 " Text="{Binding Traction2,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
-                        <TextBox Width="90" Background="{Binding ColorTraction3}" Text="{Binding Traction3,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
+                        <TextBox Width="90" Background="{Binding ColorTraction1}" Text="{Binding Traction1,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
+                        <TextBox Width="90" Background="{Binding ColorTraction2}" Margin="5 0 5 0 " Text="{Binding Traction2,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
+                        <TextBox Width="90" Background="{Binding ColorTraction3}" Text="{Binding Traction3,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -183,7 +190,7 @@
                     <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Grid.Column="0">
                         <StackPanel >
                             <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="N OUTIL" Width="90" TextAlignment="Center" />
-                            <TextBox Width="90" Height="25" Text="{Binding NOutilB}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
+                            <TextBox Width="90" Height="25" Text="{Binding NOutilB}" IsReadOnly="{Binding EnregReadOnlyProp}" HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </Border>
                     <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1"  Grid.Column="1">
@@ -195,23 +202,27 @@
                     <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1"  Grid.Column="0">
                         <StackPanel>
                             <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="DENUDAGE" Width="90" TextAlignment="Center" />
-                            <TextBox Width="90" Height="25" Text="{Binding DenudageB,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
+                            <TextBox Width="90" Height="25" Text="{Binding DenudageB,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" IsReadOnly="{Binding EnregReadOnlyProp}" HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1"  Grid.Column="1" Grid.Row="1">
                         <StackPanel>
                             <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="ASPECT CNX" Width="120" TextAlignment="Center" />
                             <Border Background="White" Height="25" BorderThickness="1" BorderBrush="Gray">
-                                <ComboBox SelectedValue="{Binding enregDetail.AspectCnx}" SelectedValuePath="Content">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <RadioButton Content="C" IsChecked="{Binding BCChicked}" Margin="0 0 10 0" />
+                                <RadioButton Content="NC" IsChecked="{Binding BNCChicked}" />
+                            </StackPanel>
+                    <!--
+                                <ComboBox SelectedValue="{Binding enregDetail.AspectCnxB}" SelectedValuePath="Content">
                                     <ComboBoxItem Content="CONFORM"/>
                                     <ComboBoxItem Content="NON CONFORM"/>
                                 </ComboBox>
+                    -->
                             </Border>
                         </StackPanel>
                     </Border>
-                    <!--
                 <TextBlock Height="30" Text="C:Conform NC:Non Conform" Foreground="Blue" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
-                -->
                 </Grid>
                 <Grid Grid.Column="1" Margin="0 0 0 0">
                     <Grid.RowDefinitions>
@@ -228,25 +239,25 @@
                     <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="1">
                         <StackPanel  Orientation="Horizontal">
                             <TextBlock FontWeight="Bold" Padding="10 0 10 0"  Background="black" Foreground="white" Text="HA" Width="90"/>
-                            <TextBox Width="90"  Background="{Binding ColorHA1B}" Text="{Binding HA1B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" InputScope="Number"/>
-                            <TextBox Width="90"  Background="{Binding ColorHA2B}" Margin="5 0 5 0 " Text="{Binding HA2B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
-                            <TextBox Width="90"  Background="{Binding ColorHA3B}" Text="{Binding HA3B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
+                            <TextBox Width="90"  Background="{Binding ColorHA1B}" Text="{Binding HA1B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" InputScope="Number" HorizontalContentAlignment="Center"/>
+                            <TextBox Width="90"  Background="{Binding ColorHA2B}" Margin="5 0 5 0 " Text="{Binding HA2B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
+                            <TextBox Width="90"  Background="{Binding ColorHA3B}" Text="{Binding HA3B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="2">
                         <StackPanel  Orientation="Horizontal">
                             <TextBlock  FontWeight="Bold" Padding="10 0 10 0"  Background="black" Foreground="white" Text="HI" Width="90"/>
-                            <TextBox Width="90" Background="{Binding ColorHI1B}" Text="{Binding HI1B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
-                            <TextBox Width="90" Background="{Binding ColorHI2B}" Margin="5 0 5 0 " Text="{Binding HI2B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
-                            <TextBox Width="90" Background="{Binding ColorHI3B}" Text="{Binding HI3B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
+                            <TextBox Width="90" Background="{Binding ColorHI1B}" Text="{Binding HI1B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
+                            <TextBox Width="90" Background="{Binding ColorHI2B}" Margin="5 0 5 0 " Text="{Binding HI2B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
+                            <TextBox Width="90" Background="{Binding ColorHI3B}" Text="{Binding HI3B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1"  Grid.Row="3">
                         <StackPanel  Orientation="Horizontal">
                             <TextBlock FontWeight="Bold"  Padding="10 0 10 0" Background="black" Foreground="white" Text="TRACTION" Width="90"/>
-                            <TextBox Width="90" Background="{Binding ColorTraction1B}" Text="{Binding Traction1B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
-                            <TextBox Width="90" Background="{Binding ColorTraction2B}" Margin="5 0 5 0 " Text="{Binding Traction2B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
-                            <TextBox Width="90" Background="{Binding ColorTraction3B}" Text="{Binding Traction3B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}"/>
+                            <TextBox Width="90" Background="{Binding ColorTraction1B}" Text="{Binding Traction1B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
+                            <TextBox Width="90" Background="{Binding ColorTraction2B}" Margin="5 0 5 0 " Text="{Binding Traction2B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
+                            <TextBox Width="90" Background="{Binding ColorTraction3B}" Text="{Binding Traction3B,UpdateSourceTrigger=PropertyChanged,TargetNullValue=''}" HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </Border>
                 </Grid>
