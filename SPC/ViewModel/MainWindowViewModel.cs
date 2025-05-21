@@ -28,15 +28,9 @@ namespace SPC.ViewModel
         {
             get { return serieSelected; }
             set {
-                if( value == null)
+                if ( serieSelected != value) 
                 {
                     serieSelected = value;
-                }
-                else if ( serieSelected != value) 
-                {
-                    serieSelected = value;
-                    NMachine = value.NoMachine;
-                    NMatricule = value.OperationNo;
                 }
             }
         }
@@ -103,11 +97,13 @@ namespace SPC.ViewModel
         }
 
         public DispatcherTimer _timerDispatcher { get; set; }
+        public DispatcherTimer _reloadTimer { get; set; }
 
         public MainWindowViewModel()
         {
             AllSeries = SPCEnregCompletManager.GetAll("NF");
-            FiltredSeries = SPCEnregCompletManager.GetAll("NF");
+            FiltredSeries = new ObservableCollection<SPCEnregComplet>();
+            ReloadFilter();
             NewSeriesCommand = new RelayCommand(obj => OpenNewSeries("new"), parm => true);
             SurrFinCommand = new RelayCommand(obj => OpenNewSeries("surr"), parm => true);
             HistoryCommand = new RelayCommand(OpenHistory, parm => true);
@@ -119,6 +115,16 @@ namespace SPC.ViewModel
                 _timerDispatcher.Stop();
                 ReloadFilter();
             };
+
+            //reloading series every 1 minute
+            _reloadTimer = new DispatcherTimer();
+            _reloadTimer.Interval = TimeSpan.FromMinutes(1);
+            _reloadTimer.Tick += (s, e) =>
+            {
+                ReloadAllSeries();
+                ReloadFilter();
+            };
+            _reloadTimer.Start();
 
             var resetOutilView = new ResetOutil();
             resetOutilView.Show();

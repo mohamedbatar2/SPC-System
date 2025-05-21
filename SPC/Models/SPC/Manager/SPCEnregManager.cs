@@ -245,11 +245,11 @@ namespace SPC.Models
 
                     cmd.Parameters.AddWithValue("@Denudage", enreg.Denudage ?? (object)DBNull.Value);
 
-                    cmd.Parameters.AddWithValue("@NoOutilB", string.IsNullOrEmpty(enreg.NoOutilB) ? DBNull.Value : (object)enreg.NoOutil);
+                    cmd.Parameters.AddWithValue("@NoOutilB", string.IsNullOrEmpty(enreg.NoOutilB) ? DBNull.Value : (object)enreg.NoOutilB);
                     cmd.Parameters.AddWithValue("@ConnexionB", (object)enreg.ConnexionB ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@DenudageB", enreg.DenudageB ?? (object)DBNull.Value);
 
-                    cmd.Parameters.AddWithValue("@NoOutilC", string.IsNullOrEmpty(enreg.NoOutilC) ? DBNull.Value : (object)enreg.NoOutil);
+                    cmd.Parameters.AddWithValue("@NoOutilC", string.IsNullOrEmpty(enreg.NoOutilC) ? DBNull.Value : (object)enreg.NoOutilC);
                     cmd.Parameters.AddWithValue("@ConnexionC", (object)enreg.ConnexionC ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@DenudageC", enreg.DenudageC ?? (object)DBNull.Value);
 

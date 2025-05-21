@@ -190,13 +190,13 @@
                     <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Grid.Column="0">
                         <StackPanel >
                             <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="N OUTIL" Width="90" TextAlignment="Center" />
-                            <TextBox Width="90" Height="25" Text="{Binding NOutilB}" IsReadOnly="{Binding EnregReadOnlyProp}" HorizontalContentAlignment="Center"/>
+                            <TextBox Width="90" Height="25" Text="{Binding NOutilB}" IsReadOnly="{Binding EnregReadOnlyProp}" IsEnabled="{Binding ExtBEnable}" HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </Border>
                     <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1"  Grid.Column="1">
                         <StackPanel >
                             <TextBlock FontWeight="Bold"  Background="black" Foreground="White" Text="Connexion" Width="120" TextAlignment="Center" />
-                            <TextBox Width="120" Height="25" Text="{Binding ConnexionB}" IsReadOnly="{Binding EnregReadOnlyProp}"/>
+                            <TextBox Width="120" Height="25" Text="{Binding ConnexionB}" IsReadOnly="{Binding EnregReadOnlyProp}" IsEnabled="{Binding ExtBEnable}"/>
                         </StackPanel>
                     </Border>
                     <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1"  Grid.Column="0">

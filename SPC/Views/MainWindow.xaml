@@ -83,7 +83,7 @@
                 <DataGridTextColumn Binding="{Binding Denudage}" Header="Denudage" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Section}" Header="Section" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Repere}" Header="Repere" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Marquage}" Header="Aspect Connexion" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Marquage}" Header="Aspect Marquage" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding HA1}" Header="Hauteur ame 1" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding HA2}" Header="Hauteur ame 2" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding HA3}" Header="Hauteur ame 3" Width="auto"/>
@@ -106,6 +106,7 @@
                 <DataGridTextColumn Binding="{Binding Traction1B}" Header="Traction 1" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Traction2B}" Header="Traction 2" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Traction3B}" Header="Traction 3" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding AspectCnxB}" Header="Aspect Connexion" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding NoOutilC}" Header="Outil" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding ConnexionC}" Header="Connexion" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding DenudageC}" Header="Denudage" Width="auto"/>
@@ -118,6 +119,7 @@
                 <DataGridTextColumn Binding="{Binding Traction1C}" Header="Traction 1" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Traction2C}" Header="Traction 2" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Traction3C}" Header="Traction 3" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding AspectCnxC}" Header="Aspect Connexion" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Denudage1}" Header="Denudage 1" Width="auto"/> 
                 <DataGridTextColumn Binding="{Binding Denudage2}" Header="Denudage 1" Width="auto"/> 
                 <DataGridTextColumn Binding="{Binding Denudage3}" Header="Denudage 1" Width="auto"/> 
