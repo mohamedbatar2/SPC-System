@@ -249,7 +249,7 @@ namespace SPC.ViewModel
                 var laststatus = SPCEnregCompletManager.LastSerieByOpStatus(NMatricule);
 
                 if (obj.Equals("new")) viewModel = new CoupeCableViewModel(NMachine.ToUpper(), GenerateNSerie(), NMatricule);
-                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new CoupeCableViewModel(SPCEnregManager.GetSerie(SerieSelected.NoSerie)); //if there is no prev one it would arise error solve this
+                else if (obj.Equals("surr") && SerieSelected != null) viewModel = new CoupeCableViewModel(SPCEnregManager.GetSerie(SerieSelected.NoSerie), FiltredSeries.Where(s=> SerieSelected.NoSerie.Equals(s.NoSerie)).All(s=> !string.IsNullOrEmpty(s.Marquage))); // last is checking if there was a serie without marquage to hide it 
                 else
                 {
                     MessageBox.Show("Selectionner une serie!!!!");

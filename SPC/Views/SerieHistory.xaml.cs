@@ -23,5 +23,6 @@ namespace SPC.Views
         {
             InitializeComponent();
         }
+
     }
 }

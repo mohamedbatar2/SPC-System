@@ -246,8 +246,9 @@ namespace SPC.ViewModel
         public string VisiRefWarning { get; private set; }
         public string EnregReadOnlyProp { get; set; }
         public string NatureLabel { get; private set; }
+        public string ASPECTVISI { get; set; }
 
-        public CoupeCableViewModel(SPCEnreg enreg)
+        public CoupeCableViewModel(SPCEnreg enreg, bool Aspect)
         {
             this.enreg = enreg;
 
@@ -258,6 +259,8 @@ namespace SPC.ViewModel
             Init();
             ItemsSourceD = new List<string>() { "S", "F" };
             EnregReadOnlyProp = "true";
+
+            ASPECTVISI = Aspect?"Visible":"hidden";
         }
         public CoupeCableViewModel(string NMachine, string NSerie, string NMatricule)
         {
@@ -271,6 +274,8 @@ namespace SPC.ViewModel
 
             ItemsSourceD = new List<string>() { "D", "D-F" };
             EnregReadOnlyProp = "false";
+
+            ASPECTVISI = "visible";
         }
         private void Init()
         {

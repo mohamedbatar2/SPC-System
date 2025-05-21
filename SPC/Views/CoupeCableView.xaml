@@ -72,7 +72,7 @@
             </Border>
         </Grid>
 
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" HorizontalAlignment="Center" Margin="50">
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" HorizontalAlignment="Center" Margin="50" Visibility="{Binding ASPECTVISI}">
             <StackPanel >
                 <TextBlock TextAlignment="Center" FontWeight="Bold" Foreground="White" Text="ASPECT MARQUAGE" Background="DarkSlateGray" />
                 <StackPanel Orientation="Horizontal">
