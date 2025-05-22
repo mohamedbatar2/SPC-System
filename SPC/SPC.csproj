@@ -84,7 +84,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Client.cs" />
-    <Compile Include="Models\ClientManager.cs" />
+    <Compile Include="Models\Manager\ClientManager.cs" />
     <Compile Include="Models\SPC\SPCEnreg.cs" />
     <Compile Include="Models\SPC\SPCEnregComplet.cs" />
     <Compile Include="Models\SPC\Manager\SPCEnregCompletManager.cs" />
@@ -92,13 +92,13 @@
     <Compile Include="Models\SPC\Manager\SPCEnregDetailManager.cs" />
     <Compile Include="Models\SPC\Manager\SPCEnregManager.cs" />
     <Compile Include="Models\Machine.cs" />
-    <Compile Include="Models\MachineManager.cs" />
+    <Compile Include="Models\Manager\MachineManager.cs" />
     <Compile Include="Models\Operateur.cs" />
-    <Compile Include="Models\OperateurManager.cs" />
+    <Compile Include="Models\Manager\OperateurManager.cs" />
     <Compile Include="Models\OtaPrvntf.cs" />
-    <Compile Include="Models\OtaPrvntfManager.cs" />
+    <Compile Include="Models\Manager\OtaPrvntfManager.cs" />
     <Compile Include="Models\Outil.cs" />
-    <Compile Include="Models\OutilManager.cs" />
+    <Compile Include="Models\Manager\OutilManager.cs" />
     <Compile Include="ViewModel\CoupeCableViewModel.cs" />
     <Compile Include="ViewModel\DenudeuseViewModel.cs" />
     <Compile Include="ViewModel\DualExtrimiteSertisseuseViewModel.cs" />
