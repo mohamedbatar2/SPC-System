@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -15,13 +16,13 @@ namespace SPC.Models
         public static ObservableCollection<SPCEnregDetail> GetEnregDetails()
         {
             var enregDetails = new ObservableCollection<SPCEnregDetail>();
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string querey = "select * from enregDetail";
 
-                SqlCommand cmd = new SqlCommand(querey, conn);
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                OleDbCommand cmd = new OleDbCommand(querey, conn);
+                using (OleDbDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
@@ -92,7 +93,7 @@ namespace SPC.Models
 
         public static void InsertNew(SPCEnregDetail detail)
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = @"
@@ -120,7 +121,7 @@ namespace SPC.Models
                         @HA1C, @HA2C, @HA3C, @HI1C, @HI2C, @HI3C, @Traction1C, @Traction2C, @Traction3C,
                         @AspectCnxB, @AspectCnxC
                     )";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
 
                     cmd.Parameters.AddWithValue("@IdEnrg", detail.IdEnrg);

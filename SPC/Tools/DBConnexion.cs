@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -9,11 +10,12 @@ namespace SPC.DB
 {
     public class DBConnexion
     {
-        private static string dbname = "SPCApplication";
-        private static string host = "localhost";
-        public static SqlConnection GetConnexion()
+        public static string user = Environment.UserName;
+        public static string databasePath = $@"C:\Users\{user}\Desktop\SPCapplication.accdb";
+        public static string connexionString = $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={databasePath};Persist Security Info=False;";
+        public static OleDbConnection GetConnexion()
         {
-            var conn = new SqlConnection("Server=" + host + "\\SQLEXPRESS;Database=" + dbname + ";Integrated Security=True;");
+            var conn = new OleDbConnection(connexionString);
             return conn;
         }
     }

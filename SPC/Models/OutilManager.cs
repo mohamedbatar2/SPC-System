@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Common;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace SPC.Models
     {
         public static ObservableCollection<Outil> GetOutilsByCndO(string nOutil, string cnx)
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query;
@@ -22,7 +23,7 @@ namespace SPC.Models
                 else if(!string.IsNullOrEmpty(cnx) && string.IsNullOrEmpty(nOutil)) query = "select * from outil where Connexion = @cnx;";
                 else if(!string.IsNullOrEmpty(nOutil) && string.IsNullOrEmpty(cnx)) query = "select * from outil where NOutil = @nOutil;";
                 else query = "select * from outil where NOutil = @nOutil and Connexion = @cnx;";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     if (!(string.IsNullOrEmpty(nOutil) || string.IsNullOrEmpty(cnx))) 
                     {
@@ -32,7 +33,7 @@ namespace SPC.Models
                     else if (!string.IsNullOrEmpty(cnx)) cmd.Parameters.AddWithValue("@cnx", cnx);
                     else if (!string.IsNullOrEmpty(nOutil)) cmd.Parameters.AddWithValue("@nOutil", nOutil);
 
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         var outils = new ObservableCollection<Outil>();
                         while (reader.Read())
@@ -75,13 +76,13 @@ namespace SPC.Models
         }
         public static ObservableCollection<Outil> GetOutils()
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "select * from outil;";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         var outils = new ObservableCollection<Outil>();
                         while (reader.Read())

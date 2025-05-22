@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -17,14 +18,14 @@ namespace SPC.Models
             {
                 return "";
             }
-            using(SqlConnection conn = DBConnexion.GetConnexion())
+            using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "select Libelle from machines where NMachine = @NMachine;";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NMachine", NMachine);
-                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    using (OleDbDataReader rdr = cmd.ExecuteReader())
                     {
                         if (rdr.Read())
                         {
@@ -37,14 +38,14 @@ namespace SPC.Models
         }
         public static string GetTypeSPC(string NMachine)
         {
-            using(SqlConnection conn = DBConnexion.GetConnexion())
+            using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "select typeSPC from machines where NMachine = @NMachine;";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NMachine", NMachine);
-                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    using (OleDbDataReader rdr = cmd.ExecuteReader())
                     {
                         if (rdr.Read()) return rdr[0] as string;
                         else return "";

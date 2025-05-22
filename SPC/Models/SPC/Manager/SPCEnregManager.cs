@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Common;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -15,13 +16,13 @@ namespace SPC.Models
         public static ObservableCollection<SPCEnreg> GetEnregs()
         {
             var Enregistrements = new ObservableCollection<SPCEnreg>();
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "select * from Enreg;";
-                SqlCommand comm = new SqlCommand(query, conn);
+                OleDbCommand comm = new OleDbCommand(query, conn);
 
-                using (SqlDataReader reader = comm.ExecuteReader())
+                using (OleDbDataReader reader = comm.ExecuteReader())
                 {
                     while (reader.Read())
                     {
@@ -69,13 +70,17 @@ namespace SPC.Models
 
         public static string GetLastSerie()
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "select top 1 NoSerie from enreg order by cast(substring(NoSerie ,3 , len(NoSerie)) as int) desc;";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                string query = @"
+                                SELECT TOP 1 NoSerie 
+                                FROM enreg 
+                                ORDER BY CLng(Mid(NoSerie, 3, Len(NoSerie))) DESC;
+                                ";
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
@@ -88,15 +93,15 @@ namespace SPC.Models
         }
         public static SPCEnreg GetLastSerie(string NMachine, string NMatricule)
         {
-            using(SqlConnection conn = DBConnexion.GetConnexion())
+            using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "select top 1 * from enreg where NoMachine = @NMachine and OperationNo = @NOpr order by id desc;";
-                using(SqlCommand cmd = new SqlCommand(query, conn))
+                using(OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NMachine", NMachine);
                     cmd.Parameters.AddWithValue("@NOpr", NMatricule);
-                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    using(OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         reader.Read();
                          
@@ -144,14 +149,14 @@ namespace SPC.Models
         }
         public static SPCEnreg GetSerie(string NSerie)
         {
-            using(SqlConnection conn = DBConnexion.GetConnexion())
+            using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "select * from enreg where NoSerie = @NoSerie;";
-                using(SqlCommand cmd = new SqlCommand(query, conn))
+                using(OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Noserie", NSerie);
-                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    using(OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         reader.Read();
                          
@@ -199,7 +204,7 @@ namespace SPC.Models
         }
         public static void InsertNew(SPCEnreg enreg)
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = @"
@@ -218,7 +223,7 @@ namespace SPC.Models
                         @ConnexionC, @NoOutilC, @DenudageC
 
                     )";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
 
                     cmd.Parameters.AddWithValue("@NoSerie", string.IsNullOrEmpty(enreg.NoSerie) ? DBNull.Value : (object)enreg.NoSerie);
@@ -260,14 +265,14 @@ namespace SPC.Models
 
         public static int GetId(string NSerie)
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "select Id from enreg where NoSerie = @NSerie;";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NSerie", NSerie);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         reader.Read();
                         return (int)reader[0];
@@ -277,14 +282,14 @@ namespace SPC.Models
         }
         public static bool IsSerieThere(string NSerie)
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "select NoSerie from enreg where NoSerie = @NSerie;";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NSerie", NSerie);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         return reader.Read();
                     }

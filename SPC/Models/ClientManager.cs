@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Permissions;
@@ -13,14 +14,14 @@ namespace SPC.Models
     {
         public static List<string> GetClientsNames()
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 var list = new List<string>();
                 string query = "select * from Client;";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
@@ -34,11 +35,11 @@ namespace SPC.Models
         }
         public static void AddClient(String clientName)
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "insert into client values(@clientname);";
-                using(SqlCommand cmd = new SqlCommand(query, conn))
+                using(OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@clientname", clientName);
                     cmd.ExecuteNonQuery();   

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -14,15 +15,15 @@ namespace SPC.Models
     {
         public static bool CheckOpExist(string NOp)
         {
-            using(SqlConnection conn = DBConnexion.GetConnexion())
+            using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "select * from Operateurs where OperationNo = @NOp;";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Nop", string.IsNullOrEmpty(NOp)? DBNull.Value : (object)NOp);
 
-                    using (SqlDataReader reader = cmd.ExecuteReader()) 
+                    using (OleDbDataReader reader = cmd.ExecuteReader()) 
                     {
                         return reader.Read();
                     }
@@ -31,13 +32,13 @@ namespace SPC.Models
         }
         public static string GetOpName(string NOp)
         {
-            using(SqlConnection conn = DBConnexion.GetConnexion()) {
+            using(OleDbConnection conn = DBConnexion.GetConnexion()) {
                 conn.Open();
                 string query = "select Name from Operateurs where OperationNo = @NOp;";
-                using(SqlCommand cmd = new SqlCommand(query, conn))
+                using(OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NOp", NOp);
-                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    using(OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         if(reader.Read())
                         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -15,20 +16,20 @@ namespace SPC.Models
     {
         public static ObservableCollection<SPCEnregComplet> GetAll(string stat, string month = "", string year = "")//not Finished == nf fo
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 string query;
                 if(string.Equals(stat, "NF")) query = "select * from enreg e, enregdetail d where e.id = d.idenrg and e.NoSerie not in (select se.NoSerie from enreg se, enregdetail sd where se.id = sd.idenrg and Right(sd.Nature, 1 ) = 'F' ) order by NoSerie;";
                 else query = "select * from enreg e, enregdetail d where e.id = d.idenrg and year(DateDebut) = @year and month(DateDebut) = @month and e.id in (select idenrg from enregDetail where right(Nature, 1) = 'F') order by NoSerie;";
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     if (stat != "NF")
                     {
                         cmd.Parameters.AddWithValue("@year", year);
                         cmd.Parameters.AddWithValue("@month", month);
                     }
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         var enregComplets = new ObservableCollection<SPCEnregComplet>();
                         while (reader.Read())
@@ -131,14 +132,14 @@ namespace SPC.Models
         
         public static string LastSerieByOpStatus(string NOp)
         {
-            using (SqlConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
                 string query = "select top 1 Nature from enreg e, enregdetail d where OperationNo = @NOp and d.idenrg = e.id order by datedebut desc;";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NOp", NOp);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
