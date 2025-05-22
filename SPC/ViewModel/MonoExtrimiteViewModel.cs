@@ -802,6 +802,9 @@ namespace SPC.ViewModel
         {
             if (SaveCheck())
             {
+                enreg.HA = Outils[0].Hame;
+                enreg.HI = Outils[0].Hisolant;
+                enreg.Traction = Outils[0].Trac;
                 SPCEnregManager.InsertNew(enreg);
 
                 enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);

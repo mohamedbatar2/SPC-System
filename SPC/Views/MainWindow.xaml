@@ -83,6 +83,9 @@
                 <DataGridTextColumn Binding="{Binding Denudage}" Header="Denudage" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Section}" Header="Section" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Repere}" Header="Repere" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding HA}" Header="Hauteur ame" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding HI}" Header="Hauteur isolant" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Traction}" Header="Traction" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Marquage}" Header="Aspect Marquage" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding HA1}" Header="Hauteur ame 1" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding HA2}" Header="Hauteur ame 2" Width="auto"/>
