@@ -18,7 +18,7 @@ namespace SPC.Models
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "select * from Operateurs where OperationNo = @NOp;";
+                string query = "select * from Operateurs where OperationNo = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Nop", string.IsNullOrEmpty(NOp)? DBNull.Value : (object)NOp);
@@ -34,7 +34,7 @@ namespace SPC.Models
         {
             using(OleDbConnection conn = DBConnexion.GetConnexion()) {
                 conn.Open();
-                string query = "select Name from Operateurs where OperationNo = @NOp;";
+                string query = "select Name from Operateurs where OperationNo = ?;";
                 using(OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NOp", NOp);

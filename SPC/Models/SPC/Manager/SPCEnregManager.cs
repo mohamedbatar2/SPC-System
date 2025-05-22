@@ -209,19 +209,14 @@ namespace SPC.Models
                 conn.Open();
                 string query = @"
                     INSERT INTO enreg (
-                        NoSerie, ResourceNo, OperationNo, Client, NoEquipement, Section,
+                        NoSerie, ResourceNo, OperationNo, Client, NoEquipement, [Section],
                         NoContact, NoOutil, NoContact2, NoOutil2, HA, HI, Traction,
                         LongueurD, UAP, LongueurD2, NoMachine, Connexion, Ref, Denudage,
                         ConnexionB, NoOutilB, DenudageB,
                         ConnexionC, NoOutilC, DenudageC
                     )
                     VALUES (
-                        @NoSerie, @ResourceNo, @OperationNo, @Client, @NoEquipement, @Section,
-                        @NoContact, @NoOutil, @NoContact2, @NoOutil2, @HA, @HI, @Traction,
-                        @LongueurD, @UAP, @LongueurD2, @NoMachine, @Connexion, @Ref, @Denudage,
-                        @ConnexionB, @NoOutilB, @DenudageB,
-                        @ConnexionC, @NoOutilC, @DenudageC
-
+                    ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
                     )";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
@@ -236,12 +231,12 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@NoOutil", string.IsNullOrEmpty(enreg.NoOutil) ? DBNull.Value : (object)enreg.NoOutil);
                     cmd.Parameters.AddWithValue("@NoContact2", string.IsNullOrEmpty(enreg.NoContact2) ? DBNull.Value : (object)enreg.NoContact2);
                     cmd.Parameters.AddWithValue("@NoOutil2", string.IsNullOrEmpty(enreg.NoOutil2) ? DBNull.Value : (object)enreg.NoOutil2);
-                    cmd.Parameters.AddWithValue("@UAP", string.IsNullOrEmpty(enreg.UAP) ? DBNull.Value : (object)enreg.UAP);
 
                     cmd.Parameters.AddWithValue("@HA", enreg.HA ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@HI", enreg.HI ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Traction", enreg.Traction ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@LongueurD", enreg.LongueurD ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@UAP", string.IsNullOrEmpty(enreg.UAP) ? DBNull.Value : (object)enreg.UAP);
                     cmd.Parameters.AddWithValue("@LongueurD2", enreg.LongueurD2 ?? (object)DBNull.Value);
 
                     cmd.Parameters.AddWithValue("@NoMachine", (object)enreg.NoMachine ?? DBNull.Value);
@@ -285,7 +280,7 @@ namespace SPC.Models
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "select NoSerie from enreg where NoSerie = @NSerie;";
+                string query = "select NoSerie from enreg where NoSerie = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NSerie", NSerie);

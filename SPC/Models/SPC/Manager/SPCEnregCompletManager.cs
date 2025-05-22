@@ -20,7 +20,7 @@ namespace SPC.Models
             {
                 string query;
                 if(string.Equals(stat, "NF")) query = "select * from enreg e, enregdetail d where e.id = d.idenrg and e.NoSerie not in (select se.NoSerie from enreg se, enregdetail sd where se.id = sd.idenrg and Right(sd.Nature, 1 ) = 'F' ) order by NoSerie;";
-                else query = "select * from enreg e, enregdetail d where e.id = d.idenrg and year(DateDebut) = @year and month(DateDebut) = @month and e.id in (select idenrg from enregDetail where right(Nature, 1) = 'F') order by NoSerie;";
+                else query = "select * from enreg e, enregdetail d where e.id = d.idenrg and year(DateDebut) = ? and month(DateDebut) = ? e.id in (select idenrg from enregDetail where right(Nature, 1) = 'F') order by NoSerie;";
                 conn.Open();
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
@@ -135,7 +135,7 @@ namespace SPC.Models
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "select top 1 Nature from enreg e, enregdetail d where OperationNo = @NOp and d.idenrg = e.id order by datedebut desc;";
+                string query = "select top 1 Nature from enreg e, enregdetail d where OperationNo = ? and d.idenrg = e.id order by datedebut desc;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NOp", NOp);

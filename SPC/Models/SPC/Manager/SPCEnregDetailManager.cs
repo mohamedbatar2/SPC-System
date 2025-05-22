@@ -110,22 +110,15 @@ namespace SPC.Models
                         AspectCnxB, AspectCnxC
                     )
                     VALUES (
-                        @IdEnrg, @DateDebut, @Quantite, @HA1, @HA2, @HA3, 
-                        @HI1, @HI2, @HI3, @Traction1, @Traction2, @Traction3,
-                        @Nature, @LongueurM, @Repere, @Claquage, @Marquage,
-                        @ContactAspect1, @ContactAspect2, @ContactAspect3,
-                        @Denudage1, @Denudage2, @Denudage3,
-                        @Tol1, @Tol2, @Tol3,
-                        @Clip1, @Clip2, @Clip3, @LongueurM2, @AspectCnx,
-                        @HA1B, @HA2B, @HA3B, @HI1B, @HI2B, @HI3B, @Traction1B, @Traction2B, @Traction3B, 
-                        @HA1C, @HA2C, @HA3C, @HI1C, @HI2C, @HI3C, @Traction1C, @Traction2C, @Traction3C,
-                        @AspectCnxB, @AspectCnxC
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                     )";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
 
                     cmd.Parameters.AddWithValue("@IdEnrg", detail.IdEnrg);
-                    cmd.Parameters.AddWithValue("@DateDebut", detail.DateCreation ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@DateCreation", detail.DateCreation.HasValue ? detail.DateCreation.Value.ToString("yyyy-MM-dd HH:mm:ss") : (object)DBNull.Value); 
                     cmd.Parameters.AddWithValue("@Quantite", detail.Quantite ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@HA1", detail.HA1 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@HA2", detail.HA2 ?? (object)DBNull.Value);
@@ -136,31 +129,30 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@Traction1", detail.Traction1 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Traction2", detail.Traction2 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Traction3", detail.Traction3 ?? (object)DBNull.Value);
+
+                    cmd.Parameters.AddWithValue("@Nature", string.IsNullOrEmpty(detail.Nature) ? DBNull.Value : (object)detail.Nature);
+
                     cmd.Parameters.AddWithValue("@LongueurM", detail.LongueurM ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Repere", string.IsNullOrEmpty(detail.Repere) ? DBNull.Value : (object)detail.Repere);
+                    cmd.Parameters.AddWithValue("@Claquage", string.IsNullOrEmpty(detail.Claquage) ? DBNull.Value : (object)detail.Claquage);
+                    cmd.Parameters.AddWithValue("@Marquage", string.IsNullOrEmpty(detail.Marquage) ? DBNull.Value : (object)detail.Marquage);
+
+                    cmd.Parameters.AddWithValue("@ContactAspect1", string.IsNullOrEmpty(detail.ContactAspect1) ? DBNull.Value : (object)detail.ContactAspect1);
+                    cmd.Parameters.AddWithValue("@ContactAspect2", string.IsNullOrEmpty(detail.ContactAspect2) ? DBNull.Value : (object)detail.ContactAspect2);
+                    cmd.Parameters.AddWithValue("@ContactAspect3", string.IsNullOrEmpty(detail.ContactAspect3) ? DBNull.Value : (object)detail.ContactAspect3);
                     cmd.Parameters.AddWithValue("@Denudage1", detail.Denudage1 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Denudage2", detail.Denudage2 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Denudage3", detail.Denudage3 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Tol1", detail.Tol1 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Tol2", detail.Tol2 ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Tol3", detail.Tol3 ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@LongueurM2", detail.LongueurM2 ?? (object)DBNull.Value);
-
-                    cmd.Parameters.AddWithValue("@Repere", string.IsNullOrEmpty(detail.Repere) ? DBNull.Value : (object)detail.Repere);
-                    cmd.Parameters.AddWithValue("@Claquage", string.IsNullOrEmpty(detail.Claquage) ? DBNull.Value : (object)detail.Claquage);
-                    cmd.Parameters.AddWithValue("@Marquage", string.IsNullOrEmpty(detail.Marquage) ? DBNull.Value : (object)detail.Marquage);
-                    cmd.Parameters.AddWithValue("@ContactAspect1", string.IsNullOrEmpty(detail.ContactAspect1) ? DBNull.Value : (object)detail.ContactAspect1);
-                    cmd.Parameters.AddWithValue("@ContactAspect2", string.IsNullOrEmpty(detail.ContactAspect2) ? DBNull.Value : (object)detail.ContactAspect2);
-                    cmd.Parameters.AddWithValue("@ContactAspect3", string.IsNullOrEmpty(detail.ContactAspect3) ? DBNull.Value : (object)detail.ContactAspect3);
-                    cmd.Parameters.AddWithValue("@Nature", string.IsNullOrEmpty(detail.Nature) ? DBNull.Value : (object)detail.Nature);
 
                     cmd.Parameters.AddWithValue("@Clip1", string.IsNullOrEmpty(detail.Clip1) ? DBNull.Value : (object)detail.Clip1);
                     cmd.Parameters.AddWithValue("@Clip2", string.IsNullOrEmpty(detail.Clip2) ? DBNull.Value : (object)detail.Clip2);
                     cmd.Parameters.AddWithValue("@Clip3", string.IsNullOrEmpty(detail.Clip3) ? DBNull.Value : (object)detail.Clip3);
+                    cmd.Parameters.AddWithValue("@LongueurM2", detail.LongueurM2 ?? (object)DBNull.Value);
 
                     cmd.Parameters.AddWithValue("@AspectCnx", string.IsNullOrEmpty(detail.AspectCnx) ? DBNull.Value : (object)detail.AspectCnx);
-
-                    cmd.Parameters.AddWithValue("@AspectCnxB", string.IsNullOrEmpty(detail.AspectCnxB) ? DBNull.Value : (object)detail.AspectCnxB);
-                    cmd.Parameters.AddWithValue("@AspectCnxC", string.IsNullOrEmpty(detail.AspectCnxC) ? DBNull.Value : (object)detail.AspectCnxC);
 
                     cmd.Parameters.AddWithValue("@HA1B", detail.HA1B ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@HA2B", detail.HA2B ?? (object)DBNull.Value);
@@ -181,6 +173,9 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@Traction1C", detail.Traction1C ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Traction2C", detail.Traction2C ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Traction3C", detail.Traction3C ?? (object)DBNull.Value);
+
+                    cmd.Parameters.AddWithValue("@AspectCnxB", string.IsNullOrEmpty(detail.AspectCnxB) ? DBNull.Value : (object)detail.AspectCnxB);
+                    cmd.Parameters.AddWithValue("@AspectCnxC", string.IsNullOrEmpty(detail.AspectCnxC) ? DBNull.Value : (object)detail.AspectCnxC);
 
                     cmd.ExecuteNonQuery();
                 }

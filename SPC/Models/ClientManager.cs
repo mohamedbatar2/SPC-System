@@ -38,7 +38,7 @@ namespace SPC.Models
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "insert into client values(@clientname);";
+                string query = "insert into client values(?);";
                 using(OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@clientname", clientName);

@@ -21,7 +21,7 @@ namespace SPC.Models
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "select Libelle from machines where NMachine = @NMachine;";
+                string query = "select Libelle from machines where NMachine = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NMachine", NMachine);
@@ -41,7 +41,7 @@ namespace SPC.Models
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "select typeSPC from machines where NMachine = @NMachine;";
+                string query = "select typeSPC from machines where NMachine = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NMachine", NMachine);

@@ -18,10 +18,10 @@ namespace SPC.Models
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "update OtaPrvntf set DtPre = @DtPrev, QtAct = 0 where NOutil = @NOutil;";
+                string query = "update OtaPrvntf set DtPre = ?, QtAct = 0 where NOutil = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@DtPrev", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@DtPrev", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                     cmd.Parameters.AddWithValue("@NOutil", NOutil);
                     cmd.ExecuteNonQuery();
                 }
@@ -32,7 +32,7 @@ namespace SPC.Models
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "select * from OtaPrvntf where NOutil = @NOutil;";
+                string query = "select * from OtaPrvntf where NOutil = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NOutil", NOutil);
@@ -58,7 +58,7 @@ namespace SPC.Models
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 conn.Open();
-                string query = "update OtaPrvntf set QtAct = QtAct + @Qt where NOutil = @NOutil;";
+                string query = "update OtaPrvntf set QtAct = QtAct + ? where NOutil = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Qt", Quantite);

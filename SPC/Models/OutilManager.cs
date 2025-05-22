@@ -20,9 +20,9 @@ namespace SPC.Models
                 conn.Open();
                 string query;
                 if (string.IsNullOrEmpty(nOutil) && string.IsNullOrEmpty(cnx)) return new ObservableCollection<Outil>();
-                else if(!string.IsNullOrEmpty(cnx) && string.IsNullOrEmpty(nOutil)) query = "select * from outil where Connexion = @cnx;";
-                else if(!string.IsNullOrEmpty(nOutil) && string.IsNullOrEmpty(cnx)) query = "select * from outil where NOutil = @nOutil;";
-                else query = "select * from outil where NOutil = @nOutil and Connexion = @cnx;";
+                else if(!string.IsNullOrEmpty(cnx) && string.IsNullOrEmpty(nOutil)) query = "select * from outil where Connexion = ?;";
+                else if(!string.IsNullOrEmpty(nOutil) && string.IsNullOrEmpty(cnx)) query = "select * from outil where NOutil = ?;";
+                else query = "select * from outil where NOutil = ? and Connexion = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     if (!(string.IsNullOrEmpty(nOutil) || string.IsNullOrEmpty(cnx))) 
