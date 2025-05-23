@@ -21,7 +21,7 @@ namespace SPC.ViewModel
             get { return selectedDate; }
             set { selectedDate = value;
                 var sp = value.Split('/');
-                month = sp[0];
+                month = sp[0].Trim('0');
                 year = sp[1];
                 ReloadData();
             }
@@ -36,20 +36,20 @@ namespace SPC.ViewModel
             year = DateTime.Now.Year.ToString();
             month = DateTime.Now.Month.ToString();
             AllSeries = SPCEnregCompletManager.GetAll("F", month, year);
-            for (int j = int.Parse(year); j > 2015; j--)
+            for (int y = int.Parse(year); y > 2015; y--)
             {
-                if(j == int.Parse(year))
+                if(y == int.Parse(year))
                 {
-                    for (int i = int.Parse(month); i>0 ; i--)
+                    for (int m = int.Parse(month); m>0 ; m--)
                     { 
-                        DateItems.Add($"{i:D2}/{j}");
+                        DateItems.Add($"{m:D2}/{y}");
                     }
                 }
                 else
                 {
-                    for (int i = 12; i > 0; i--)
+                    for (int m = 12; m > 0; m--)
                     {
-                        DateItems.Add($"{i:D2}/{j}");
+                        DateItems.Add($"{m:D2}/{y}");
                     }
                 }
             }
@@ -60,7 +60,6 @@ namespace SPC.ViewModel
             AllSeries.Clear();
             foreach (var item in SPCEnregCompletManager.GetAll("F", month, year))
             {
-                if(month == "05")
                 AllSeries.Add(item);
             }
         }

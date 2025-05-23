@@ -14,13 +14,13 @@ namespace SPC.Models
 {
     public class SPCEnregCompletManager
     {
-        public static ObservableCollection<SPCEnregComplet> GetAll(string stat, string month = "", string year = "")//not Finished == nf fo
+        public static ObservableCollection<SPCEnregComplet> GetAll(string stat, string month = "", string year = "")//not Finished == NF
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 string query;
                 if(string.Equals(stat, "NF")) query = "select * from enreg e, enregdetail d where e.id = d.idenrg and e.NoSerie not in (select se.NoSerie from enreg se, enregdetail sd where se.id = sd.idenrg and Right(sd.Nature, 1 ) = 'F' ) order by NoSerie;";
-                else query = "select * from enreg e, enregdetail d where e.id = d.idenrg and year(DateDebut) = ? and month(DateDebut) = ? e.id in (select idenrg from enregDetail where right(Nature, 1) = 'F') order by NoSerie;";
+                else query = "select * from enreg e, enregdetail d where e.id = d.idenrg and year(DateDebut) = ? and month(DateDebut) = ? and e.id in (select idenrg from enregDetail where right(Nature, 1) = 'F') order by NoSerie;";
                 conn.Open();
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {

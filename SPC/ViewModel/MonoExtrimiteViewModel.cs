@@ -102,7 +102,7 @@ namespace SPC.ViewModel
                         quantite = value;
                         enregDetail.Quantite = null;
                     }
-                    else if(Regex.IsMatch(value.ToString(), @"^[0-9]+$"))
+                    else if(Regex.IsMatch(value.ToString(), @"^[0-9]+$") && int.Parse(value) <= 500)
                     {
                         quantite = value;
                         enregDetail.Quantite = Int32.Parse(value);

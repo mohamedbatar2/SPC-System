@@ -116,13 +116,11 @@ namespace SPC.ViewModel
                 ReloadFilter();
             };
 
-            //reloading series every 1 minute
             _reloadTimer = new DispatcherTimer();
             _reloadTimer.Interval = TimeSpan.FromMinutes(1);
             _reloadTimer.Tick += (s, e) =>
             {
                 ReloadAllSeries();
-                ReloadFilter();
             };
             _reloadTimer.Start();
 

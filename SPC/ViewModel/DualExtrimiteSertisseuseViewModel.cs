@@ -153,7 +153,7 @@ namespace SPC.ViewModel
                         quantite = value;
                         enregDetail.Quantite = null;
                     }
-                    else if(Regex.IsMatch(value.ToString(), @"^[0-9]+$"))
+                    else if(Regex.IsMatch(value.ToString(), @"^[0-9]+$") && int.Parse(value) <= 500)
                     {
                         quantite = value;
                         enregDetail.Quantite = Int32.Parse(value);
@@ -1347,11 +1347,14 @@ namespace SPC.ViewModel
         {
             if (SaveCheck())
             {
+                enreg.HA = Outils[0].Hame;
+                enreg.HI = Outils[0].Hisolant;
+                enreg.Traction = Outils[0].Trac;
                 SPCEnregManager.InsertNew(enreg);
 
                 enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
                 OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);
-                if(string.IsNullOrEmpty(NOutilB))
+                if(!string.IsNullOrEmpty(NOutilB))
                     OtaPrvntfManager.UpdatePrvntf(NOutilB, (int)enregDetail.Quantite);
 
                 SPCEnregDetailManager.InsertNew(enregDetail);

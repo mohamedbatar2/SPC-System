@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SPC.Views"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        Title="{Binding Name}" Height="600" Width="1300"
+        Title="{Binding Name}" Height="620" Width="1300"
         Background="LightGray">
     <Grid>
         <Grid.RowDefinitions>
