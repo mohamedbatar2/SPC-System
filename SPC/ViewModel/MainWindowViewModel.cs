@@ -107,6 +107,42 @@ namespace SPC.ViewModel
                 }
             }
         }
+        private Outil selectedOutil;
+        public Outil SelectedOutil
+        {
+            get { return selectedOutil; }
+            set 
+            {
+                selectedOutil = value;
+                if(SelectedOutil == null)
+                {
+                    VisiOutilInfor = "Hidden";
+                    OnPropertyChanger(nameof(VisiOutilInfor));
+                }
+                else
+                {
+                    VisiOutilInfor = "Visible";
+                    OnPropertyChanger(nameof(VisiOutilInfor));
+                }
+                    OnPropertyChanger(nameof(SelectedOutil));
+            }
+        }
+        public string VisiOutilInfor { get; set; }
+
+        private string connexion;
+
+        public string Connexion
+        {
+            get { return connexion; }
+            set 
+            {
+                connexion = value; 
+                ReloadOutils();
+            }
+        }
+
+        public ObservableCollection<Outil> FiltredOutils { get; set; }
+        public string VisiOutilGrid { get; set; }
         public InfoBarHelper InfoBar { get; set; }
 
         public DispatcherTimer _timerDispatcher { get; set; }
@@ -140,6 +176,11 @@ namespace SPC.ViewModel
             var resetOutilView = new ResetOutil();
             resetOutilView.Show();
             InfoBar = new InfoBarHelper();
+
+            FiltredOutils = new ObservableCollection<Outil>();
+
+            VisiOutilGrid = "hidden";
+            VisiOutilInfor = "Hidden";
         }
 
         private void OpenHistory(object obj)
@@ -322,6 +363,22 @@ namespace SPC.ViewModel
 
             OperateurLabel = !OperateurManager.CheckOpExist(NMatricule)? "" :OperateurManager.GetOpName(NMatricule.ToUpper());
             MachineLabel = string.IsNullOrEmpty(NMachine) ? "" : MachineManager.GetLibelle(NMachine);
+        }
+        private void ReloadOutils()
+        {
+            FiltredOutils.Clear();
+            foreach (var item in OutilManager.GetOutilsByCndO("" , Connexion))
+            {
+                FiltredOutils.Add(item);
+            }
+            if (FiltredOutils.Count() > 0)
+                VisiOutilGrid = "Visible";
+            else
+            {
+                VisiOutilGrid = "Hidden";
+                selectedOutil = null;
+            }
+            OnPropertyChanger(nameof(VisiOutilGrid));
         }
 
         public string GenerateNSerie()
