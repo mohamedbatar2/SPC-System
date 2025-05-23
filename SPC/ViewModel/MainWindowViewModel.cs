@@ -42,6 +42,7 @@ namespace SPC.ViewModel
             get { return nMachine; }
             set
             {
+                InfoBar.RestartTimer();
                 if (nMachine != value)
                 {
                     nMachine = value;
@@ -59,6 +60,7 @@ namespace SPC.ViewModel
             get { return nMatricule; }
             set
             {
+                InfoBar.RestartTimer();
                 if (nMatricule != value)
                 {
                     nMatricule = value;
@@ -75,7 +77,12 @@ namespace SPC.ViewModel
             get { return machineLabel; }
             set
             {
-                if (value != machineLabel)
+                if (string.IsNullOrEmpty(value))
+                {
+                    machineLabel = "Machine:";
+                    OnPropertyChanger(nameof(MachineLabel));
+                }
+                else if (value != machineLabel)
                 {
                     machineLabel = value;
                     OnPropertyChanger(nameof(MachineLabel));
@@ -88,13 +95,19 @@ namespace SPC.ViewModel
             get { return opLabel; }
             set
             {
-                if (value != opLabel)
+                if (string.IsNullOrEmpty(value))
+                {
+                    opLabel = "Matricule:";
+                    OnPropertyChanger(nameof(OperateurLabel));
+                }
+                else if (value != opLabel)
                 {
                     opLabel = value;
                     OnPropertyChanger(nameof(OperateurLabel));
                 }
             }
         }
+        public InfoBarHelper InfoBar { get; set; }
 
         public DispatcherTimer _timerDispatcher { get; set; }
         public DispatcherTimer _reloadTimer { get; set; }
@@ -126,10 +139,12 @@ namespace SPC.ViewModel
 
             var resetOutilView = new ResetOutil();
             resetOutilView.Show();
+            InfoBar = new InfoBarHelper();
         }
 
         private void OpenHistory(object obj)
         {
+            InfoBar.RestartTimer();
             var historyView = new SerieHistory
             {
                 DataContext = new HistoryViewModel()
@@ -141,6 +156,7 @@ namespace SPC.ViewModel
 
         private void OpenNewSeries(object obj)
         {
+            InfoBar.RestartTimer();
             if (string.IsNullOrEmpty(NMachine) || string.IsNullOrEmpty(MachineManager.GetTypeSPC(NMachine))) MessageBox.Show("verifier le machine");
             else if (string.IsNullOrEmpty(NMatricule) || !OperateurManager.CheckOpExist(NMatricule)) MessageBox.Show("verifier le matricule");
             else if (string.Equals(MachineManager.GetTypeSPC(NMachine), "CRIP1"))

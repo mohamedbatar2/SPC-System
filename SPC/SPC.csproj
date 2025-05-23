@@ -103,6 +103,7 @@
     <Compile Include="ViewModel\DenudeuseViewModel.cs" />
     <Compile Include="ViewModel\DualExtrimiteSertisseuseViewModel.cs" />
     <Compile Include="ViewModel\HistoryViewModel.cs" />
+    <Compile Include="ViewModel\InfoBarHelper.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\MonoExtrimiteViewModel.cs" />
     <Compile Include="ViewModel\ResetOutilViewModel.cs" />
