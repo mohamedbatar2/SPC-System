@@ -54,6 +54,17 @@ namespace SPC.ViewModel
             }
         }
 
+        private bool CnCchicked;
+        public bool CNCChicked
+        {
+            get { return CnCchicked; }
+            set
+            {
+                CnCchicked = value;
+                OnPropertyChanged(nameof(CNCChicked));
+                enregDetail.AspectCnxC = !CnCchicked ? "Conform" : "Non conform";
+            }
+        }
         private bool BnCchicked;
         public bool BNCChicked
         {
@@ -62,7 +73,7 @@ namespace SPC.ViewModel
             {
                 BnCchicked = value;
                 OnPropertyChanged(nameof(BNCChicked));
-                enregDetail.AspectCnx = !BnCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnxB = !BnCchicked ? "Conform" : "Non conform";
             }
         }
         private bool Cchicked;

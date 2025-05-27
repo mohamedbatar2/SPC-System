@@ -49,7 +49,7 @@ namespace SPC.ViewModel
             {
                 BnCchicked = value;
                 OnPropertyChanged(nameof(BNCChicked));
-                enregDetail.AspectCnx = !BnCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnxB = !BnCchicked ? "Conform" : "Non conform";
             }
         }
         private bool Cchicked;

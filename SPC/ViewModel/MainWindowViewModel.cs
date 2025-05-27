@@ -42,6 +42,7 @@ namespace SPC.ViewModel
             get { return nMachine; }
             set
             {
+                OutilFilter = "";
                 InfoBar.RestartTimer();
                 if (nMachine != value)
                 {
@@ -61,6 +62,7 @@ namespace SPC.ViewModel
             set
             {
                 InfoBar.RestartTimer();
+                OutilFilter = "";
                 if (nMatricule != value)
                 {
                     nMatricule = value;
@@ -129,15 +131,16 @@ namespace SPC.ViewModel
         }
         public string VisiOutilInfor { get; set; }
 
-        private string connexion;
+        private string outilFilter;
 
-        public string Connexion
+        public string OutilFilter
         {
-            get { return connexion; }
+            get { return outilFilter; }
             set 
             {
-                connexion = value; 
+                outilFilter = value; 
                 ReloadOutils();
+                OnPropertyChanger(nameof(OutilFilter));
             }
         }
 
@@ -367,7 +370,8 @@ namespace SPC.ViewModel
         private void ReloadOutils()
         {
             FiltredOutils.Clear();
-            foreach (var item in OutilManager.GetOutilsByCndO("" , Connexion))
+            var outils = OutilManager.GetOutilsByCndO("", OutilFilter).Count() > 0 ? OutilManager.GetOutilsByCndO("", OutilFilter) : OutilManager.GetOutilsByCndO(OutilFilter, "");
+            foreach (var item in outils)
             {
                 FiltredOutils.Add(item);
             }
