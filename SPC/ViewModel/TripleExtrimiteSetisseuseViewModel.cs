@@ -39,7 +39,7 @@ namespace SPC.ViewModel
             {
                 CCchicked = value;
                 OnPropertyChanged(nameof(CCChicked));
-                enregDetail.AspectCnxC = CCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnxC = CCchicked ? "C" : "NC";
             }
         }
         private bool BCchicked;
@@ -50,7 +50,7 @@ namespace SPC.ViewModel
             {
                 BCchicked = value;
                 OnPropertyChanged(nameof(BCChicked));
-                enregDetail.AspectCnxB = BCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnxB = BCchicked ? "C" : "NC";
             }
         }
 
@@ -62,7 +62,7 @@ namespace SPC.ViewModel
             {
                 CnCchicked = value;
                 OnPropertyChanged(nameof(CNCChicked));
-                enregDetail.AspectCnxC = !CnCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnxC = !CnCchicked ? "C" : "NC";
             }
         }
         private bool BnCchicked;
@@ -73,7 +73,7 @@ namespace SPC.ViewModel
             {
                 BnCchicked = value;
                 OnPropertyChanged(nameof(BNCChicked));
-                enregDetail.AspectCnxB = !BnCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnxB = !BnCchicked ? "C" : "NC";
             }
         }
         private bool Cchicked;
@@ -84,7 +84,7 @@ namespace SPC.ViewModel
             {
                 Cchicked = value;
                 OnPropertyChanged(nameof(CChicked));
-                enregDetail.AspectCnx = Cchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnx = Cchicked ? "C" : "NC";
             }
         }
 
@@ -96,7 +96,7 @@ namespace SPC.ViewModel
             {
                 nCchicked = value;
                 OnPropertyChanged(nameof(NCChicked));
-                enregDetail.AspectCnx = !nCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnx = !nCchicked ? "C" : "NC";
             }
         }
         public bool ExitLoops { get; set; }
@@ -237,7 +237,7 @@ namespace SPC.ViewModel
                 if (denudageC != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudageC = value;
-                    enreg.DenudageC = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudageC);
+                    enreg.DenudageC = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(value.Replace(',','.'));
                     OnPropertyChanged(nameof(DenudageC));
                 }
             }
@@ -259,7 +259,7 @@ namespace SPC.ViewModel
                 if (denudageB != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudageB = value;
-                    enreg.DenudageB = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudageB);
+                    enreg.DenudageB = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(value.Replace(',','.'));
                     OnPropertyChanged(nameof(DenudageB));
                 }
             }
@@ -281,7 +281,7 @@ namespace SPC.ViewModel
                 if (denudage != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudage = value;
-                    enreg.Denudage = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage);
+                    enreg.Denudage = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(value.Replace(',','.'));
                     OnPropertyChanged(nameof(Denudage));
                 }
             }
@@ -1162,6 +1162,7 @@ namespace SPC.ViewModel
             set {
                 if (Outils.Count() == 0) return;
                 if (OutilsB.Count() == 0) return;
+                if (string.IsNullOrEmpty(value)) value = "";
 
                 if (value.ToUpper() != nOutilC)
                 {
@@ -1180,6 +1181,7 @@ namespace SPC.ViewModel
             get { return nOutilB; }
             set {
                 if (Outils.Count() == 0) return;
+                if (string.IsNullOrEmpty(value)) value = "";
                 if (value.ToUpper() != nOutilB)
                 {
                     enreg.NoOutilB = value.ToUpper();
@@ -1400,15 +1402,6 @@ namespace SPC.ViewModel
             NOutil = enreg.NoOutil;
             Denudage = enreg.Denudage.ToString().Replace('.',',');
 
-            if (enreg.DenudageC != null)
-            {
-                VisiExtrimiteC = "Visible";
-                ConnexionC = enreg.ConnexionC;
-                NOutilC = enreg.NoOutilC;
-                DenudageC = enreg.DenudageC.ToString().Replace('.',',');
-            }
-
-            else VisiExtrimiteC = "Hidden";
 
             if (enreg.DenudageB != null)
             {
@@ -1419,6 +1412,16 @@ namespace SPC.ViewModel
             }
 
             else VisiExtrimiteB = "Hidden";
+
+            if (enreg.DenudageC != null)
+            {
+                VisiExtrimiteC = "Visible";
+                ConnexionC = enreg.ConnexionC;
+                NOutilC = enreg.NoOutilC;
+                DenudageC = enreg.DenudageC.ToString().Replace('.',',');
+            }
+
+            else VisiExtrimiteC = "Hidden";
 
             ItemsSourceD = new List<string>() { "S", "F" };
             EnregReadOnlyProp = "true";
@@ -1908,10 +1911,13 @@ namespace SPC.ViewModel
         {
             if (SaveCheck())
             {
-                enreg.HA = Outils[0].Hame;
-                enreg.HI = Outils[0].Hisolant;
-                enreg.Traction = Outils[0].Trac;
-                SPCEnregManager.InsertNew(enreg);
+                if (enregDetail.Nature.Contains("D"))
+                {
+                    enreg.HA = Outils[0].Hame;
+                    enreg.HI = Outils[0].Hisolant;
+                    enreg.Traction = Outils[0].Trac;
+                    SPCEnregManager.InsertNew(enreg);
+                }
 
                 enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
                 OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);
@@ -2062,6 +2068,7 @@ namespace SPC.ViewModel
             OnPropertyChanged(nameof(ExtBEnable));
             OnPropertyChanged(nameof(ExtCEnable));
         }
+
         private bool SaveCheck()
         {
 

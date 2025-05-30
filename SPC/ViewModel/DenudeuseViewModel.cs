@@ -87,7 +87,7 @@ namespace SPC.ViewModel
                 if (denudage != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudage = value;
-                    enreg.Denudage = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage);
+                    enreg.Denudage = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(denudage.Replace(',','.'));
                     OnPropertyChanged(nameof(Denudage));
                 }
             }
@@ -109,7 +109,7 @@ namespace SPC.ViewModel
                 if (denudage1 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudage1 = value;
-                    enregDetail.Denudage1 = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage1);
+                    enregDetail.Denudage1 = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(denudage1.Replace(',','.'));
                     OnPropertyChanged(nameof(Denudage1));
                 }
             }
@@ -131,7 +131,7 @@ namespace SPC.ViewModel
                 if (denudage2 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudage2 = value;
-                    enregDetail.Denudage2 = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage2);
+                    enregDetail.Denudage2 = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(denudage2.Replace(',','.'));
                     OnPropertyChanged(nameof(Denudage2));
                 }
             }
@@ -153,7 +153,7 @@ namespace SPC.ViewModel
                 if (denudage3 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudage3 = value;
-                    enregDetail.Denudage3 = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage3);
+                    enregDetail.Denudage3 = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(denudage3.Replace(',','.'));
                     OnPropertyChanged(nameof(Denudage3));
                 }
             }
@@ -245,7 +245,10 @@ namespace SPC.ViewModel
         {
             if (SaveCheck())
             {
-                SPCEnregManager.InsertNew(enreg);
+                if (enregDetail.Nature.Contains("D"))
+                {
+                    SPCEnregManager.InsertNew(enreg);
+                }
 
                 enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
 

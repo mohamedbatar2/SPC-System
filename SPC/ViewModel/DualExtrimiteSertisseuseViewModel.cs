@@ -37,7 +37,7 @@ namespace SPC.ViewModel
             {
                 BCchicked = value;
                 OnPropertyChanged(nameof(BCChicked));
-                enregDetail.AspectCnxB = BCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnxB = BCchicked ? "C" : "NC";
             }
         }
 
@@ -49,7 +49,7 @@ namespace SPC.ViewModel
             {
                 BnCchicked = value;
                 OnPropertyChanged(nameof(BNCChicked));
-                enregDetail.AspectCnxB = !BnCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnxB = !BnCchicked ? "C" : "NC";
             }
         }
         private bool Cchicked;
@@ -60,7 +60,7 @@ namespace SPC.ViewModel
             {
                 Cchicked = value;
                 OnPropertyChanged(nameof(CChicked));
-                enregDetail.AspectCnx = Cchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnx = Cchicked ? "C" : "NC";
             }
         }
 
@@ -72,7 +72,7 @@ namespace SPC.ViewModel
             {
                 nCchicked = value;
                 OnPropertyChanged(nameof(NCChicked));
-                enregDetail.AspectCnx = !nCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnx = !nCchicked ? "C" : "NC";
             }
         }
         public bool ExitLoops { get; set; }
@@ -180,7 +180,7 @@ namespace SPC.ViewModel
                 if (denudageB != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudageB = value;
-                    enreg.DenudageB = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudageB);
+                    enreg.DenudageB = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(value.Replace(',','.'));
                     OnPropertyChanged(nameof(DenudageB));
                 }
             }
@@ -202,7 +202,7 @@ namespace SPC.ViewModel
                 if (denudage != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudage = value;
-                    enreg.Denudage = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage);
+                    enreg.Denudage = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(value.Replace(',','.'));
                     OnPropertyChanged(nameof(Denudage));
                 }
             }
@@ -792,6 +792,10 @@ namespace SPC.ViewModel
         {
             get { return nOutilB; }
             set {
+                if(string.IsNullOrEmpty(value))
+                {
+                    value = "";
+                }
                 if (value.ToUpper() != nOutilB)
                 {
                     enreg.NoOutilB = value.ToUpper();
@@ -977,9 +981,9 @@ namespace SPC.ViewModel
             if (enreg.DenudageB != null)
             {
                 VisiExtrimiteB = "Visible";
+                DenudageB = enreg.DenudageB.ToString().Replace('.',',');
                 ConnexionB = enreg.ConnexionB;
                 NOutilB = enreg.NoOutilB;
-                DenudageB = enreg.DenudageB.ToString().Replace('.',',');
             }
 
             else VisiExtrimiteB = "Hidden";
@@ -1347,10 +1351,13 @@ namespace SPC.ViewModel
         {
             if (SaveCheck())
             {
-                enreg.HA = Outils[0].Hame;
-                enreg.HI = Outils[0].Hisolant;
-                enreg.Traction = Outils[0].Trac;
-                SPCEnregManager.InsertNew(enreg);
+                if (enregDetail.Nature.Contains("D"))
+                {
+                    enreg.HA = Outils[0].Hame;
+                    enreg.HI = Outils[0].Hisolant;
+                    enreg.Traction = Outils[0].Trac;
+                    SPCEnregManager.InsertNew(enreg);
+                }
 
                 enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
                 OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);

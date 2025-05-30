@@ -140,8 +140,10 @@
                 <DataGridTextColumn Binding="{Binding Traction3C}" Header="Traction 3" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding AspectCnxC}" Header="Aspect Connexion" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Denudage1}" Header="Denudage 1" Width="auto"/> 
-                <DataGridTextColumn Binding="{Binding Denudage2}" Header="Denudage 1" Width="auto"/> 
-                <DataGridTextColumn Binding="{Binding Denudage3}" Header="Denudage 1" Width="auto"/> 
+                <DataGridTextColumn Binding="{Binding Denudage2}" Header="Denudage 2" Width="auto"/> 
+                <DataGridTextColumn Binding="{Binding Denudage3}" Header="Denudage 3" Width="auto"/> 
+                <DataGridTextColumn Binding="{Binding LongueurD}" Header="LongueurD" Width="auto"/> 
+                <DataGridTextColumn Binding="{Binding LongueurM}" Header="LongueurM" Width="auto"/> 
 <!--                <DataGridTextColumn Binding="{Binding}" Header="" Width="auto"/>  -->
             </DataGrid.Columns>
         </DataGrid>

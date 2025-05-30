@@ -42,7 +42,7 @@ namespace SPC.ViewModel
             {
                 Cchicked = value;
                 OnPropertyChanged(nameof(CChicked));
-                enregDetail.AspectCnx = Cchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnx = Cchicked ? "C" : "NC";
             }
         }
 
@@ -54,7 +54,7 @@ namespace SPC.ViewModel
             {
                 nCchicked = value;
                 OnPropertyChanged(nameof(NCChicked));
-                enregDetail.AspectCnx = !nCchicked ? "Conform" : "Non conform";
+                enregDetail.AspectCnx = !nCchicked ? "C" : "NC";
             }
         }
         public bool ExitLoops { get; set; }
@@ -129,7 +129,8 @@ namespace SPC.ViewModel
                 if (denudage != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudage = value;
-                    enreg.Denudage = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage);
+                    //enreg.Denudage = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage); // this was so much wrong
+                    enreg.Denudage = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(denudage.Replace(',','.'));
                     OnPropertyChanged(nameof(Denudage));
                 }
             }
@@ -802,10 +803,13 @@ namespace SPC.ViewModel
         {
             if (SaveCheck())
             {
-                enreg.HA = Outils[0].Hame;
-                enreg.HI = Outils[0].Hisolant;
-                enreg.Traction = Outils[0].Trac;
-                SPCEnregManager.InsertNew(enreg);
+                if (enregDetail.Nature.Contains("D"))
+                {
+                    enreg.HA = Outils[0].Hame;
+                    enreg.HI = Outils[0].Hisolant;
+                    enreg.Traction = Outils[0].Trac;
+                    SPCEnregManager.InsertNew(enreg);
+                }
 
                 enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
                 OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);
