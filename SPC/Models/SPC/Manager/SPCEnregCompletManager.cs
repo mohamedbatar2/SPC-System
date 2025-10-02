@@ -14,14 +14,16 @@ namespace SPC.Models
 {
     public class SPCEnregCompletManager
     {
-        public static ObservableCollection<SPCEnregComplet> GetAll(string stat, string month = "", string year = "")//not Finished == NF
+        public static async Task<ObservableCollection<SPCEnregComplet>> GetAllAsync(string stat, string month = "", string year = "")//not Finished == NF
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
                 string query;
-                if(string.Equals(stat, "NF")) query = "select * from enreg e, enregdetail d where e.id = d.idenrg and e.NoSerie not in (select se.NoSerie from enreg se, enregdetail sd where se.id = sd.idenrg and Right(sd.Nature, 1 ) = 'F' ) order by NoSerie;";
-                else query = "select * from enreg e, enregdetail d where e.id = d.idenrg and year(DateDebut) = ? and month(DateDebut) = ? and e.id in (select idenrg from enregDetail where right(Nature, 1) = 'F') order by NoSerie;";
-                conn.Open();
+                if(string.Equals(stat, "NF")) 
+                    query = "select * from enreg e, enregdetail d where e.id = d.idenrg and e.NoSerie not in (select se.NoSerie from enreg se, enregdetail sd where se.id = sd.idenrg and Right(sd.Nature, 1 ) = 'F' ) order by NoSerie;";
+                else
+                    query = "select * from enreg e, enregdetail d where e.id = d.idenrg and year(DateDebut) = ? and month(DateDebut) = ? and e.id in (select idenrg from enregDetail where right(Nature, 1) = 'F') order by NoSerie;";
+                await conn.OpenAsync();
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     if (stat != "NF")
@@ -29,10 +31,10 @@ namespace SPC.Models
                         cmd.Parameters.AddWithValue("@year", year);
                         cmd.Parameters.AddWithValue("@month", month);
                     }
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader =(OleDbDataReader)await  cmd.ExecuteReaderAsync())
                     {
                         var enregComplets = new ObservableCollection<SPCEnregComplet>();
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             enregComplets.Add(new SPCEnregComplet()
                             {
@@ -130,7 +132,7 @@ namespace SPC.Models
             }
         }
         
-        public static string LastSerieByOpStatus(string NOp)
+        public static async Task<string> LastSerieByOpStatusAsync(string NOp)
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
@@ -139,9 +141,9 @@ namespace SPC.Models
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NOp", NOp);
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        if (reader.Read())
+                        if (await reader.ReadAsync())
                         {
                             string Nature;
                             Nature = reader["Nature"] as string;
@@ -152,5 +154,10 @@ namespace SPC.Models
                 }
             }
         }
+        public static ObservableCollection<SPCEnregComplet> GetAll(string stat, string month = "", string year = "")
+           => GetAllAsync(stat, month, year).GetAwaiter().GetResult();
+
+        public static string LastSerieByOpStatus(string NOp)
+            => LastSerieByOpStatusAsync(NOp).GetAwaiter().GetResult();
     }
 }

@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using SPC.Models;
+using SPC.Services;
 using SPC.Tools;
 
 
@@ -17,6 +18,18 @@ namespace SPC.ViewModel
 {
     public class TripleExtrimiteSetisseuseViewModel : INotifyPropertyChanged
     {
+        private readonly ISpcDataService _dataService;
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged(nameof(IsLoading));
+            }
+        }
+
         private string nature;
         public string Nature
         {
@@ -1374,27 +1387,30 @@ namespace SPC.ViewModel
         private List<string> warningsC;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public TripleExtrimiteSetisseuseViewModel(string NMachine, string NSerie, string NMatricule)
+        public TripleExtrimiteSetisseuseViewModel(ISpcDataService dataService,string NMachine, string NSerie, string NMatricule)
         {
+            _dataService = dataService?? throw new ArgumentNullException(nameof(dataService));
             enreg = new SPCEnreg()
             {
                 NoSerie = NSerie,
                 NoMachine = NMachine,
                 OperationNo = NMatricule
             };
-            Init(); //should be bellow enreg cause i use it in the Init
+            InitializeSync(); //should be bellow enreg cause i use it in the Init
 
             VisiExtrimiteB = "Visible";
             VisiExtrimiteC = "Visible";
             ItemsSourceD = new List<string>() { "D", "D-F" };
             EnregReadOnlyProp = "false";
+            _ = LoadInitialDataAsync();
         }
 
-        public TripleExtrimiteSetisseuseViewModel(SPCEnreg enreg)
+        public TripleExtrimiteSetisseuseViewModel(ISpcDataService dataService,SPCEnreg enreg)
         {
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
             this.enreg = enreg;
 
-            Init(); //should be bellow enreg cause i use it in the Init
+            InitializeSync(); //should be bellow enreg cause i use it in the Init
 
             Section = enreg.Section;
 
@@ -1425,32 +1441,65 @@ namespace SPC.ViewModel
 
             ItemsSourceD = new List<string>() { "S", "F" };
             EnregReadOnlyProp = "true";
+            _ = LoadInitialDataAsync();
         }
 
-        private void Init()
+        
+
+        private void InitializeSync()
         {
-            Name = OperateurManager.GetOpName(enreg.OperationNo);
-
-            ViewInit();
-
-            NonFiltredOutils = OutilManager.GetOutils();
-            Clients = ClientManager.GetClientsNames();
+           
             Outils = new ObservableCollection<Outil>();
             OutilsB = new ObservableCollection<Outil>();
             OutilsC = new ObservableCollection<Outil>();
-            SaveCommand = new RelayCommand(SaveSerie, parm => true);
+
+            SaveCommand = new AsyncRelayCommand(SaveSerieAsync, CanSave);
+
+          
             enregDetail = new SPCEnregDetail()
             {
                 DateCreation = DateTime.Now,
             };
-            WarningNotifTimer =new DispatcherTimer();
+
+            WarningNotifTimer = new DispatcherTimer();
             WarningNotifTimer.Interval = TimeSpan.FromMilliseconds(1000);
 
+    
             enreg.RefSizeTester += () => RefSizeAct();
             enreg.CliAbsTester += () => CliAbsAct();
 
             ExitLoops = false;
         }
+
+        private async Task LoadInitialDataAsync()
+        {
+            IsLoading = true;
+
+            try
+            {
+                
+                Name = await _dataService.GetOpNameAsync(enreg.OperationNo);
+
+               
+                Clients = await _dataService.GetClientNamesAsync();
+
+                var outilsList = await _dataService.GetAllOutilsAsync();
+                NonFiltredOutils = new ObservableCollection<Outil>(outilsList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Erreur de chargement des données:\n\n{ex.Message}",
+                    "Erreur",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
         private void ViewInit()
         {
             warnings = new List<string>();
@@ -1907,29 +1956,46 @@ namespace SPC.ViewModel
             if (value1 == null || value2 == null) return true;
             return !(value1 > value2+tol || value1 < value2-tol);
         }
-        private void SaveSerie(object obj)
+
+        private async Task SaveSerieAsync()
         {
-            if (SaveCheck())
+            if (!SaveCheck())
+                return;
+
+            IsLoading = true;
+
+            try
             {
                 if (enregDetail.Nature.Contains("D"))
                 {
                     enreg.HA = Outils[0].Hame;
                     enreg.HI = Outils[0].Hisolant;
                     enreg.Traction = Outils[0].Trac;
-                    SPCEnregManager.InsertNew(enreg);
+                    await _dataService.InsertNewSerieAsync(enreg);
                 }
 
-                enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
-                OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);
-                if(!string.IsNullOrEmpty(NOutilB))
-                    OtaPrvntfManager.UpdatePrvntf(NOutilB, (int)enregDetail.Quantite);
-                if(!string.IsNullOrEmpty(NOutilC))
-                    OtaPrvntfManager.UpdatePrvntf(NOutilC, (int)enregDetail.Quantite);
+                enregDetail.IdEnrg = await _dataService.GetSerieIdAsync(enreg.NoSerie);
+                await _dataService.UpdatePrvntfAsync(NOutil, (int)enregDetail.Quantite);
 
-                SPCEnregDetailManager.InsertNew(enregDetail);
+                if (!string.IsNullOrEmpty(NOutilB))
+                    await _dataService.UpdatePrvntfAsync(NOutilB, (int)enregDetail.Quantite);
+
+                await _dataService.InsertNewDetailAsync(enregDetail);
+
                 RequestClose?.Invoke();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur lors de l'enregistrement:\n\n{ex.Message}",
+                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
+
+        private bool CanSave() => !IsLoading;
         private bool CheckFull(string Ext = "A")
         {
             List<string> enregProps = new List<string>{"Client", "Ref", "Section"};

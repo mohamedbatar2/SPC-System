@@ -99,6 +99,9 @@
     <Compile Include="Models\Manager\OtaPrvntfManager.cs" />
     <Compile Include="Models\Outil.cs" />
     <Compile Include="Models\Manager\OutilManager.cs" />
+    <Compile Include="Service\AccessDataService.cs" />
+    <Compile Include="Service\ISpcDataService.cs" />
+    <Compile Include="Tools\AsyncRelayCommand.cs" />
     <Compile Include="ViewModel\CoupeCableViewModel.cs" />
     <Compile Include="ViewModel\DenudeuseViewModel.cs" />
     <Compile Include="ViewModel\DualExtrimiteSertisseuseViewModel.cs" />
@@ -117,6 +120,7 @@
     <Compile Include="Views\DualExtrimiteSertisseuse.xaml.cs">
       <DependentUpon>DualExtrimiteSertisseuse.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\InverseBoolConverter.cs" />
     <Compile Include="Views\MonoExtrimite.xaml.cs">
       <DependentUpon>MonoExtrimite.xaml</DependentUpon>
     </Compile>

@@ -12,18 +12,18 @@ namespace SPC.Models
 {
     public class ClientManager
     {
-        public static List<string> GetClientsNames()
+        public static async Task<List<string>> GetClientsNamesAsync()
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 var list = new List<string>();
                 string query = "select * from Client;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             list.Add(reader["Client"] as string);
 
@@ -33,18 +33,20 @@ namespace SPC.Models
                 }
             }
         }
-        public static void AddClient(String clientName)
+        public static async Task AddClientAsync(String clientName)
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "insert into client values(?);";
                 using(OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@clientname", clientName);
-                    cmd.ExecuteNonQuery();   
+                    await cmd.ExecuteNonQueryAsync();   
                 }
             }
         }
+        public static List<string> GetClientsNames() => GetClientsNamesAsync().GetAwaiter().GetResult();
+        public static void AddClient(string clientName) => AddClientAsync(clientName).GetAwaiter().GetResult();
     }
 }

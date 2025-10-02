@@ -66,5 +66,6 @@ namespace SPC.Models
         public string ConnexionC { get; set; }
         public string NoOutilB { get; set; }
         public string NoOutilC { get; set; }
+        public DateTime? DateCreation { get; set; }
     }
 }

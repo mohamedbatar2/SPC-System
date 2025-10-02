@@ -13,18 +13,18 @@ namespace SPC.Models
 {
     public class SPCEnregManager
     {
-        public static ObservableCollection<SPCEnreg> GetEnregs()
+        public static async Task<ObservableCollection<SPCEnreg>> GetEnregsAsync()
         {
             var Enregistrements = new ObservableCollection<SPCEnreg>();
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select * from Enreg;";
                 OleDbCommand comm = new OleDbCommand(query, conn);
 
-                using (OleDbDataReader reader = comm.ExecuteReader())
+                using (OleDbDataReader reader =(OleDbDataReader)await comm.ExecuteReaderAsync())
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
 
                         Enregistrements.Add(new SPCEnreg()
@@ -68,11 +68,11 @@ namespace SPC.Models
             return Enregistrements;
         }
 
-        public static string GetLastSerie()
+        public static async Task<string> GetLastSerieAsync()
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = @"
                                 SELECT TOP 1 NoSerie 
                                 FROM enreg 
@@ -80,9 +80,9 @@ namespace SPC.Models
                                 ";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        if (reader.Read())
+                        if (await reader.ReadAsync())
                         {
                             return reader.GetString(0);
                         }
@@ -91,19 +91,19 @@ namespace SPC.Models
                 }
             }
         }
-        public static SPCEnreg GetLastSerie(string NMachine, string NMatricule)
+        public static async Task<SPCEnreg> GetLastSerieAsync(string NMachine, string NMatricule)
         {
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select top 1 * from enreg where NoMachine = @NMachine and OperationNo = @NOpr order by id desc;";
                 using(OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NMachine", NMachine);
                     cmd.Parameters.AddWithValue("@NOpr", NMatricule);
-                    using(OleDbDataReader reader = cmd.ExecuteReader())
+                    using(OleDbDataReader reader =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        reader.Read();
+                        await reader.ReadAsync();
                          
                         var enreg = new SPCEnreg()
                         {
@@ -147,18 +147,18 @@ namespace SPC.Models
                 }
             }
         }
-        public static SPCEnreg GetSerie(string NSerie)
+        public static async Task<SPCEnreg> GetSerieAsync(string NSerie)
         {
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select * from enreg where NoSerie = @NoSerie;";
                 using(OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Noserie", NSerie);
-                    using(OleDbDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader =(OleDbDataReader)await  cmd.ExecuteReaderAsync())
                     {
-                        reader.Read();
+                        await reader.ReadAsync();
                          
                         var enreg = new SPCEnreg()
                         {
@@ -202,11 +202,11 @@ namespace SPC.Models
                 }
             }
         }
-        public static void InsertNew(SPCEnreg enreg)
+        public static async Task InsertNewAsync(SPCEnreg enreg)
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = @"
                     INSERT INTO enreg (
                         NoSerie, ResourceNo, OperationNo, Client, NoEquipement, [Section],
@@ -253,21 +253,21 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@NoOutilC", string.IsNullOrEmpty(enreg.NoOutilC) ? DBNull.Value : (object)enreg.NoOutilC);
                     cmd.Parameters.AddWithValue("@DenudageC", enreg.DenudageC ?? (object)DBNull.Value);
 
-                    cmd.ExecuteNonQuery();
+                   await cmd.ExecuteNonQueryAsync();
                 }
             }
         }
 
-        public static int GetId(string NSerie)
+        public static async Task<int> GetIdAsync(string NSerie)
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select Id from enreg where NoSerie = @NSerie;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NSerie", NSerie);
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
                         reader.Read();
                         return (int)reader[0];
@@ -275,21 +275,48 @@ namespace SPC.Models
                 }
             }
         }
-        public static bool IsSerieThere(string NSerie)
+        public static async Task<bool> IsSerieThereAsync(string NSerie)
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select NoSerie from enreg where NoSerie = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NSerie", NSerie);
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        return reader.Read();
+                        return await reader.ReadAsync();
                     }
                 }
             }
         }
+        // Add these at the end of the SPCEnregManager class, before the closing brace
+
+        // ============================================================
+        // Backward Compatibility Wrappers (Synchronous versions)
+        // ============================================================
+
+        public static ObservableCollection<SPCEnreg> GetEnregs()
+            => GetEnregsAsync().GetAwaiter().GetResult();
+
+        public static string GetLastSerie()
+            => GetLastSerieAsync().GetAwaiter().GetResult();
+
+        public static SPCEnreg GetLastSerie(string NMachine, string NMatricule)
+            => GetLastSerieAsync(NMachine, NMatricule).GetAwaiter().GetResult();
+
+        public static SPCEnreg GetSerie(string NSerie)
+            => GetSerieAsync(NSerie).GetAwaiter().GetResult();
+
+        public static void InsertNew(SPCEnreg enreg)
+            => InsertNewAsync(enreg).GetAwaiter().GetResult();
+
+        public static int GetId(string NSerie)
+            => GetIdAsync(NSerie).GetAwaiter().GetResult();
+
+        public static bool IsSerieThere(string NSerie)
+            => IsSerieThereAsync(NSerie).GetAwaiter().GetResult();
+
     }
 }

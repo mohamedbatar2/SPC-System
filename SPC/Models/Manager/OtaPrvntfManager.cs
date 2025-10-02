@@ -13,32 +13,32 @@ namespace SPC.Models
 {
     public class OtaPrvntfManager
     {
-        public static void ResetOtaPrvntf(string NOutil)
+        public static async Task ResetOtaPrvntfAsync(string NOutil)
         {
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "update OtaPrvntf set DtPre = ?, QtAct = 0 where NOutil = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@DtPrev", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                     cmd.Parameters.AddWithValue("@NOutil", NOutil);
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
                 }
             }
         }
-        public static OtaPrvntf GetPrvntf(string NOutil)
+        public static async Task< OtaPrvntf> GetPrvntfAsync(string NOutil)
         {
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select * from OtaPrvntf where NOutil = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NOutil", NOutil);
-                    using(OleDbDataReader reader = cmd.ExecuteReader())
+                    using(OleDbDataReader reader =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        if (reader.Read())
+                        if (await reader.ReadAsync())
                         {
                             return new OtaPrvntf()
                             {
@@ -53,19 +53,23 @@ namespace SPC.Models
                 }
             }
         }
-        public static void UpdatePrvntf(string NOutil, int Quantite)
+        public static async Task UpdatePrvntfAsync(string NOutil, int Quantite)
         {
-            using(OleDbConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "update OtaPrvntf set QtAct = QtAct + ? where NOutil = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Qt", Quantite);
                     cmd.Parameters.AddWithValue("@NOutil", NOutil);
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
                 }
             }
         }
+             public static void ResetOtaPrvntf(string NOutil) => ResetOtaPrvntfAsync(NOutil).GetAwaiter().GetResult();
+        public static OtaPrvntf GetPrvntf(string NOutil) => GetPrvntfAsync(NOutil).GetAwaiter().GetResult();
+        public static void UpdatePrvntf(string NOutil, int Quantite) => UpdatePrvntfAsync(NOutil, Quantite).GetAwaiter().GetResult();
     }
-}
+    }
+

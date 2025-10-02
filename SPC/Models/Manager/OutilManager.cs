@@ -13,15 +13,18 @@ namespace SPC.Models
 {
     public class OutilManager
     {
-        public static ObservableCollection<Outil> GetOutilsByCndO(string nOutil, string cnx)
+        public static async Task<ObservableCollection<Outil>> GetOutilsByCndOAsync(string nOutil, string cnx)
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query;
-                if (string.IsNullOrEmpty(nOutil) && string.IsNullOrEmpty(cnx)) return new ObservableCollection<Outil>();
-                else if(!string.IsNullOrEmpty(cnx) && string.IsNullOrEmpty(nOutil)) query = "select * from outil where Connexion = ?;";
-                else if(!string.IsNullOrEmpty(nOutil) && string.IsNullOrEmpty(cnx)) query = "select * from outil where NOutil = ?;";
+                if (string.IsNullOrEmpty(nOutil) && string.IsNullOrEmpty(cnx)) 
+                    return new ObservableCollection<Outil>();
+                else if(!string.IsNullOrEmpty(cnx) && string.IsNullOrEmpty(nOutil))
+                    query = "select * from outil where Connexion = ?;";
+                else if(!string.IsNullOrEmpty(nOutil) && string.IsNullOrEmpty(cnx))
+                    query = "select * from outil where NOutil = ?;";
                 else query = "select * from outil where NOutil = ? and Connexion = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
@@ -33,7 +36,7 @@ namespace SPC.Models
                     else if (!string.IsNullOrEmpty(cnx)) cmd.Parameters.AddWithValue("@cnx", cnx);
                     else if (!string.IsNullOrEmpty(nOutil)) cmd.Parameters.AddWithValue("@nOutil", nOutil);
 
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
                         var outils = new ObservableCollection<Outil>();
                         while (reader.Read())
@@ -74,18 +77,18 @@ namespace SPC.Models
                 }
             }
         }
-        public static ObservableCollection<Outil> GetOutils()
+        public static async Task<ObservableCollection<Outil>> GetOutilsAsync()
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select * from outil;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
                         var outils = new ObservableCollection<Outil>();
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             outils.Add(new Outil()
                             {
@@ -123,5 +126,9 @@ namespace SPC.Models
                 }
             }
         }
+        public static ObservableCollection<Outil> GetOutilsByCndO(string nOutil, string cnx)
+           => GetOutilsByCndOAsync(nOutil, cnx).GetAwaiter().GetResult();
+        public static ObservableCollection<Outil> GetOutils()
+            => GetOutilsAsync().GetAwaiter().GetResult();
     }
 }

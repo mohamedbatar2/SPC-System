@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,19 +14,32 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using SPC.Models;
+using SPC.Services;
 using SPC.Tools;
 
 namespace SPC.ViewModel
 {
     public class MonoExtrimiteViewModel : INotifyPropertyChanged
     {
+        private readonly ISpcDataService _dataService;
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged(nameof(IsLoading));
+            }
+        }
+
         private string nature;
         public string Nature
         {
             get { return nature; }
             set {
 
-                nature = value; 
+                nature = value;
                 enregDetail.Nature = value;
                 NatureLabel = Nature == "D" ? "Debut" : Nature == "F" ? "Fin" : Nature == "S" ? "Surveillance" : Nature == "D-F" ? "Debut/Fin" : "";
                 OnPropertyChanged(nameof(NatureLabel));
@@ -69,7 +82,7 @@ namespace SPC.ViewModel
                 {
                     outilWarningVisibilite = value;
                     OnPropertyChanged(nameof(OutilWarningVisibilite));
-                    if(cc == 0)
+                    if (cc == 0)
                     {
                         prvLoop();
                     }
@@ -102,7 +115,7 @@ namespace SPC.ViewModel
                         quantite = value;
                         enregDetail.Quantite = null;
                     }
-                    else if(Regex.IsMatch(value.ToString(), @"^[0-9]+$") && int.Parse(value) <= 500)
+                    else if (Regex.IsMatch(value.ToString(), @"^[0-9]+$") && int.Parse(value) <= 500)
                     {
                         quantite = value;
                         enregDetail.Quantite = Int32.Parse(value);
@@ -130,7 +143,7 @@ namespace SPC.ViewModel
                 {
                     denudage = value;
                     //enreg.Denudage = string.IsNullOrEmpty(value)?null:(decimal?)decimal.Parse(denudage); // this was so much wrong
-                    enreg.Denudage = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(denudage.Replace(',','.'));
+                    enreg.Denudage = string.IsNullOrEmpty(value) ? null : (decimal?)decimal.Parse(denudage.Replace(',', '.'));
                     OnPropertyChanged(nameof(Denudage));
                 }
             }
@@ -144,19 +157,19 @@ namespace SPC.ViewModel
             }
             set
             {
-                if (string.IsNullOrEmpty(value)){
+                if (string.IsNullOrEmpty(value)) {
                     ha1 = null;
-                    WarningNotif(null , "HA1");
+                    WarningNotif(null, "HA1");
                     return;
                 }
-                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (ha1 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     ha1 = value;
 
                     WarningNotifTimer.Tick += (s, e) =>
                     {
-                        WarningNotif(string.IsNullOrEmpty(ha1)?(decimal?)null:decimal.Parse(ha1.Replace(',', '.')), "HA1");
+                        WarningNotif(string.IsNullOrEmpty(ha1) ? (decimal?)null : decimal.Parse(ha1.Replace(',', '.')), "HA1");
                         WarningNotifTimer.Stop();
                     };
                     WarningNotifTimer.Stop();
@@ -176,19 +189,19 @@ namespace SPC.ViewModel
             }
             set
             {
-                if (value == null){
+                if (value == null) {
                     ha2 = null;
-                    WarningNotif(null , "HA2");
+                    WarningNotif(null, "HA2");
                     return;
                 }
-                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (ha2 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     ha2 = value;
 
                     WarningNotifTimer.Tick += (s, e) =>
                     {
-                        WarningNotif(string.IsNullOrEmpty(ha2)?(decimal?)null:decimal.Parse(ha2.Replace(',', '.')), "HA2");
+                        WarningNotif(string.IsNullOrEmpty(ha2) ? (decimal?)null : decimal.Parse(ha2.Replace(',', '.')), "HA2");
                         WarningNotifTimer.Stop();
                     };
                     WarningNotifTimer.Stop();
@@ -208,19 +221,19 @@ namespace SPC.ViewModel
             }
             set
             {
-                if (value == null){
+                if (value == null) {
                     ha3 = null;
-                    WarningNotif(null , "HA2");
+                    WarningNotif(null, "HA2");
                     return;
                 }
-                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (ha3 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     ha3 = value;
 
                     WarningNotifTimer.Tick += (s, e) =>
                     {
-                        WarningNotif(string.IsNullOrEmpty(ha3)?(decimal?)null:decimal.Parse(ha3.Replace(',', '.')), "HA3");
+                        WarningNotif(string.IsNullOrEmpty(ha3) ? (decimal?)null : decimal.Parse(ha3.Replace(',', '.')), "HA3");
                         WarningNotifTimer.Stop();
                     };
                     WarningNotifTimer.Stop();
@@ -241,12 +254,12 @@ namespace SPC.ViewModel
             }
             set
             {
-                if (value == null){
+                if (value == null) {
                     hi1 = null;
-                    WarningNotif(null , "HI1");
+                    WarningNotif(null, "HI1");
                     return;
                 }
-                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (hi1 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     hi1 = value;
@@ -273,12 +286,12 @@ namespace SPC.ViewModel
             }
             set
             {
-                if (value == null){
+                if (value == null) {
                     hi2 = null;
-                    WarningNotif(null , "HI2");
+                    WarningNotif(null, "HI2");
                     return;
                 }
-                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (hi2 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     hi2 = value;
@@ -305,12 +318,12 @@ namespace SPC.ViewModel
             }
             set
             {
-                if (value == null){
+                if (value == null) {
                     hi3 = null;
-                    WarningNotif(null , "HI3");
+                    WarningNotif(null, "HI3");
                     return;
                 }
-                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (hi3 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     hi3 = value;
@@ -337,12 +350,12 @@ namespace SPC.ViewModel
             }
             set
             {
-                if (value == null){
+                if (value == null) {
                     traction1 = null;
-                    WarningNotif(null , "Traction1");
+                    WarningNotif(null, "Traction1");
                     return;
                 }
-                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (traction1 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     traction1 = value;
@@ -369,12 +382,12 @@ namespace SPC.ViewModel
             }
             set
             {
-                if (value == null){
+                if (value == null) {
                     traction2 = null;
-                    WarningNotif(null , "Traction2");
+                    WarningNotif(null, "Traction2");
                     return;
                 }
-                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (traction2 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     traction2 = value;
@@ -401,12 +414,12 @@ namespace SPC.ViewModel
             }
             set
             {
-                if (value == null){
+                if (value == null) {
                     traction3 = null;
-                    WarningNotif(null , "Traction1");
+                    WarningNotif(null, "Traction1");
                     return;
                 }
-                if(value.Last() == '.') value = value.Substring(0, value.Length - 1 ) + ',';
+                if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (traction3 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     traction3 = value;
@@ -426,19 +439,19 @@ namespace SPC.ViewModel
         }
         public string Name { get; set; }//title
 
-        private string nOutil;
+        private string _nOutil;
         public string NOutil
         {
-            get { return nOutil; }
-            set {
-                if (value.ToUpper() != nOutil)
+            get => _nOutil;
+            set
+            {
+                if (value.ToUpper() != _nOutil)
                 {
                     enreg.NoOutil = value.ToUpper();
-                    nOutil = value.ToUpper();
-                    FilterOutils();
+                    _nOutil = value.ToUpper();
+                    _ = FilterOutilsAsync();  // Fire and forget
                     WarningNotifCheckingAll();
-                    var prv = OtaPrvntfManager.GetPrvntf(NOutil);
-                    OutilWarningVisibilite = prv == null || ( prv.DtPrv > DateTime.Now.AddYears(-1) && prv.QtAct < 0.8 * prv.PrvQt ) ? "Hidden" : "Visible";
+                    _ = CheckOutilPrvntfAsync();  // Nouveau
                 }
             }
         }
@@ -452,7 +465,7 @@ namespace SPC.ViewModel
                 {
                     enreg.Connexion = value;
                     connexion = value;
-                    FilterOutils();
+                    _ = FilterOutilsAsync();
                     WarningNotifCheckingAll();
                 }
             }
@@ -477,7 +490,7 @@ namespace SPC.ViewModel
                     enreg.Section = value;
                     if (!string.IsNullOrEmpty(NOutil) && !string.IsNullOrEmpty(Connexion))
                     {
-                        FilterOutils();
+                        _ = FilterOutilsAsync();
                         WarningNotifCheckingAll();
                         OnPropertyChanged(nameof(Section));
                     }
@@ -509,9 +522,9 @@ namespace SPC.ViewModel
         public string EnregReadOnlyProp
         {
             get { return enregReadOnlyProp; }
-            set { 
+            set {
                 enregReadOnlyProp = value;
-                ClientChanging = value=="false"? "true" : "false";
+                ClientChanging = value == "false" ? "true" : "false";
             }
         }
         public string ClientChanging { get; set; }
@@ -529,35 +542,37 @@ namespace SPC.ViewModel
         private List<string> warnings;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public MonoExtrimiteViewModel(string NMachine, string NSerie, string NMatricule)
+        public MonoExtrimiteViewModel(ISpcDataService dataService, string NMachine, string NSerie, string NMatricule)
         {
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
             enreg = new SPCEnreg()
             {
                 NoSerie = NSerie,
                 NoMachine = NMachine,
                 OperationNo = NMatricule
             };
-            Init(); //should be bellow enreg cause i use it in the Init
+            InitializeSync(); //should be bellow enreg cause i use it in the Init
 
             ItemsSourceD = new List<string>() { "D", "D-F" };
             EnregReadOnlyProp = "false";
+            _ = LoadInitialDataAsync();
         }
 
-        public MonoExtrimiteViewModel(SPCEnreg enreg)
+        public MonoExtrimiteViewModel(ISpcDataService dataService,SPCEnreg enreg)
         {
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
             this.enreg = enreg;
-            Init(); //should be bellow enreg cause i use it in the Init
-
+            InitializeSync(); //should be bellow enreg cause i use it in the Init
             Section = enreg.Section;
             Connexion = enreg.Connexion;
             NOutil = enreg.NoOutil;
-            Denudage = enreg.Denudage.ToString().Replace('.',',');
+            Denudage = enreg.Denudage.ToString().Replace('.', ',');
 
             ItemsSourceD = new List<string>() { "S", "F" };
             EnregReadOnlyProp = "true";
         }
 
-        private void Init()
+        private void InitializeSync()
         {
             Name = OperateurManager.GetOpName(enreg.OperationNo);
 
@@ -566,12 +581,12 @@ namespace SPC.ViewModel
             NonFiltredOutils = OutilManager.GetOutils();
             Clients = ClientManager.GetClientsNames();
             Outils = new ObservableCollection<Outil>();
-            SaveCommand = new RelayCommand(SaveSerie, parm => true);
+            SaveCommand = new AsyncRelayCommand(SaveSerieAsync, CanSave);
             enregDetail = new SPCEnregDetail()
             {
                 DateCreation = DateTime.Now,
             };
-            WarningNotifTimer =new DispatcherTimer();
+            WarningNotifTimer = new DispatcherTimer();
             WarningNotifTimer.Interval = TimeSpan.FromMilliseconds(1000);
 
             enreg.RefSizeTester += () => RefSizeAct();
@@ -579,6 +594,28 @@ namespace SPC.ViewModel
 
             ExitLoops = false;
         }
+        private async Task LoadInitialDataAsync()
+        {
+            IsLoading = true;
+            try
+            {
+                Name = await _dataService.GetOpNameAsync(enreg.OperationNo);
+                Clients = await _dataService.GetClientNamesAsync();
+
+                // Convertir List en ObservableCollection
+                var outilsList = await _dataService.GetAllOutilsAsync();
+                NonFiltredOutils = new ObservableCollection<Outil>(outilsList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur de chargement: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
         private void ViewInit()
         {
             OutilWarningVisibilite = "Hidden";
@@ -587,10 +624,10 @@ namespace SPC.ViewModel
             WarningColor = "red";
             RefColor = "LightGreen";
             RefFor = "White";
-            VisiRefWarning= "Hidden";
+            VisiRefWarning = "Hidden";
             CliColor = "LightGreen";
             CliFor = "White";
-            VisiCliWarning= "Hidden";
+            VisiCliWarning = "Hidden";
             VisiDataGrid = "Hidden";
             VisiWarning = "Hidden";
             OutilWarningColor = "red";
@@ -599,21 +636,21 @@ namespace SPC.ViewModel
         }
         private void WarningNotifCheckingAll()
         {
-            WarningNotif(string.IsNullOrEmpty(HA1)?(decimal?)null:decimal.Parse(HA1.Replace(',', '.')), "HA1");
-            WarningNotif(string.IsNullOrEmpty(HA2)?(decimal?)null:decimal.Parse(HA2.Replace(',', '.')), "HA2");
-            WarningNotif(string.IsNullOrEmpty(HA3)?(decimal?)null:decimal.Parse(HA3.Replace(',', '.')), "HA3");
+            WarningNotif(string.IsNullOrEmpty(HA1) ? (decimal?)null : decimal.Parse(HA1.Replace(',', '.')), "HA1");
+            WarningNotif(string.IsNullOrEmpty(HA2) ? (decimal?)null : decimal.Parse(HA2.Replace(',', '.')), "HA2");
+            WarningNotif(string.IsNullOrEmpty(HA3) ? (decimal?)null : decimal.Parse(HA3.Replace(',', '.')), "HA3");
 
-            WarningNotif(string.IsNullOrEmpty(HI1)?(decimal?)null:decimal.Parse(HI1.Replace(',', '.')), "HI1");
-            WarningNotif(string.IsNullOrEmpty(HI2)?(decimal?)null:decimal.Parse(HI2.Replace(',', '.')), "HI2");
-            WarningNotif(string.IsNullOrEmpty(HI3)?(decimal?)null:decimal.Parse(HI3.Replace(',', '.')), "HI3");
+            WarningNotif(string.IsNullOrEmpty(HI1) ? (decimal?)null : decimal.Parse(HI1.Replace(',', '.')), "HI1");
+            WarningNotif(string.IsNullOrEmpty(HI2) ? (decimal?)null : decimal.Parse(HI2.Replace(',', '.')), "HI2");
+            WarningNotif(string.IsNullOrEmpty(HI3) ? (decimal?)null : decimal.Parse(HI3.Replace(',', '.')), "HI3");
 
-            WarningNotif(string.IsNullOrEmpty(Traction1)?(decimal?)null:decimal.Parse(Traction1.Replace(',', '.')), "Traction1");
-            WarningNotif(string.IsNullOrEmpty(Traction2)?(decimal?)null:decimal.Parse(Traction2.Replace(',', '.')), "Traction2");
-            WarningNotif(string.IsNullOrEmpty(Traction3)?(decimal?)null:decimal.Parse(Traction3.Replace(',', '.')), "Traction3");
+            WarningNotif(string.IsNullOrEmpty(Traction1) ? (decimal?)null : decimal.Parse(Traction1.Replace(',', '.')), "Traction1");
+            WarningNotif(string.IsNullOrEmpty(Traction2) ? (decimal?)null : decimal.Parse(Traction2.Replace(',', '.')), "Traction2");
+            WarningNotif(string.IsNullOrEmpty(Traction3) ? (decimal?)null : decimal.Parse(Traction3.Replace(',', '.')), "Traction3");
         }
-        public void WarningNotif(decimal? v, string p) 
+        public void WarningNotif(decimal? v, string p)
         {
-            if(Outils.Count == 0 || (string.IsNullOrEmpty(Section) && string.IsNullOrEmpty(Connexion) && string.IsNullOrEmpty(NOutil)))
+            if (Outils.Count == 0 || (string.IsNullOrEmpty(Section) && string.IsNullOrEmpty(Connexion) && string.IsNullOrEmpty(NOutil)))
             {
                 warnings.Clear();
                 InitWarningColor();
@@ -670,7 +707,7 @@ namespace SPC.ViewModel
             }
             else if (p.Contains("Traction"))
             {
-                if(v<outil.Trac)
+                if (v < outil.Trac)
                 {
                     if (!warnings.Contains(warn))
                     {
@@ -721,7 +758,7 @@ namespace SPC.ViewModel
                 ColorHA1 = ColorHA1 == "white" ? "PaleVioletRed" : "white";
                 OnPropertyChanged(nameof(ColorHA1));
             }
-            if (warning == "HA2") { 
+            if (warning == "HA2") {
                 ColorHA2 = ColorHA2 == "white" ? "PaleVioletRed" : "white";
                 OnPropertyChanged(nameof(ColorHA2));
             }
@@ -745,7 +782,7 @@ namespace SPC.ViewModel
                 ColorHI3 = ColorHI3 == "white" ? "PaleVioletRed" : "white";
                 OnPropertyChanged(nameof(ColorHI3));
             }
-            if (warning == "Traction1") 
+            if (warning == "Traction1")
             {
                 ColorTraction1 = ColorTraction1 == "white" ? "PaleVioletRed" : "white";
                 OnPropertyChanged(nameof(ColorTraction1));
@@ -777,7 +814,7 @@ namespace SPC.ViewModel
         {
             VisiWarning = "Visible";
             OnPropertyChanged(nameof(VisiWarning));
-            while (warnings.Count()!=0 && !ExitLoops)
+            while (warnings.Count() != 0 && !ExitLoops)
             {
                 Warning = "Hort tolerance";
                 OnPropertyChanged(nameof(Warning));
@@ -792,32 +829,51 @@ namespace SPC.ViewModel
             OnPropertyChanged(nameof(Warning));
             VisiWarning = "Hidden";
             OnPropertyChanged(nameof(VisiWarning));
-       }
+        }
 
         private bool CompareBetween(decimal? value1, decimal? value2, decimal? tol)
         {
             if (value1 == null || value2 == null) return true;
-            return !(value1 > value2+tol || value1 < value2-tol);
+            return !(value1 > value2 + tol || value1 < value2 - tol);
         }
-        private void SaveSerie(object obj)
+        private async Task SaveSerieAsync()
         {
-            if (SaveCheck())
+            if (!SaveCheck())
+                return;
+
+            IsLoading = true;
+            try
             {
                 if (enregDetail.Nature.Contains("D"))
                 {
                     enreg.HA = Outils[0].Hame;
                     enreg.HI = Outils[0].Hisolant;
                     enreg.Traction = Outils[0].Trac;
-                    SPCEnregManager.InsertNew(enreg);
+                    await _dataService.InsertNewSerieAsync(enreg);
                 }
 
-                enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
-                OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);
+                enregDetail.IdEnrg = await _dataService.GetSerieIdAsync(enreg.NoSerie);
+                await _dataService.UpdatePrvntfAsync(NOutil, (int)enregDetail.Quantite);
+                await _dataService.InsertNewDetailAsync(enregDetail);
 
-                SPCEnregDetailManager.InsertNew(enregDetail);
                 RequestClose?.Invoke();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur: {ex.Message}", "Erreur",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
+
+        private bool CanSave()
+        {
+            return !IsLoading;
+        }
+
         private bool CheckFull()
         {
             List<string> enregProps = new List<string>{"Client", "Ref", "Section", "Connexion"
@@ -856,7 +912,7 @@ namespace SPC.ViewModel
         }
         private void CliAbsAct()
         {
-            if(!ClientManager.GetClientsNames().Contains(enreg.Client))
+            if (!ClientManager.GetClientsNames().Contains(enreg.Client))
             {
                 CliColor = "Red";
                 CliFor = "Yellow";
@@ -874,7 +930,7 @@ namespace SPC.ViewModel
         }
         private void RefSizeAct()
         {
-            if(enreg.Ref.Length < 6)
+            if (enreg.Ref.Length < 6)
             {
                 RefColor = "Red";
                 RefFor = "Yellow";
@@ -890,17 +946,25 @@ namespace SPC.ViewModel
             OnPropertyChanged(nameof(RefFor));
             OnPropertyChanged(nameof(VisiRefWarning));
         }
-        public void FilterOutils()
+        public async Task FilterOutilsAsync()
         {
-            Outils.Clear();
-            var outils = OutilManager.GetOutilsByCndO(NOutil, Connexion);
-
-            foreach (var item in outils) 
+            try
             {
-                if (item.Sec.Equals(Section) || string.IsNullOrEmpty(Section)) Outils.Add(item);
+                Outils.Clear();
+                var outils = await _dataService.GetOutilsAsync(NOutil, Connexion);
+
+                foreach (var item in outils)
+                {
+                    if (item.Sec.Equals(Section) || string.IsNullOrEmpty(Section))
+                        Outils.Add(item);
+                }
+                VisiDataGrid = Outils.Count() == 0 ? "Hidden" : "Visible";
+                OnPropertyChanged(nameof(VisiDataGrid));
             }
-            VisiDataGrid = Outils.Count() == 0 ? "Hidden" : "Visible";
-            OnPropertyChanged(nameof(VisiDataGrid));
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erreur filtrage outils: {ex.Message}");
+            }
         }
         private bool SaveCheck()
         {
@@ -921,14 +985,14 @@ namespace SPC.ViewModel
                 MessageBox.Show("Verifier NOutil / Section / Connexion.");
                 return false;
             }
-            
+
             if (warnings.Count() != 0)
             {
                 MessageBox.Show("pas possible, contacter le respensable de machine.");
                 return false;
             }
 
-            var prv = OtaPrvntfManager.GetPrvntf(string.IsNullOrEmpty(NOutil)? "" : NOutil);
+            var prv = OtaPrvntfManager.GetPrvntf(string.IsNullOrEmpty(NOutil) ? "" : NOutil);
             bool prvcheck = prv == null ? false : prv.QtAct + enregDetail.Quantite < prv.PrvQt;
 
             if (!prvcheck)
@@ -943,5 +1007,21 @@ namespace SPC.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Name));
         }
-    }
+    
+    private async Task CheckOutilPrvntfAsync()
+        {
+            try
+            {
+                var prv = await _dataService.GetPrvntfAsync(NOutil);
+                OutilWarningVisibilite = prv == null ||
+                    (prv.DtPrv > DateTime.Now.AddYears(-1) && prv.QtAct < 0.8 * prv.PrvQt)
+                    ? "Hidden" : "Visible";
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erreur préventif: {ex.Message}");
+            }
+        }
+
+    } 
 }

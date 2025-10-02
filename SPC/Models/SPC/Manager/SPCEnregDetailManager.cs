@@ -13,18 +13,18 @@ namespace SPC.Models
 {
     public class SPCEnregDetailManager
     {
-        public static ObservableCollection<SPCEnregDetail> GetEnregDetails()
+        public static async Task< ObservableCollection<SPCEnregDetail>> GetEnregDetailsAsync()
         {
             var enregDetails = new ObservableCollection<SPCEnregDetail>();
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string querey = "select * from enregDetail";
 
                 OleDbCommand cmd = new OleDbCommand(querey, conn);
-                using (OleDbDataReader reader = cmd.ExecuteReader())
+                using (OleDbDataReader reader =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         enregDetails.Add(new SPCEnregDetail
                         {
@@ -91,11 +91,11 @@ namespace SPC.Models
             return enregDetails;
         }
 
-        public static void InsertNew(SPCEnregDetail detail)
+        public static async Task InsertNewAsync(SPCEnregDetail detail)
         {
             using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = @"
                     INSERT INTO enregdetail (
                         IdEnrg, DateDebut, Quantite, HA1, HA2, HA3, 
@@ -177,10 +177,15 @@ namespace SPC.Models
                     cmd.Parameters.AddWithValue("@AspectCnxB", string.IsNullOrEmpty(detail.AspectCnxB) ? DBNull.Value : (object)detail.AspectCnxB);
                     cmd.Parameters.AddWithValue("@AspectCnxC", string.IsNullOrEmpty(detail.AspectCnxC) ? DBNull.Value : (object)detail.AspectCnxC);
 
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
                 }
             }
         }
+        public static ObservableCollection<SPCEnregDetail> GetEnregDetails()
+            => GetEnregDetailsAsync().GetAwaiter().GetResult();
+
+        public static void InsertNew(SPCEnregDetail detail)
+            => InsertNewAsync(detail).GetAwaiter().GetResult();
 
     }
 }

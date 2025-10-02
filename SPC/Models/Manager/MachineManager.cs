@@ -12,7 +12,7 @@ namespace SPC.Models
 {
     public class MachineManager
     {
-        public static string GetLibelle(string NMachine)
+        public static async Task<string> GetLibelleAsync(string NMachine)
         {
             if (string.IsNullOrEmpty(NMachine))
             {
@@ -20,14 +20,14 @@ namespace SPC.Models
             }
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select Libelle from machines where NMachine = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NMachine", NMachine);
-                    using (OleDbDataReader rdr = cmd.ExecuteReader())
+                    using (OleDbDataReader rdr =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        if (rdr.Read())
+                        if (await rdr.ReadAsync())
                         {
                             return rdr[0] as string;
                         }
@@ -36,22 +36,24 @@ namespace SPC.Models
                 }
             }
         }
-        public static string GetTypeSPC(string NMachine)
+        public static async Task<string> GetTypeSPCAsync(string NMachine)
         {
             using(OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select typeSPC from machines where NMachine = ?;";
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NMachine", NMachine);
-                    using (OleDbDataReader rdr = cmd.ExecuteReader())
+                    using (OleDbDataReader rdr =(OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        if (rdr.Read()) return rdr[0] as string;
+                        if (await rdr.ReadAsync()) return rdr[0] as string;
                         else return "";
                     }
                 }
             }
         }
+        public static string GetLibelle(string NMachine) => GetLibelleAsync(NMachine).GetAwaiter().GetResult();
+        public static string GetTypeSPC(string NMachine) => GetTypeSPCAsync(NMachine).GetAwaiter().GetResult();
     }
 }

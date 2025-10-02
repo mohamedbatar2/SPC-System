@@ -10,12 +10,25 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using SPC.Models;
+using SPC.Services;
 using SPC.Tools;
 
 namespace SPC.ViewModel
 {
     public class DualExtrimiteSertisseuseViewModel : INotifyPropertyChanged
     {
+        private readonly ISpcDataService _dataService;
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged(nameof(IsLoading));
+            }
+        }
+
         private string nature;
         public string Nature
         {
@@ -951,26 +964,29 @@ namespace SPC.ViewModel
         private List<string> warningsB;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public DualExtrimiteSertisseuseViewModel(string NMachine, string NSerie, string NMatricule)
+        public DualExtrimiteSertisseuseViewModel(ISpcDataService dataService,string NMachine, string NSerie, string NMatricule)
         {
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
             enreg = new SPCEnreg()
             {
                 NoSerie = NSerie,
                 NoMachine = NMachine,
                 OperationNo = NMatricule
             };
-            Init(); //should be bellow enreg cause i use it in the Init
+            InitializeSync(); //should be bellow enreg cause i use it in the Init
 
             VisiExtrimiteB = "Visible";
             ItemsSourceD = new List<string>() { "D", "D-F" };
             EnregReadOnlyProp = "false";
+            _ = LoadInitialDataAsync();
         }
 
-        public DualExtrimiteSertisseuseViewModel(SPCEnreg enreg)
+        public DualExtrimiteSertisseuseViewModel(ISpcDataService dataService,SPCEnreg enreg)
         {
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
             this.enreg = enreg;
 
-            Init(); //should be bellow enreg cause i use it in the Init
+            InitializeSync(); //should be bellow enreg cause i use it in the Init
 
             Section = enreg.Section;
 
@@ -992,7 +1008,7 @@ namespace SPC.ViewModel
             EnregReadOnlyProp = "true";
         }
 
-        private void Init()
+        private void InitializeSync()
         {
             Name = OperateurManager.GetOpName(enreg.OperationNo);
 
@@ -1002,7 +1018,7 @@ namespace SPC.ViewModel
             Clients = ClientManager.GetClientsNames();
             Outils = new ObservableCollection<Outil>();
             OutilsB = new ObservableCollection<Outil>();
-            SaveCommand = new RelayCommand(SaveSerie, parm => true);
+            SaveCommand = new AsyncRelayCommand(SaveSerieAsync, CanSave);
             enregDetail = new SPCEnregDetail()
             {
                 DateCreation = DateTime.Now,
@@ -1015,6 +1031,27 @@ namespace SPC.ViewModel
 
             ExitLoops = false;
         }
+        private async Task LoadInitialDataAsync()
+        {
+            IsLoading = true;
+            try
+            {
+                Name = await _dataService.GetOpNameAsync(enreg.OperationNo);
+                Clients = await _dataService.GetClientNamesAsync();
+
+                var outilsList = await _dataService.GetAllOutilsAsync();
+                NonFiltredOutils = new ObservableCollection<Outil>(outilsList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur de chargement: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
         private void ViewInit()
         {
             warnings = new List<string>();
@@ -1347,31 +1384,68 @@ namespace SPC.ViewModel
             if (value1 == null || value2 == null) return true;
             return !(value1 > value2+tol || value1 < value2-tol);
         }
-        private void SaveSerie(object obj)
+        private async Task SaveSerieAsync()
         {
-            if (SaveCheck())
+            // Validation avant de commencer
+            if (!SaveCheck())
+                return;
+
+            IsLoading = true;
+
+            try
             {
+                // 1️⃣ Insertion de la série si c'est un début
                 if (enregDetail.Nature.Contains("D"))
                 {
                     enreg.HA = Outils[0].Hame;
                     enreg.HI = Outils[0].Hisolant;
                     enreg.Traction = Outils[0].Trac;
-                    SPCEnregManager.InsertNew(enreg);
+
+                    // ✅ Utiliser _dataService au lieu de Manager
+                    await _dataService.InsertNewSerieAsync(enreg);
                 }
 
-                enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
-                OtaPrvntfManager.UpdatePrvntf(NOutil, (int)enregDetail.Quantite);
-                if(!string.IsNullOrEmpty(NOutilB))
-                    OtaPrvntfManager.UpdatePrvntf(NOutilB, (int)enregDetail.Quantite);
+                // 2️⃣ Récupérer l'ID de la série
+                enregDetail.IdEnrg = await _dataService.GetSerieIdAsync(enreg.NoSerie);
 
-                SPCEnregDetailManager.InsertNew(enregDetail);
+                // 3️⃣ Mettre à jour le préventif pour l'outil principal
+                await _dataService.UpdatePrvntfAsync(NOutil, (int)enregDetail.Quantite);
+
+                // 4️⃣ Mettre à jour le préventif pour le deuxième outil (si présent)
+                if (!string.IsNullOrEmpty(NOutilB))
+                {
+                    await _dataService.UpdatePrvntfAsync(NOutilB, (int)enregDetail.Quantite);
+                }
+
+                // 5️⃣ Insérer le détail
+                await _dataService.InsertNewDetailAsync(enregDetail);
+
+                // 6️⃣ Fermer la fenêtre après succès
                 RequestClose?.Invoke();
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Error"); //ToDo add sepecific ...
+                // Gestion d'erreur détaillée
+                MessageBox.Show(
+                    $"Erreur lors de l'enregistrement:\n\n{ex.Message}",
+                    "Erreur de sauvegarde",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                // Log pour le débogage
+                System.Diagnostics.Debug.WriteLine($"Erreur SaveSerieAsync: {ex}");
+            }
+            finally
+            {
+                // ✅ TOUJOURS remettre IsLoading à false
+                IsLoading = false;
             }
         }
+        public bool CanSave()
+        {
+            return !IsLoading;
+        }
+
         private bool CheckFull(string Ext = "A")
         {
             List<string> enregProps = new List<string>{"Client", "Ref", "Section"};

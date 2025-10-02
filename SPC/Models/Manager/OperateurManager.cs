@@ -13,34 +13,35 @@ namespace SPC.Models
 {
     public class OperateurManager
     {
-        public static bool CheckOpExist(string NOp)
+        public static async Task<bool> CheckOpExistAsync(string NOp)
         {
-            using(OleDbConnection conn = DBConnexion.GetConnexion())
+            using (OleDbConnection conn = DBConnexion.GetConnexion())
             {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select * from Operateurs where OperationNo = ?;";
+
                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Nop", string.IsNullOrEmpty(NOp)? DBNull.Value : (object)NOp);
+                    cmd.Parameters.AddWithValue("@Nop", string.IsNullOrEmpty(NOp) ? DBNull.Value : (object)NOp);
 
-                    using (OleDbDataReader reader = cmd.ExecuteReader()) 
+                    using (OleDbDataReader reader = (OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        return reader.Read();
+                        return await reader.ReadAsync();
                     }
                 }
             }
         }
-        public static string GetOpName(string NOp)
+        public static async Task<string> GetOpNameAsync(string NOp)
         {
             using(OleDbConnection conn = DBConnexion.GetConnexion()) {
-                conn.Open();
+                await conn.OpenAsync();
                 string query = "select Name from Operateurs where OperationNo = ?;";
                 using(OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NOp", NOp);
-                    using(OleDbDataReader reader = cmd.ExecuteReader())
+                    using(OleDbDataReader reader = (OleDbDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        if(reader.Read())
+                        if(await reader.ReadAsync())
                         {
                             return reader[0] as string;
                         }
@@ -49,5 +50,7 @@ namespace SPC.Models
                 }
             }
         }
+        public static bool CheckOpExist(string NOp) => CheckOpExistAsync(NOp).GetAwaiter().GetResult();
+        public static string GetOpName(string NOp) => GetOpNameAsync(NOp).GetAwaiter().GetResult();
     }
 }

@@ -1,6 +1,4 @@
-﻿using SPC.Models;
-using SPC.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,11 +8,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using SPC.Models;
+using SPC.Services;
+using SPC.Tools;
 
 namespace SPC.ViewModel
 {
     public class CoupeCableViewModel : INotifyPropertyChanged
     {
+        private readonly ISpcDataService _dataService;
+        public bool IsLoading { get; set; }
+
         private bool Cchicked;
         public bool CChicked
         {
@@ -248,43 +252,47 @@ namespace SPC.ViewModel
         public string NatureLabel { get; private set; }
         public string ASPECTVISI { get; set; }
 
-        public CoupeCableViewModel(SPCEnreg enreg, bool Aspect)
+        public CoupeCableViewModel( ISpcDataService dataService,SPCEnreg enreg, bool Aspect)
         {
+            _dataService = dataService ??throw new ArgumentNullException(nameof(dataService));
+
             this.enreg = enreg;
 
             Section = enreg.Section;
             Denudage = enreg.Denudage.ToString().Replace(".", ",");
             LongueurD = enreg.LongueurD.ToString().Replace(".", ",");
 
-            Init();
+            InitializeSync();
             ItemsSourceD = new List<string>() { "S", "F" };
             EnregReadOnlyProp = "true";
 
             ASPECTVISI = Aspect?"Visible":"hidden";
         }
-        public CoupeCableViewModel(string NMachine, string NSerie, string NMatricule)
+        public CoupeCableViewModel(ISpcDataService dataService, string NMachine, string NSerie, string NMatricule)
         {
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
             enreg = new SPCEnreg()
             {
                 NoSerie = NSerie,
                 NoMachine = NMachine,
                 OperationNo = NMatricule
             };
-            Init(); //should be bellow enreg cause i use it in the Init
+            InitializeSync(); //should be bellow enreg cause i use it in the Init
 
             ItemsSourceD = new List<string>() { "D", "D-F" };
             EnregReadOnlyProp = "false";
 
             ASPECTVISI = "visible";
+            _ = LoadInitialDataAsync();
         }
-        private void Init()
+        private void InitializeSync()
         {
             Name = OperateurManager.GetOpName(enreg.OperationNo);
 
             ViewInit();
 
             Clients = ClientManager.GetClientsNames();
-            SaveCommand = new RelayCommand(SaveSerie, parm => true);
+            SaveCommand = new AsyncRelayCommand(SaveSerieAsync, CanSave);
             enregDetail = new SPCEnregDetail()
             {
                 DateCreation = DateTime.Now,
@@ -296,6 +304,28 @@ namespace SPC.ViewModel
             enreg.RefSizeTester += () => RefSizeAct();
 
             ExitLoops = false;
+        }
+        private async Task LoadInitialDataAsync()
+        {
+            IsLoading = true;
+
+            try
+            {
+                // Charger le nom de l'opérateur
+                Name = await _dataService.GetOpNameAsync(enreg.OperationNo);
+
+                // Charger la liste des clients
+                Clients = await _dataService.GetClientNamesAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur de chargement: {ex.Message}", "Erreur",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
         private void ViewInit()
         {
@@ -321,21 +351,42 @@ namespace SPC.ViewModel
             OnPropertyChanged(nameof(RefFor));
             OnPropertyChanged(nameof(VisiRefWarning));
         }
-        private void SaveSerie(object obj)
+        private async Task SaveSerieAsync()
         {
-            if (SaveCheck())
+            if (!SaveCheck())
+                return;
+
+            IsLoading = true;
+
+            try
             {
                 if (enregDetail.Nature.Contains("D"))
                 {
-                    SPCEnregManager.InsertNew(enreg);
+                    await _dataService.InsertNewSerieAsync(enreg);
                 }
 
-                enregDetail.IdEnrg = SPCEnregManager.GetId(enreg.NoSerie);
+                enregDetail.IdEnrg = await _dataService.GetSerieIdAsync(enreg.NoSerie);
 
-                SPCEnregDetailManager.InsertNew(enregDetail);
+                await _dataService.InsertNewDetailAsync(enregDetail);
+
+                // Fermer la fenêtre après succès
                 RequestClose?.Invoke();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur lors de l'enregistrement: {ex.Message}",
+                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
+        private bool CanSave()
+        {
+            return !IsLoading;
+        }
+
         private bool CheckFull()
         {
             List<string> enregProps = new List<string>{"Client", "Ref", "Section", "LongueurD"};
@@ -374,27 +425,32 @@ namespace SPC.ViewModel
         {
             if (!CheckFull())
             {
-                MessageBox.Show("Remplire toutes les case.");
+                MessageBox.Show("Remplir toutes les cases.", "Validation",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 
-            if (NAChicked = false && NCChicked == false && Cchicked == false)
+            // FIX: Correction du bug (= au lieu de ==)
+            if (!NAChicked && !NCChicked && !CChicked)
             {
-                MessageBox.Show("Remplire toutes les case.");
+                MessageBox.Show("Sélectionner un état de marquage (C, NC ou NA).", "Validation",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 
             if (VisiRefWarning == "Visible")
             {
-                MessageBox.Show("Le Ref doit surpasser 6 characters.");
+                MessageBox.Show("Le Ref doit contenir au moins 6 caractères.", "Validation",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 
             return true;
         }
-        private void OnPropertyChanged(string v)
+
+        private void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(v));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
