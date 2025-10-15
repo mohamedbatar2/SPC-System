@@ -1,34 +1,34 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Threading;
+using SPC.Services;
 
 namespace SPC
 {
     public partial class App : Application
     {
-        //    public DispatcherTimer _closeTimer { get; set; }
+        public static ApiService ApiService { get; private set; }
+        public static AuthenticationService AuthService { get; private set; }
 
-        //    public App()
-        //    {
-        //        _closeTimer = new DispatcherTimer();
-        //        _closeTimer.Interval = TimeSpan.FromSeconds(120); //closes after 2 minuts
-        //        _closeTimer.Tick += (s, e) => Current.Shutdown();
-        //        _closeTimer.Start();
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
 
-        //        EventManager.RegisterClassHandler(typeof(UIElement), UIElement.MouseMoveEvent,
-        //            new RoutedEventHandler((s, e) => ResetTimer()), true);
+            try
+            {
+                ApiService = new ApiService("https://localhost:7191");
+                AuthService = new AuthenticationService(ApiService);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to initialize API services: {ex.Message}");
+                Shutdown();
+            }
+        }
 
-        //        EventManager.RegisterClassHandler(typeof(UIElement), UIElement.KeyDownEvent,
-        //            new RoutedEventHandler((s, e) => ResetTimer()), true);
-
-        //        EventManager.RegisterClassHandler(typeof(UIElement), UIElement.TouchMoveEvent,
-        //            new RoutedEventHandler((s, e) => ResetTimer()), true);
-        //    }
-
-        //    private void ResetTimer()
-        //    {
-        //        _closeTimer.Stop();
-        //        _closeTimer.Start();
-        //    }
+        protected override void OnExit(ExitEventArgs e)
+        {
+            ApiService?.Dispose();
+            base.OnExit(e);
+        }
     }
 }

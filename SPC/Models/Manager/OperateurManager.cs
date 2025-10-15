@@ -4,13 +4,16 @@ using System.Data.Common;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using SPC.DB;
-using SPC.Tools;
+
 
 namespace SPC.Models
 {
+    [SupportedOSPlatform("windows")]
+
     public class OperateurManager
     {
         public static async Task<bool> CheckOpExistAsync(string NOp)

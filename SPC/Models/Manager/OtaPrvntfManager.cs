@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,6 +12,8 @@ using SPC.DB;
 
 namespace SPC.Models
 {
+    [SupportedOSPlatform("windows")]
+
     public class OtaPrvntfManager
     {
         public static async Task ResetOtaPrvntfAsync(string NOutil)

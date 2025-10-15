@@ -3,11 +3,13 @@ using SPC.API.DTOs;
 using SPC.Tools;
 using SPC.Models;
 using SPC.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SPC.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class OperateursController : ControllerBase
     {
         private readonly ILogger<OperateursController> _logger;

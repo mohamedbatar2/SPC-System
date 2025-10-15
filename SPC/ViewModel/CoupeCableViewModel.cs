@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,7 +17,18 @@ namespace SPC.ViewModel
     public class CoupeCableViewModel : INotifyPropertyChanged
     {
         private readonly ISpcDataService _dataService;
-        public bool IsLoading { get; set; }
+        private readonly ApiService _apiService;
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged(nameof(IsLoading));
+            }
+        }
 
         private bool Cchicked;
         public bool CChicked
@@ -32,7 +43,6 @@ namespace SPC.ViewModel
                     NCChicked = false;
                     enregDetail.Marquage = "C";
                 }
-
                 OnPropertyChanged(nameof(CChicked));
             }
         }
@@ -50,7 +60,6 @@ namespace SPC.ViewModel
                     CChicked = false;
                     enregDetail.Marquage = "NC";
                 }
-
                 OnPropertyChanged(nameof(NCChicked));
             }
         }
@@ -71,11 +80,13 @@ namespace SPC.ViewModel
                 OnPropertyChanged(nameof(NAChicked));
             }
         }
+
         private string quantite;
         public string Quantite
         {
             get { return quantite; }
-            set {
+            set
+            {
                 if (quantite != value)
                 {
                     if (string.IsNullOrEmpty(value))
@@ -83,7 +94,7 @@ namespace SPC.ViewModel
                         quantite = value;
                         enregDetail.Quantite = null;
                     }
-                    else if(Regex.IsMatch(value.ToString(), @"^[0-9]+$") && int.Parse(value) <= 500)
+                    else if (Regex.IsMatch(value.ToString(), @"^[0-9]+$") && int.Parse(value) <= 500)
                     {
                         quantite = value;
                         enregDetail.Quantite = Int32.Parse(value);
@@ -97,14 +108,15 @@ namespace SPC.ViewModel
         public string Nature
         {
             get { return nature; }
-            set {
-
-                nature = value; 
+            set
+            {
+                nature = value;
                 enregDetail.Nature = value;
                 NatureLabel = Nature == "D" ? "Debut" : Nature == "F" ? "Fin" : Nature == "S" ? "Surveillance" : Nature == "D-F" ? "Debut/Fin" : "";
                 OnPropertyChanged(nameof(NatureLabel));
             }
         }
+
         private string section;
         public string Section
         {
@@ -126,6 +138,7 @@ namespace SPC.ViewModel
                 }
             }
         }
+
         private string denudage;
         public string Denudage
         {
@@ -143,11 +156,12 @@ namespace SPC.ViewModel
                 if (denudage != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudage = value;
-                    enreg.Denudage = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(value.Replace(',','.'));
+                    enreg.Denudage = string.IsNullOrEmpty(value) ? null : (decimal?)decimal.Parse(value.Replace(',', '.'));
                     OnPropertyChanged(nameof(Denudage));
                 }
             }
         }
+
         private string denudage1;
         public string Denudage1
         {
@@ -165,11 +179,12 @@ namespace SPC.ViewModel
                 if (denudage1 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudage1 = value;
-                    enregDetail.Denudage1 = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(value.Replace(',','.'));
+                    enregDetail.Denudage1 = string.IsNullOrEmpty(value) ? null : (decimal?)decimal.Parse(value.Replace(',', '.'));
                     OnPropertyChanged(nameof(Denudage1));
                 }
             }
         }
+
         private string denudage2;
         public string Denudage2
         {
@@ -187,11 +202,12 @@ namespace SPC.ViewModel
                 if (denudage2 != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
                     denudage2 = value;
-                    enregDetail.Denudage2 = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(value.Replace(',','.'));
+                    enregDetail.Denudage2 = string.IsNullOrEmpty(value) ? null : (decimal?)decimal.Parse(value.Replace(',', '.'));
                     OnPropertyChanged(nameof(Denudage2));
                 }
             }
         }
+
         private string longueurD;
         public string LongueurD
         {
@@ -208,12 +224,13 @@ namespace SPC.ViewModel
                 if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (longueurD != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
-                     longueurD= value;
-                    enreg.LongueurD = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(value.Replace(',','.'));
+                    longueurD = value;
+                    enreg.LongueurD = string.IsNullOrEmpty(value) ? null : (decimal?)decimal.Parse(value.Replace(',', '.'));
                     OnPropertyChanged(nameof(LongueurD));
                 }
             }
         }
+
         private string longueurM;
         public string LongueurM
         {
@@ -230,12 +247,13 @@ namespace SPC.ViewModel
                 if (value.Last() == '.') value = value.Substring(0, value.Length - 1) + ',';
                 if (longueurM != value && Regex.IsMatch(value.ToString(), @"^[0-9]+\,?[0-9]{0,3}$"))
                 {
-                     longueurM= value;
-                    enregDetail.LongueurM = string.IsNullOrEmpty(value)? null :(decimal?)decimal.Parse(value.Replace(',','.'));
+                    longueurM = value;
+                    enregDetail.LongueurM = string.IsNullOrEmpty(value) ? null : (decimal?)decimal.Parse(value.Replace(',', '.'));
                     OnPropertyChanged(nameof(LongueurM));
                 }
             }
         }
+
         public string Name { get; set; }
         public SPCEnreg enreg { get; set; }
         public SPCEnregDetail enregDetail { get; set; }
@@ -252,9 +270,11 @@ namespace SPC.ViewModel
         public string NatureLabel { get; private set; }
         public string ASPECTVISI { get; set; }
 
-        public CoupeCableViewModel( ISpcDataService dataService,SPCEnreg enreg, bool Aspect)
+        // Constructor for edit mode (with existing record)
+        public CoupeCableViewModel(ISpcDataService dataService, SPCEnreg enreg, bool Aspect)
         {
-            _dataService = dataService ??throw new ArgumentNullException(nameof(dataService));
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
+            _apiService = App.ApiService;
 
             this.enreg = enreg;
 
@@ -266,76 +286,100 @@ namespace SPC.ViewModel
             ItemsSourceD = new List<string>() { "S", "F" };
             EnregReadOnlyProp = "true";
 
-            ASPECTVISI = Aspect?"Visible":"hidden";
+            ASPECTVISI = Aspect ? "Visible" : "hidden";
         }
+
+        // Constructor for new record
         public CoupeCableViewModel(ISpcDataService dataService, string NMachine, string NSerie, string NMatricule)
         {
             _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
+            _apiService = App.ApiService;
+
             enreg = new SPCEnreg()
             {
                 NoSerie = NSerie,
                 NoMachine = NMachine,
                 OperationNo = NMatricule
             };
-            InitializeSync(); //should be bellow enreg cause i use it in the Init
+
+            InitializeSync();
 
             ItemsSourceD = new List<string>() { "D", "D-F" };
             EnregReadOnlyProp = "false";
 
             ASPECTVISI = "visible";
+
             _ = LoadInitialDataAsync();
         }
+
         private void InitializeSync()
         {
+            // Synchronous initialization
             Name = OperateurManager.GetOpName(enreg.OperationNo);
 
             ViewInit();
 
             Clients = ClientManager.GetClientsNames();
             SaveCommand = new AsyncRelayCommand(SaveSerieAsync, CanSave);
+
             enregDetail = new SPCEnregDetail()
             {
                 DateCreation = DateTime.Now,
             };
 
-            WarningNotifTimer =new DispatcherTimer();
+            WarningNotifTimer = new DispatcherTimer();
             WarningNotifTimer.Interval = TimeSpan.FromMilliseconds(1000);
 
             enreg.RefSizeTester += () => RefSizeAct();
 
             ExitLoops = false;
         }
+
         private async Task LoadInitialDataAsync()
         {
             IsLoading = true;
 
             try
             {
-                // Charger le nom de l'opérateur
-                Name = await _dataService.GetOpNameAsync(enreg.OperationNo);
+                // Ensure authenticated
+                if (!App.AuthService.IsAuthenticated)
+                {
+                    await App.AuthService.LoginAsync("admin", "password123");
+                }
 
-                // Charger la liste des clients
+                // Load operator name and clients via data service (which uses API internally)
+                Name = await _dataService.GetOpNameAsync(enreg.OperationNo);
                 Clients = await _dataService.GetClientNamesAsync();
+
+                OnPropertyChanged(nameof(Name));
+                OnPropertyChanged(nameof(Clients));
+            }
+            catch (HttpRequestException httpEx)
+            {
+                MessageBox.Show($"Erreur de connexion à l'API: {httpEx.Message}",
+                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur de chargement: {ex.Message}", "Erreur",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Erreur de chargement: {ex.Message}",
+                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             finally
             {
                 IsLoading = false;
             }
         }
+
         private void ViewInit()
         {
             RefColor = "LightGreen";
             RefFor = "White";
-            VisiRefWarning= "Hidden";
+            VisiRefWarning = "Hidden";
         }
+
         private void RefSizeAct()
         {
-            if(enreg.Ref.Length < 6)
+            if (enreg.Ref.Length < 6)
             {
                 RefColor = "Red";
                 RefFor = "Yellow";
@@ -351,6 +395,7 @@ namespace SPC.ViewModel
             OnPropertyChanged(nameof(RefFor));
             OnPropertyChanged(nameof(VisiRefWarning));
         }
+
         private async Task SaveSerieAsync()
         {
             if (!SaveCheck())
@@ -360,17 +405,31 @@ namespace SPC.ViewModel
 
             try
             {
+                // Ensure authenticated
+                if (!App.AuthService.IsAuthenticated)
+                {
+                    await App.AuthService.LoginAsync("admin", "password123");
+                }
+
                 if (enregDetail.Nature.Contains("D"))
                 {
                     await _dataService.InsertNewSerieAsync(enreg);
                 }
 
                 enregDetail.IdEnrg = await _dataService.GetSerieIdAsync(enreg.NoSerie);
-
                 await _dataService.InsertNewDetailAsync(enregDetail);
 
-                // Fermer la fenêtre après succès
+                // Show success message
+                MessageBox.Show("Enregistrement réussi!", "Succès",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Close window after success
                 RequestClose?.Invoke();
+            }
+            catch (HttpRequestException httpEx)
+            {
+                MessageBox.Show($"Erreur de connexion à l'API: {httpEx.Message}",
+                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
@@ -382,6 +441,7 @@ namespace SPC.ViewModel
                 IsLoading = false;
             }
         }
+
         private bool CanSave()
         {
             return !IsLoading;
@@ -389,10 +449,11 @@ namespace SPC.ViewModel
 
         private bool CheckFull()
         {
-            List<string> enregProps = new List<string>{"Client", "Ref", "Section", "LongueurD"};
-            List<string> enregDetailProps = new List<string>{"Repere", "Nature", "Quantite"
-                , "Denudage1", "Denudage2", "LongueurM" 
+            List<string> enregProps = new List<string> { "Client", "Ref", "Section", "LongueurD" };
+            List<string> enregDetailProps = new List<string> {
+                "Repere", "Nature", "Quantite", "Denudage1", "Denudage2", "LongueurM"
             };
+
             foreach (var prop in enregProps)
             {
                 var propInfo = typeof(SPCEnreg).GetProperty(prop);
@@ -406,6 +467,7 @@ namespace SPC.ViewModel
                     }
                 }
             }
+
             foreach (var prop in enregDetailProps)
             {
                 var propInfo = typeof(SPCEnregDetail).GetProperty(prop);
@@ -419,8 +481,10 @@ namespace SPC.ViewModel
                     }
                 }
             }
+
             return true;
         }
+
         private bool SaveCheck()
         {
             if (!CheckFull())
@@ -430,7 +494,6 @@ namespace SPC.ViewModel
                 return false;
             }
 
-            // FIX: Correction du bug (= au lieu de ==)
             if (!NAChicked && !NCChicked && !CChicked)
             {
                 MessageBox.Show("Sélectionner un état de marquage (C, NC ou NA).", "Validation",

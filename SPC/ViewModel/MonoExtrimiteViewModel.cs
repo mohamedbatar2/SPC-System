@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -574,12 +575,8 @@ namespace SPC.ViewModel
 
         private void InitializeSync()
         {
-            Name = OperateurManager.GetOpName(enreg.OperationNo);
-
             ViewInit();
 
-            NonFiltredOutils = OutilManager.GetOutils();
-            Clients = ClientManager.GetClientsNames();
             Outils = new ObservableCollection<Outil>();
             SaveCommand = new AsyncRelayCommand(SaveSerieAsync, CanSave);
             enregDetail = new SPCEnregDetail()
@@ -590,10 +587,11 @@ namespace SPC.ViewModel
             WarningNotifTimer.Interval = TimeSpan.FromMilliseconds(1000);
 
             enreg.RefSizeTester += () => RefSizeAct();
-            enreg.CliAbsTester += () => CliAbsAct();
+            enreg.CliAbsTester += () => _ = CliAbsActAsync();
 
             ExitLoops = false;
         }
+
         private async Task LoadInitialDataAsync()
         {
             IsLoading = true;
@@ -838,12 +836,16 @@ namespace SPC.ViewModel
         }
         private async Task SaveSerieAsync()
         {
-            if (!SaveCheck())
+            if (!await SaveCheckAsync())
                 return;
 
             IsLoading = true;
             try
             {
+                if (!App.AuthService.IsAuthenticated)
+                {
+                    await App.AuthService.LoginAsync("admin", "password123");
+                }
                 if (enregDetail.Nature.Contains("D"))
                 {
                     enreg.HA = Outils[0].Hame;
@@ -857,6 +859,11 @@ namespace SPC.ViewModel
                 await _dataService.InsertNewDetailAsync(enregDetail);
 
                 RequestClose?.Invoke();
+            }
+            catch (HttpRequestException httpEx)
+            {
+                MessageBox.Show($"Erreur de connexion API: {httpEx.Message}",
+                    "Erreur de connexion", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
@@ -910,24 +917,7 @@ namespace SPC.ViewModel
             }
             return true;
         }
-        private void CliAbsAct()
-        {
-            if (!ClientManager.GetClientsNames().Contains(enreg.Client))
-            {
-                CliColor = "Red";
-                CliFor = "Yellow";
-                VisiCliWarning = "Visible";
-            }
-            else
-            {
-                CliColor = "LightGreen";
-                CliFor = "White";
-                VisiCliWarning = "Hidden";
-            }
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CliColor)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CliFor)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisiCliWarning)));
-        }
+        
         private void RefSizeAct()
         {
             if (enreg.Ref.Length < 6)
@@ -945,6 +935,34 @@ namespace SPC.ViewModel
             OnPropertyChanged(nameof(RefColor));
             OnPropertyChanged(nameof(RefFor));
             OnPropertyChanged(nameof(VisiRefWarning));
+        }
+        private async Task CliAbsActAsync()
+        {
+            try
+            {
+                var clients = await _dataService.GetClientNamesAsync();
+
+                if (!clients.Contains(enreg.Client))
+                {
+                    CliColor = "Red";
+                    CliFor = "Yellow";
+                    VisiCliWarning = "Visible";
+                }
+                else
+                {
+                    CliColor = "LightGreen";
+                    CliFor = "White";
+                    VisiCliWarning = "Hidden";
+                }
+
+                OnPropertyChanged(nameof(CliColor));
+                OnPropertyChanged(nameof(CliFor));
+                OnPropertyChanged(nameof(VisiCliWarning));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error checking client: {ex.Message}");
+            }
         }
         public async Task FilterOutilsAsync()
         {
@@ -966,7 +984,7 @@ namespace SPC.ViewModel
                 System.Diagnostics.Debug.WriteLine($"Erreur filtrage outils: {ex.Message}");
             }
         }
-        private bool SaveCheck()
+        private async Task<bool> SaveCheckAsync()
         {
             if (!CheckFull())
             {
@@ -992,7 +1010,7 @@ namespace SPC.ViewModel
                 return false;
             }
 
-            var prv = OtaPrvntfManager.GetPrvntf(string.IsNullOrEmpty(NOutil) ? "" : NOutil);
+            var prv = await _dataService.GetPrvntfAsync(string.IsNullOrEmpty(NOutil) ? "" : NOutil);
             bool prvcheck = prv == null ? false : prv.QtAct + enregDetail.Quantite < prv.PrvQt;
 
             if (!prvcheck)

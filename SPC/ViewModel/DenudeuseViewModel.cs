@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -316,7 +317,6 @@ namespace SPC.ViewModel
             ItemsSourceD = new List<string>() { "S", "F" };
             EnregReadOnlyProp = "true";
 
-            // ✅ CORRECTION: Charger les données async
             _ = LoadInitialDataAsync();
         }
 
@@ -336,7 +336,6 @@ namespace SPC.ViewModel
             ItemsSourceD = new List<string>() { "D", "D-F" };
             EnregReadOnlyProp = "false";
 
-            // ✅ CORRECTION: Charger les données async
             _ = LoadInitialDataAsync();
         }
 
@@ -346,10 +345,8 @@ namespace SPC.ViewModel
 
         private void InitializeSync()
         {
-            // ✅ CORRECTION: Ne PAS charger le nom ici, le faire en async
             ViewInit();
 
-            // ✅ CORRECTION: Ne PAS charger les clients ici, le faire en async
             SaveCommand = new AsyncRelayCommand(SaveSerieAsync, CanSave);
 
             enregDetail = new SPCEnregDetail()
@@ -365,23 +362,34 @@ namespace SPC.ViewModel
             ExitLoops = false;
         }
 
-        // ✅ NOUVELLE MÉTHODE: Chargement async
+        // ✅ ENHANCED: Added authentication check
         private async Task LoadInitialDataAsync()
         {
             IsLoading = true;
 
             try
             {
+                // ✅ Ensure authenticated before API calls
+                if (!App.AuthService.IsAuthenticated)
+                {
+                    await App.AuthService.LoginAsync("admin", "password123");
+                }
+
                 // Charger le nom de l'opérateur
                 Name = await _dataService.GetOpNameAsync(enreg.OperationNo);
 
                 // Charger la liste des clients
                 Clients = await _dataService.GetClientNamesAsync();
             }
+            catch (HttpRequestException httpEx)
+            {
+                MessageBox.Show($"Erreur de connexion API: {httpEx.Message}\n\nAssurez-vous que l'API est en cours d'exécution.",
+                    "Erreur de connexion", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur de chargement: {ex.Message}", "Erreur",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Erreur de chargement: {ex.Message}",
+                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             finally
             {
@@ -420,7 +428,7 @@ namespace SPC.ViewModel
         // SAVE LOGIC (ASYNC)
         // ============================================================
 
-        // ✅ NOUVELLE MÉTHODE ASYNC
+        // ✅ ENHANCED: Added authentication and better error handling
         private async Task SaveSerieAsync()
         {
             if (!SaveCheck())
@@ -430,6 +438,12 @@ namespace SPC.ViewModel
 
             try
             {
+                // ✅ Ensure authenticated before saving
+                if (!App.AuthService.IsAuthenticated)
+                {
+                    await App.AuthService.LoginAsync("admin", "password123");
+                }
+
                 // 1️⃣ Insertion de la série si c'est un début
                 if (enregDetail.Nature.Contains("D"))
                 {
@@ -442,8 +456,20 @@ namespace SPC.ViewModel
                 // 3️⃣ Insertion du détail
                 await _dataService.InsertNewDetailAsync(enregDetail);
 
-                // 4️⃣ Fermer la fenêtre après succès
+                // 4️⃣ Success message
+                MessageBox.Show("Enregistrement réussi!", "Succès",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // 5️⃣ Fermer la fenêtre après succès
                 RequestClose?.Invoke();
+            }
+            catch (HttpRequestException httpEx)
+            {
+                MessageBox.Show(
+                    $"Erreur de connexion API:\n\n{httpEx.Message}\n\nAssurez-vous que l'API est en cours d'exécution.",
+                    "Erreur de connexion",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
             catch (Exception ex)
             {

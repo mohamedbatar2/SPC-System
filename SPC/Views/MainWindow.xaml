@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -54,7 +54,7 @@
 
                     <Label Content="Hame" VerticalAlignment="Center" FontWeight="SemiBold"/>
                     <Label Content="{Binding SelectedOutil.Hame}" VerticalAlignment="Center"/>
-                    
+
                     <Label Content="Hisolant" VerticalAlignment="Center" FontWeight="SemiBold"/>
                     <Label Content="{Binding SelectedOutil.Hisolant}" VerticalAlignment="Center"/>
                 </StackPanel>
@@ -66,117 +66,118 @@
 
         <Border Grid.Column="0" Grid.ColumnSpan="2" Margin="10" Grid.Row="1" BorderThickness="1.5" BorderBrush="Black">
             <DataGrid IsReadOnly="True"  HeadersVisibility="Column" CanUserAddRows="False" ItemsSource="{Binding FiltredSeries}"  AutoGenerateColumns="False" Width="auto" SelectedValue="{Binding SerieSelected}">
-            <DataGrid.Resources>
-                <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="Background" Value="#C9ADA7"/>
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="BorderBrush" Value="Black"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="Padding" Value="2 0 2 0"/>
-                    <Setter Property="BorderThickness" Value="1.2 1.2 1.2 1"/>
-                </Style>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="Background" Value="#EADBD6"/>
-                    <Setter Property="FontWeight" Value="SemiBold"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True" >
-                            <Setter Property="Background" Value="#97A2A6" />
-                            <Setter Property="Foreground" Value="White" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding NoSerie}" Header="No Serie" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding NoMachine}" Header="Machine" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Client}" Header="Client" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Name}" Header="Nom-Prenom" Width="auto"/> 
-                <DataGridTextColumn Binding="{Binding DateCreation}" Header="Date" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Nature}" Header="Nature" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding NoOutil}" Header="Outil" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Quantite}" Header="Quantite" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Connexion}" Header="Connexion" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Denudage}" Header="Denudage" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Section}" Header="Section" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Repere}" Header="Repere" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HA}" Header="Hauteur ame" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HI}" Header="Hauteur isolant" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Traction}" Header="Traction" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Marquage}" Header="Aspect Marquage" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HA1}" Header="Hauteur ame 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HA2}" Header="Hauteur ame 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HA3}" Header="Hauteur ame 3" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HI1}" Header="Hauteur isolant 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HI2}" Header="Hauteur isolant 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HI3}" Header="Hauteur isolant 3" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Traction1}" Header="Traction 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Traction2}" Header="Traction 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Traction3}" Header="Traction 3" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding AspectCnx}" Header="Aspect Connexion" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding NoOutilB}" Header="Outil" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding ConnexionB}" Header="Connexion" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding DenudageB}" Header="Denudage" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HA1B}" Header="Hauteur ame 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HA2B}" Header="Hauteur ame 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HA3B}" Header="Hauteur ame 3" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HI1B}" Header="Hauteur isolant 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HI2B}" Header="Hauteur isolant 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HI3B}" Header="Hauteur isolant 3" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Traction1B}" Header="Traction 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Traction2B}" Header="Traction 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Traction3B}" Header="Traction 3" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding AspectCnxB}" Header="Aspect Connexion" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding NoOutilC}" Header="Outil" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding ConnexionC}" Header="Connexion" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding DenudageC}" Header="Denudage" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HA1C}" Header="Hauteur ame 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HA2C}" Header="Hauteur ame 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HA3C}" Header="Hauteur ame 3" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HI1C}" Header="Hauteur isolant 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HI2C}" Header="Hauteur isolant 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding HI3C}" Header="Hauteur isolant 3" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Traction1C}" Header="Traction 1" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Traction2C}" Header="Traction 2" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Traction3C}" Header="Traction 3" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding AspectCnxC}" Header="Aspect Connexion" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Denudage1}" Header="Denudage 1" Width="auto"/> 
-                <DataGridTextColumn Binding="{Binding Denudage2}" Header="Denudage 2" Width="auto"/> 
-                <DataGridTextColumn Binding="{Binding Denudage3}" Header="Denudage 3" Width="auto"/> 
-                <DataGridTextColumn Binding="{Binding LongueurD}" Header="LongueurD" Width="auto"/> 
-                <DataGridTextColumn Binding="{Binding LongueurM}" Header="LongueurM" Width="auto"/> 
-<!--                <DataGridTextColumn Binding="{Binding}" Header="" Width="auto"/>  -->
-            </DataGrid.Columns>
-        </DataGrid>
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#C9ADA7"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="Padding" Value="2 0 2 0"/>
+                        <Setter Property="BorderThickness" Value="1.2 1.2 1.2 1"/>
+                    </Style>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Background" Value="#EADBD6"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True" >
+                                <Setter Property="Background" Value="#97A2A6" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding NoSerie}" Header="No Serie" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding NoMachine}" Header="Machine" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Client}" Header="Client" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Name}" Header="Nom-Prenom" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding DateCreation}" Header="Date" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Nature}" Header="Nature" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding NoOutil}" Header="Outil" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Quantite}" Header="Quantite" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Connexion}" Header="Connexion" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Denudage}" Header="Denudage" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Section}" Header="Section" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Repere}" Header="Repere" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HA}" Header="Hauteur ame" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HI}" Header="Hauteur isolant" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Traction}" Header="Traction" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Marquage}" Header="Aspect Marquage" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HA1}" Header="Hauteur ame 1" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HA2}" Header="Hauteur ame 2" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HA3}" Header="Hauteur ame 3" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HI1}" Header="Hauteur isolant 1" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HI2}" Header="Hauteur isolant 2" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HI3}" Header="Hauteur isolant 3" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Traction1}" Header="Traction 1" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Traction2}" Header="Traction 2" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Traction3}" Header="Traction 3" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding AspectCnx}" Header="Aspect Connexion" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding NoOutilB}" Header="Outil" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding ConnexionB}" Header="Connexion" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding DenudageB}" Header="Denudage" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HA1B}" Header="Hauteur ame 1" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HA2B}" Header="Hauteur ame 2" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HA3B}" Header="Hauteur ame 3" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HI1B}" Header="Hauteur isolant 1" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HI2B}" Header="Hauteur isolant 2" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HI3B}" Header="Hauteur isolant 3" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Traction1B}" Header="Traction 1" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Traction2B}" Header="Traction 2" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Traction3B}" Header="Traction 3" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding AspectCnxB}" Header="Aspect Connexion" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding NoOutilC}" Header="Outil" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding ConnexionC}" Header="Connexion" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding DenudageC}" Header="Denudage" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HA1C}" Header="Hauteur ame 1" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HA2C}" Header="Hauteur ame 2" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HA3C}" Header="Hauteur ame 3" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HI1C}" Header="Hauteur isolant 1" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HI2C}" Header="Hauteur isolant 2" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding HI3C}" Header="Hauteur isolant 3" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Traction1C}" Header="Traction 1" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Traction2C}" Header="Traction 2" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Traction3C}" Header="Traction 3" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding AspectCnxC}" Header="Aspect Connexion" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Denudage1}" Header="Denudage 1" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Denudage2}" Header="Denudage 2" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding Denudage3}" Header="Denudage 3" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding LongueurD}" Header="LongueurD" Width="auto"/>
+                    <DataGridTextColumn Binding="{Binding LongueurM}" Header="LongueurM" Width="auto"/>
+                    <!--                <DataGridTextColumn Binding="{Binding}" Header="" Width="auto"/>  -->
+                </DataGrid.Columns>
+            </DataGrid>
         </Border>
 
         <Border Grid.Column="0" Grid.ColumnSpan="2" Margin="10" Grid.Row="1" BorderThickness="1.5" BorderBrush="Black" HorizontalAlignment="Left" VerticalAlignment="top"  Visibility="{Binding VisiOutilGrid}">
             <DataGrid IsReadOnly="True"  HeadersVisibility="Column" CanUserAddRows="False" ItemsSource="{Binding FiltredOutils}" Width="auto" SelectedItem="{Binding SelectedOutil}">
-            <DataGrid.Resources>
-                <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="Background" Value="#C9ADA7"/>
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="BorderBrush" Value="Black"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="Padding" Value="2 0 2 0"/>
-                    <Setter Property="BorderThickness" Value="1.2 1.2 1.2 1"/>
-                </Style>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="Background" Value="#EADBD6"/>
-                    <Setter Property="FontWeight" Value="SemiBold"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True" >
-                            <Setter Property="Background" Value="#97A2A6" />
-                            <Setter Property="Foreground" Value="White" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.Resources>
-        </DataGrid>
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#C9ADA7"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="Padding" Value="2 0 2 0"/>
+                        <Setter Property="BorderThickness" Value="1.2 1.2 1.2 1"/>
+                    </Style>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Background" Value="#EADBD6"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True" >
+                                <Setter Property="Background" Value="#97A2A6" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Resources>
+            </DataGrid>
+
         </Border>
-        
-        
-        
-        
+
+
+
+
         <Grid Grid.Row="2" Background="#807839" Height="17">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -190,4 +191,5 @@
             <Label Content="{Binding InfoBar.Session}"  Padding="10 0 0 0" Grid.Column="3"/>
         </Grid>
     </Grid>
+
 </Window>

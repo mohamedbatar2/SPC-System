@@ -51,7 +51,7 @@ namespace SPC.Services
         // Alias optionnels (pour compatibilité)
         Task<OtaPrvntf> GetPreventiveMaintenanceAsync(string noOutil);
         Task UpdatePreventiveMaintenanceAsync(string noOutil, int quantite);
-
+        Task ResetPrvntfAsync(string nOutil);
         // ============================================================
         // CLIENTS
         // ============================================================

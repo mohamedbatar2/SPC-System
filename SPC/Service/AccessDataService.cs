@@ -1,11 +1,16 @@
-﻿using SPC.Models;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
+using SPC.Models;
 
 namespace SPC.Services
 {
+    [SupportedOSPlatform("windows")]
+    
+
     public class AccessDataService : ISpcDataService
     {
         // ============================================================
@@ -126,6 +131,21 @@ namespace SPC.Services
 
         public Task UpdatePreventiveMaintenanceAsync(string noOutil, int quantite)
             => UpdatePrvntfAsync(noOutil, quantite);
+        public async Task ResetPrvntfAsync(string nOutil)
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    OtaPrvntfManager.ResetOtaPrvntf(nOutil);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Error resetting preventif: {ex.Message}", ex);
+                }
+            });
+        }
+
 
         // ============================================================
         // CLIENTS

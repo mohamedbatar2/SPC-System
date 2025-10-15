@@ -1,4 +1,4 @@
-﻿namespace SPC.API.DTOs
+﻿namespace SPC.DTOs
 {
     //<summary>
     //Operateur Dto

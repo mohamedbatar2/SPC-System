@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Data.OleDb;
 using System.IO;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 
 namespace SPC.DB
 {
+    [SupportedOSPlatform("windows")]
+
     public class DBConnexion
     {
         private static readonly string user = Environment.UserName;
@@ -47,11 +50,9 @@ namespace SPC.DB
         {
             try
             {
-                using (var conn = GetConnexion())
-                {
-                    await conn.OpenAsync();
-                    return true;
-                }
+                using var conn = GetConnexion();
+                await conn.OpenAsync();
+                return true;
             }
             catch
             {

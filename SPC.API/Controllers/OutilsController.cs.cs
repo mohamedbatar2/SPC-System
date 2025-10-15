@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SPC.API.DTOs;
 using SPC.API.Helpers;
 using SPC.Models;
@@ -11,6 +12,8 @@ namespace SPC.API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
+    
     public class OutilsController : ControllerBase
     {
         private readonly ILogger<OutilsController> _logger;

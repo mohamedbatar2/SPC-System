@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ using SPC.DB;
 
 namespace SPC.Models
 {
+    [SupportedOSPlatform("windows")]
+
     public class ClientManager
     {
         public static async Task<List<string>> GetClientsNamesAsync()

@@ -3,67 +3,46 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
-using SPC.Models;
+using SPC.DTOs;
 using SPC.Services;
 
 namespace SPC.ViewModel
 {
     public class HistoryViewModel : INotifyPropertyChanged
     {
-        // ============================================================
-        // SERVICES & DEPENDENCIES
-        // ============================================================
+        private readonly ApiService _apiService;
 
-        private readonly ISpcDataService _dataService;
+        public ObservableCollection<SPCEnregCompletDto> AllSeries { get; set; }
+        public List<string> DateItems { get; set; }
 
-        // ============================================================
-        // PROPERTIES
-        // ============================================================
-
-        private ObservableCollection<SPCEnregComplet> _allSeries;
-        public ObservableCollection<SPCEnregComplet> AllSeries
-        {
-            get => _allSeries;
-            set
-            {
-                _allSeries = value;
-                OnPropertyChanged(nameof(AllSeries));
-            }
-        }
-
-        private List<string> _dateItems;
-        public List<string> DateItems
-        {
-            get => _dateItems;
-            set
-            {
-                _dateItems = value;
-                OnPropertyChanged(nameof(DateItems));
-            }
-        }
-
-        private string _selectedDate;
+        private string selectedDate;
         public string SelectedDate
         {
-            get => _selectedDate;
+            get { return selectedDate; }
             set
             {
-                _selectedDate = value;
-                OnPropertyChanged(nameof(SelectedDate));
-
+                selectedDate = value;
                 if (!string.IsNullOrEmpty(value))
                 {
                     var sp = value.Split('/');
-                    _month = sp[0].TrimStart('0');
-                    _year = sp[1];
-                    _ = ReloadDataAsync(); // Fire and forget
+                    if (sp.Length == 2)
+                    {
+                        month = sp[0].TrimStart('0');
+                        if (string.IsNullOrEmpty(month)) month = "12"; // Handle "00" case
+                        year = sp[1];
+                        OnPropertyChanged(nameof(SelectedDate));
+                        _ = ReloadDataAsync();
+                    }
                 }
             }
         }
 
+        private string year, month;
         private bool _isLoading;
+
         public bool IsLoading
         {
             get => _isLoading;
@@ -74,91 +53,65 @@ namespace SPC.ViewModel
             }
         }
 
-        private string _year;
-        private string _month;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        // ============================================================
-        // CONSTRUCTOR
-        // ============================================================
-
-        public HistoryViewModel(ISpcDataService dataService)
+        public HistoryViewModel()
         {
-            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
-
-            // Initialiser les collections
-            AllSeries = new ObservableCollection<SPCEnregComplet>();
-            DateItems = new List<string>();
-
-            // Date actuelle
-            _year = DateTime.Now.Year.ToString();
-            _month = DateTime.Now.Month.ToString();
-
-            // Générer la liste des dates
-            GenerateDateItems();
-
-            // Charger les données async
-            _ = LoadInitialDataAsync();
-        }
-
-        // ============================================================
-        // INITIALIZATION
-        // ============================================================
-
-        private void GenerateDateItems()
-        {
-            var items = new List<string>();
-            int currentYear = int.Parse(_year);
-            int currentMonth = int.Parse(_month);
-
-            for (int y = currentYear; y > 2015; y--)
+            try
             {
-                if (y == currentYear)
-                {
-                    // Année en cours: du mois actuel jusqu'à janvier
-                    for (int m = currentMonth; m > 0; m--)
-                    {
-                        items.Add($"{m:D2}/{y}");
-                    }
-                }
-                else
-                {
-                    // Années précédentes: tous les mois
-                    for (int m = 12; m > 0; m--)
-                    {
-                        items.Add($"{m:D2}/{y}");
-                    }
-                }
-            }
+                _apiService = App.ApiService;
 
-            DateItems = items;
+                DateItems = new List<string>();
+                year = DateTime.Now.Year.ToString();
+                month = DateTime.Now.Month.ToString();
+
+                AllSeries = new ObservableCollection<SPCEnregCompletDto>();
+
+                // Build date dropdown (years from current down to 2016)
+                for (int y = int.Parse(year); y > 2015; y--)
+                {
+                    if (y == int.Parse(year))
+                    {
+                        // Current year: only months up to current month
+                        for (int m = int.Parse(month); m > 0; m--)
+                        {
+                            DateItems.Add($"{m:D2}/{y}");
+                        }
+                    }
+                    else
+                    {
+                        // Previous years: all 12 months
+                        for (int m = 12; m > 0; m--)
+                        {
+                            DateItems.Add($"{m:D2}/{y}");
+                        }
+                    }
+                }
+
+                // Set default selected date
+                if (DateItems.Count > 0)
+                {
+                    selectedDate = DateItems[0];
+                    OnPropertyChanged(nameof(SelectedDate));
+                }
+
+                // Load initial data AFTER window is shown (prevents blocking)
+                Application.Current?.Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await LoadInitialDataAsync();
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initializing History view: {ex.Message}\n\nPlease make sure the API is running.",
+                    "Initialization Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private async Task LoadInitialDataAsync()
         {
-            IsLoading = true;
-
-            try
-            {
-                var series = await _dataService.GetHistoricalSeriesAsync("F", _month, _year);
-                AllSeries = new ObservableCollection<SPCEnregComplet>(series);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"Erreur de chargement de l'historique:\n\n{ex.Message}",
-                    "Erreur",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-            finally
-            {
-                IsLoading = false;
-            }
+            await ReloadDataAsync();
         }
-
-        // ============================================================
-        // DATA RELOAD (ASYNC)
-        // ============================================================
 
         private async Task ReloadDataAsync()
         {
@@ -166,22 +119,49 @@ namespace SPC.ViewModel
 
             try
             {
-                AllSeries.Clear();
-
-                var series = await _dataService.GetHistoricalSeriesAsync("F", _month, _year);
-
-                foreach (var item in series)
+                // Ensure authenticated
+                if (!App.AuthService.IsAuthenticated)
                 {
-                    AllSeries.Add(item);
+                    var loginSuccess = await App.AuthService.LoginAsync("admin", "password123");
+                    if (!loginSuccess)
+                    {
+                        MessageBox.Show("Authentication failed. Please check that the API is running at https://localhost:7191",
+                            "Authentication Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
                 }
+
+                // Call the /api/Series/history endpoint
+                var endpoint = $"api/Series/history?status=F&month={month}&year={year}";
+                var data = await _apiService.GetAsync<List<SPCEnregCompletDto>>(endpoint);
+
+                // Update UI on UI thread
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    AllSeries.Clear();
+                    if (data != null && data.Count > 0)
+                    {
+                        foreach (var item in data)
+                        {
+                            AllSeries.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        // Optional: Show message if no data
+                        // MessageBox.Show($"No data found for {month}/{year}");
+                    }
+                });
+            }
+            catch (HttpRequestException httpEx)
+            {
+                MessageBox.Show($"Cannot connect to API. Make sure SPC.API is running at https://localhost:7191\n\nError: {httpEx.Message}",
+                    "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Erreur de rechargement des données:\n\n{ex.Message}",
-                    "Erreur",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                MessageBox.Show($"Error loading history data: {ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -189,15 +169,9 @@ namespace SPC.ViewModel
             }
         }
 
-        // ============================================================
-        // INOTIFYPROPERTYCHANGED
-        // ============================================================
-
-        private void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

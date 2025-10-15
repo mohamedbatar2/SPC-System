@@ -15,7 +15,7 @@ namespace SPC.API.Helpers
         /// <summary>
         /// Convertit un model Outil en OutilDto
         /// </summary>
-        public static OutilDto? ToDto(this Outil outil)
+        public static OutilDto ToDto(this Outil outil)
         {
             if (outil == null) return null;
 
@@ -54,7 +54,7 @@ namespace SPC.API.Helpers
         /// <summary>
         /// Convertit un OutilDto en model Outil
         /// </summary>
-        public static Outil? ToModel(this OutilDto dto)
+        public static Outil ToModel(this OutilDto dto)
         {
             if (dto == null) return null;
 
@@ -94,7 +94,7 @@ namespace SPC.API.Helpers
         // MACHINE
         // ============================================================
 
-        public static MachineDto? ToDto(this Machine machine)
+        public static MachineDto ToDto(this Machine machine)
         {
             if (machine == null) return null;
 
@@ -110,7 +110,7 @@ namespace SPC.API.Helpers
         // OPERATEUR
         // ============================================================
 
-        public static OperateurDto? ToDto(this Operateur operateur)
+        public static OperateurDto ToDto(this Operateur operateur)
         {
             if (operateur == null) return null;
 
@@ -126,7 +126,7 @@ namespace SPC.API.Helpers
         // CLIENT
         // ============================================================
 
-        public static ClientDto? ToDto(this Client client)
+        public static ClientDto ToDto(this Client client)
         {
             if (client == null) return null;
 
@@ -140,7 +140,7 @@ namespace SPC.API.Helpers
         // OTAPRVNTF
         // ============================================================
 
-        public static OtaPrvntfDto? ToDto(this OtaPrvntf prvntf)
+        public static OtaPrvntfDto ToDto(this OtaPrvntf prvntf)
         {
             if (prvntf == null) return null;
 
@@ -153,7 +153,7 @@ namespace SPC.API.Helpers
             };
         }
 
-        public static OtaPrvntf? ToModel(this OtaPrvntfDto dto)
+        public static OtaPrvntf ToModel(this OtaPrvntfDto dto)
         {
             if (dto == null) return null;
 
@@ -167,7 +167,7 @@ namespace SPC.API.Helpers
         }
       
 
-        public static SPCEnregCompletDto? ToDto(this SPCEnregComplet complet, string status = "NF")
+        public static SPCEnregCompletDto ToDto(this SPCEnregComplet complet, string status = "NF")
         {
             if (complet == null) return null;
 
@@ -180,17 +180,18 @@ namespace SPC.API.Helpers
                 Ref = complet.Ref,
                 Section = complet.Section,
                 Connexion = complet.Connexion,
-                Denudage = complet.Denudage,
+                Denudage = (decimal)complet.Denudage,
                 NoOutil = complet.NoOutil,
-                DateCreation = complet.DateCreation,
+                DateCreation = (DateTime)complet.DateCreation,
                 Nature = complet.Nature,
-                Quantite = complet.Quantite,
+                Quantite = (decimal)complet.Quantite,
                 Repere = complet.Repere,
                 NomOperateur = complet.Name,
                 LibelleMachine = null,
                 Status = status
             };
         }
+
 
     }
 

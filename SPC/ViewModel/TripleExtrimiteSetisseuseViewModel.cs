@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -1166,46 +1167,87 @@ namespace SPC.ViewModel
                 }
             }
         }
-        public string Name { get; set; }//title
+        public string Name { get; set; }
 
         private string nOutilC;
         public string NOutilC
         {
             get { return nOutilC; }
-            set {
-                if (Outils.Count() == 0) return;
-                if (OutilsB.Count() == 0) return;
-                if (string.IsNullOrEmpty(value)) value = "";
+            set
+            {
+                // ✅ Add null check
+                if (Outils == null || OutilsB == null || OutilsC == null ||
+                    Outils.Count() == 0 || OutilsB.Count() == 0) return;
 
+                if (string.IsNullOrEmpty(value)) value = "";
                 if (value.ToUpper() != nOutilC)
                 {
                     enreg.NoOutilC = value.ToUpper();
                     nOutilC = value.ToUpper();
-                    FilterOutils();
+                    _ = FilterOutils();
                     WarningNotifCheckingAll();
-                    var prv = OtaPrvntfManager.GetPrvntf(NOutilC);
-                    OutilWarningVisibiliteC = prv == null || ( prv.DtPrv > DateTime.Now.AddYears(-1) && prv.QtAct < 0.8 * prv.PrvQt ) ? "Hidden" : "Visible";
+                    _ = CheckOutilCPrvntfAsync();
                 }
             }
         }
+
+
+        // Separate async method
+        private async Task CheckOutilCPrvntfAsync()
+        {
+            try
+            {
+                var prv = await _dataService.GetPrvntfAsync(NOutilC);
+                OutilWarningVisibiliteC = prv == null ||
+                    (prv.DtPrv > DateTime.Now.AddYears(-1) && prv.QtAct < 0.8 * prv.PrvQt)
+                    ? "Hidden" : "Visible";
+                OnPropertyChanged(nameof(OutilWarningVisibiliteC));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error checking preventif C: {ex.Message}");
+            }
+        }
+
         private string nOutilB;
         public string NOutilB
         {
             get { return nOutilB; }
-            set {
-                if (Outils.Count() == 0) return;
+            set
+            {
+                // ✅ Add null check
+                if (Outils == null || OutilsB == null || Outils.Count() == 0) return;
+
                 if (string.IsNullOrEmpty(value)) value = "";
                 if (value.ToUpper() != nOutilB)
                 {
                     enreg.NoOutilB = value.ToUpper();
                     nOutilB = value.ToUpper();
-                    FilterOutils();
+                    _ = FilterOutils();
                     WarningNotifCheckingAll();
-                    var prv = OtaPrvntfManager.GetPrvntf(NOutilB);
-                    OutilWarningVisibiliteB = prv == null || ( prv.DtPrv > DateTime.Now.AddYears(-1) && prv.QtAct < 0.8 * prv.PrvQt ) ? "Hidden" : "Visible";
+                    _ = CheckOutilBPrvntfAsync();
                 }
             }
         }
+
+
+        // ✅ NEW: Separate async method
+        private async Task CheckOutilBPrvntfAsync()
+        {
+            try
+            {
+                var prv = await _dataService.GetPrvntfAsync(NOutilB);
+                OutilWarningVisibiliteB = prv == null ||
+                    (prv.DtPrv > DateTime.Now.AddYears(-1) && prv.QtAct < 0.8 * prv.PrvQt)
+                    ? "Hidden" : "Visible";
+                OnPropertyChanged(nameof(OutilWarningVisibiliteB));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error checking preventif: {ex.Message}");
+            }
+        }
+
         private string connexionC;
         public string ConnexionC
         {
@@ -1217,7 +1259,7 @@ namespace SPC.ViewModel
                 {
                     enreg.ConnexionC = value;
                     connexionC = value;
-                    FilterOutils();
+                    _ = FilterOutils();
                     WarningNotifCheckingAll();
                 }
             }
@@ -1234,7 +1276,7 @@ namespace SPC.ViewModel
                 {
                     enreg.ConnexionB = value;
                     connexionB = value;
-                    FilterOutils();
+                    _ = FilterOutils();
                     WarningNotifCheckingAll();
                 }
             }
@@ -1244,18 +1286,39 @@ namespace SPC.ViewModel
         public string NOutil
         {
             get { return nOutil; }
-            set {
+            set
+            {
+                
+                if (Outils == null || Outils.Count() == 0) return;
+
                 if (value.ToUpper() != nOutil)
                 {
                     enreg.NoOutil = value.ToUpper();
                     nOutil = value.ToUpper();
-                    FilterOutils();
+                    _ = FilterOutils();
                     WarningNotifCheckingAll();
-                    var prv = OtaPrvntfManager.GetPrvntf(NOutil);
-                    OutilWarningVisibilite = prv == null || ( prv.DtPrv > DateTime.Now.AddYears(-1) && prv.QtAct < 0.8 * prv.PrvQt ) ? "Hidden" : "Visible";
+                    _ = CheckOutilPrvntfAsync();
                 }
             }
         }
+
+        // Separate async method
+        private async Task CheckOutilPrvntfAsync()
+        {
+            try
+            {
+                var prv = await _dataService.GetPrvntfAsync(NOutil);
+                OutilWarningVisibilite = prv == null ||
+                    (prv.DtPrv > DateTime.Now.AddYears(-1) && prv.QtAct < 0.8 * prv.PrvQt)
+                    ? "Hidden" : "Visible";
+                OnPropertyChanged(nameof(OutilWarningVisibilite));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error checking preventif: {ex.Message}");
+            }
+        }
+
         private string connexion;
 
         public string Connexion
@@ -1266,7 +1329,7 @@ namespace SPC.ViewModel
                 {
                     enreg.Connexion = value;
                     connexion = value;
-                    FilterOutils();
+                    _ =FilterOutils();
                     WarningNotifCheckingAll();
                 }
             }
@@ -1292,7 +1355,7 @@ namespace SPC.ViewModel
                     enreg.Section = value;
                     if (!string.IsNullOrEmpty(NOutil) && !string.IsNullOrEmpty(Connexion))
                     {
-                        FilterOutils();
+                        _ =FilterOutils();
                         WarningNotifCheckingAll();
                         OnPropertyChanged(nameof(Section));
                     }
@@ -1466,9 +1529,10 @@ namespace SPC.ViewModel
 
     
             enreg.RefSizeTester += () => RefSizeAct();
-            enreg.CliAbsTester += () => CliAbsAct();
+            enreg.CliAbsTester += () => _= CliAbsActAsync();
 
             ExitLoops = false;
+            ViewInit();
         }
 
         private async Task LoadInitialDataAsync()
@@ -1959,13 +2023,17 @@ namespace SPC.ViewModel
 
         private async Task SaveSerieAsync()
         {
-            if (!SaveCheck())
+            if (!await SaveCheckAsync())
                 return;
 
             IsLoading = true;
 
             try
             {
+                if (!App.AuthService.IsAuthenticated)
+                {
+                    await App.AuthService.LoginAsync("admin", "password123");
+                }
                 if (enregDetail.Nature.Contains("D"))
                 {
                     enreg.HA = Outils[0].Hame;
@@ -1983,6 +2051,11 @@ namespace SPC.ViewModel
                 await _dataService.InsertNewDetailAsync(enregDetail);
 
                 RequestClose?.Invoke();
+            }
+            catch (HttpRequestException httpEx)
+            {
+                MessageBox.Show($"Erreur de connexion API: {httpEx.Message}",
+                    "Erreur de connexion", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
@@ -2051,24 +2124,48 @@ namespace SPC.ViewModel
             }
             return true;
         }
-        private void CliAbsAct()
+        private async Task CliAbsActAsync()
         {
-            if(!ClientManager.GetClientsNames().Contains(enreg.Client))
+            try
             {
-                CliColor = "Red";
-                CliFor = "Yellow";
-                VisiCliWarning = "Visible";
+                // ✅ Get client list from API
+                var clients = await _dataService.GetClientNamesAsync();
+
+                // ✅ Check if current client exists in the list
+                if (!clients.Contains(enreg.Client))
+                {
+                    CliColor = "Red";
+                    CliFor = "Yellow";
+                    VisiCliWarning = "Visible";
+                }
+                else
+                {
+                    CliColor = "LightGreen";
+                    CliFor = "White";
+                    VisiCliWarning = "Hidden";
+                }
+
+                // ✅ Notify UI of property changes
+                OnPropertyChanged(nameof(CliColor));
+                OnPropertyChanged(nameof(CliFor));
+                OnPropertyChanged(nameof(VisiCliWarning));
             }
-            else
+            catch (Exception ex)
             {
+                // ✅ Handle any errors gracefully
+                System.Diagnostics.Debug.WriteLine($"Error checking client: {ex.Message}");
+
+                // ✅ Set safe defaults on error
                 CliColor = "LightGreen";
                 CliFor = "White";
                 VisiCliWarning = "Hidden";
+
+                OnPropertyChanged(nameof(CliColor));
+                OnPropertyChanged(nameof(CliFor));
+                OnPropertyChanged(nameof(VisiCliWarning));
             }
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CliColor)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CliFor)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisiCliWarning)));
         }
+
         private void RefSizeAct()
         {
             if(enreg.Ref.Length < 6)
@@ -2082,16 +2179,16 @@ namespace SPC.ViewModel
                 RefColor = "LightGreen";
                 RefFor = "White";
                 VisiRefWarning = "Hidden";
-            }
+            }   
             OnPropertyChanged(nameof(RefColor));
             OnPropertyChanged(nameof(RefFor));
             OnPropertyChanged(nameof(VisiRefWarning));
         }
 
-        public void FilterOutils()
+        public async Task FilterOutils()
         {
             OutilsC.Clear();
-            var outilsC = OutilManager.GetOutilsByCndO(NOutilC, ConnexionC);
+            var outilsC = await _dataService.GetOutilsByConditionAsync(NOutilC, ConnexionC);
 
             if (NOutilC != NOutil && NOutilC != NOutilB)
             {
@@ -2104,7 +2201,7 @@ namespace SPC.ViewModel
             OnPropertyChanged(nameof(VisiDataGridC));
 
             OutilsB.Clear();
-            var outilsB = OutilManager.GetOutilsByCndO(NOutilB, ConnexionB);
+            var outilsB = await _dataService.GetOutilsByConditionAsync(NOutilB, ConnexionB);
 
             if (NOutilB != NOutil)
             {
@@ -2118,7 +2215,7 @@ namespace SPC.ViewModel
             OnPropertyChanged(nameof(VisiDataGridB));
 
             Outils.Clear();
-            var outils = OutilManager.GetOutilsByCndO(NOutil, Connexion);
+            var outils = await _dataService.GetOutilsByConditionAsync(NOutil, Connexion);
 
             foreach (var item in outils) 
             {
@@ -2135,7 +2232,7 @@ namespace SPC.ViewModel
             OnPropertyChanged(nameof(ExtCEnable));
         }
 
-        private bool SaveCheck()
+        private async Task<bool> SaveCheckAsync()
         {
 
             if (!CheckFull() || !CheckFull("B"))
@@ -2162,7 +2259,7 @@ namespace SPC.ViewModel
                 return false;
             }
 
-            var prv = OtaPrvntfManager.GetPrvntf(string.IsNullOrEmpty(NOutil)? "" : NOutil);
+            var prv = await _dataService.GetPrvntfAsync(string.IsNullOrEmpty(NOutil)? "" : NOutil);
             bool prvcheck = prv == null ? false : prv.QtAct + enregDetail.Quantite < prv.PrvQt;
 
             if (!prvcheck)
@@ -2173,7 +2270,7 @@ namespace SPC.ViewModel
 
             if (!string.IsNullOrEmpty(NOutilB))
             {
-                var prvB = OtaPrvntfManager.GetPrvntf(string.IsNullOrEmpty(NOutilB)? "" : NOutilB);
+                var prvB = await _dataService.GetPrvntfAsync(string.IsNullOrEmpty(NOutilB)? "" : NOutilB);
                 bool prvcheckB = prvB == null ? false : prvB.QtAct + enregDetail.Quantite < prvB.PrvQt;
 
                 if (!prvcheckB)
@@ -2185,7 +2282,7 @@ namespace SPC.ViewModel
 
             if (!string.IsNullOrEmpty(NOutilC))
             {
-                var prvC = OtaPrvntfManager.GetPrvntf(string.IsNullOrEmpty(NOutilC)? "" : NOutilC);
+                var prvC = await _dataService.GetPrvntfAsync(string.IsNullOrEmpty(NOutilC)? "" : NOutilC);
                 bool prvcheckC = prvC == null ? false : prvC.QtAct + enregDetail.Quantite < prvC.PrvQt;
 
                 if (!prvcheckC)

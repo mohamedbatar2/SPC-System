@@ -1,4 +1,6 @@
-﻿namespace SPC.API.DTOs
+﻿using System;
+
+namespace SPC.DTOs
 {
     /// <summary>
     /// DTO pour la maintenance préventive des outils
@@ -12,18 +14,11 @@
     }
 
     /// <summary>
-    /// Request pour mettre à jour le préventif d'un outil
+    /// Requête pour mettre à jour le préventif
     /// </summary>
     public class UpdatePrvntfRequest
     {
-        /// <summary>
-        /// Numéro de l'outil
-        /// </summary>
-        public string NoOutil { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Quantité à ajouter au compteur
-        /// </summary>
+        public required string NoOutil { get; set; }
         public int Quantite { get; set; }
     }
 }

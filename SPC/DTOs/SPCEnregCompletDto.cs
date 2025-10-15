@@ -1,4 +1,6 @@
-﻿namespace SPC.API.DTOs
+﻿using System;
+
+namespace SPC.DTOs
 {
     /// <summary>
     /// DTO pour les séries complètes (vue complète)

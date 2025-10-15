@@ -453,7 +453,7 @@ namespace SPC.ViewModel
             InfoBar.RestartTimer();
             var historyView = new SerieHistory
             {
-                DataContext = new HistoryViewModel(_dataService)
+                DataContext = new HistoryViewModel()
             };
             historyView.ShowDialog();
         }

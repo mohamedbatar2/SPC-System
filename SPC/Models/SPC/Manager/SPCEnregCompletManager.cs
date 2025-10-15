@@ -5,6 +5,7 @@ using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +13,8 @@ using SPC.DB;
 
 namespace SPC.Models
 {
+    [SupportedOSPlatform("windows")]
+
     public class SPCEnregCompletManager
     {
         public static async Task<ObservableCollection<SPCEnregComplet>> GetAllAsync(string stat, string month = "", string year = "")//not Finished == NF

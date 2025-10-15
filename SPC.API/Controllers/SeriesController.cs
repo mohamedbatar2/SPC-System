@@ -2,11 +2,13 @@
 using SPC.API.DTOs;
 using SPC.Tools;
 using SPC.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SPC.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class SeriesController : ControllerBase
     {
         private readonly ILogger<SeriesController> _logger;
@@ -36,14 +38,14 @@ namespace SPC.API.Controllers
                     Ref = s.Ref,
                     Section = s.Section,
                     Connexion = s.Connexion,
-                    Denudage = s.Denudage,
+                    Denudage = (decimal)s.Denudage,
                     NoOutil = s.NoOutil,
-                    DateCreation = s.DateCreation,  // ✅ UTILISER DateMaj au lieu de DateCreation
+                    DateCreation = (DateTime)s.DateCreation,  // UTILISER DateMaj au lieu de DateCreation
                     Nature = s.Nature,
-                    Quantite = s.Quantite,
+                    Quantite = (decimal)s.Quantite,
                     Repere = s.Repere,
                     NomOperateur = s.Name,
-                    LibelleMachine = null,  // ✅ SAFE NAVIGATION
+                    LibelleMachine = null,  // SAFE NAVIGATION
                     Status = status
                 });
 
@@ -167,7 +169,7 @@ namespace SPC.API.Controllers
                     OperationNo = s.OperationNo,
                     Client = s.Client,
                     Ref = s.Ref,
-                    DateCreation = s.DateCreation,
+                    DateCreation = (DateTime)s.DateCreation,
                     Status = status
                 });
 
@@ -266,5 +268,6 @@ namespace SPC.API.Controllers
                 return StatusCode(500, new { message = "Erreur serveur", detail = ex.Message });
             }
         }
+        
     }
 }

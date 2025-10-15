@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SPC.API.DTOs;
-using SPC.API.Helpers;  // ✅ AJOUTER pour ToDto()
+using SPC.API.Helpers;
 using SPC.Models;
-using SPC.Tools;
+
 
 namespace SPC.API.Controllers
 {
@@ -11,6 +12,8 @@ namespace SPC.API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
+    
     public class PreventifController : ControllerBase
     {
         private readonly ILogger<PreventifController> _logger;
@@ -134,5 +137,43 @@ namespace SPC.API.Controllers
                 });
             }
         }
+        [HttpPost("reset/{nOutil}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ResetPrvntf(string nOutil)  // ✅ Add async Task
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(nOutil))
+                {
+                    return BadRequest(new { error = "Tool number is required" });
+                }
+
+                _logger.LogInformation("Resetting preventif for outil: {NoOutil}", nOutil);
+
+                var prv = await OtaPrvntfManager.GetPrvntfAsync(nOutil);  // ✅ Add await
+
+                if (prv == null)
+                {
+                    return NotFound(new { error = $"Tool '{nOutil}' not found" });
+                }
+
+                await OtaPrvntfManager.ResetOtaPrvntfAsync(nOutil);  // ✅ Add await
+
+                return Ok(new
+                {
+                    message = "Preventif reset successfully",
+                    tool = nOutil
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error resetting preventif for {NoOutil}", nOutil);
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
     }
 }

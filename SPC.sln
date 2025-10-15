@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPC", "SPC\SPC.csproj", "{6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPC.API", "SPC.API\SPC.API.csproj", "{7F732861-E8DA-4635-A224-F89BB48EBBC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPC.SHARED", "SPC.SHARED\SPC.SHARED.csproj", "{5040D027-5E53-4937-8387-B30DDD8BB800}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,10 +20,6 @@ Global
 		{7F732861-E8DA-4635-A224-F89BB48EBBC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F732861-E8DA-4635-A224-F89BB48EBBC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F732861-E8DA-4635-A224-F89BB48EBBC3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5040D027-5E53-4937-8387-B30DDD8BB800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5040D027-5E53-4937-8387-B30DDD8BB800}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5040D027-5E53-4937-8387-B30DDD8BB800}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5040D027-5E53-4937-8387-B30DDD8BB800}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
